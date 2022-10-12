@@ -1,10 +1,13 @@
-
+import { Provider } from "react-redux";
+import { Routers } from "./components/router/Routers";
+import { store } from "./store/store";
+import "antd/dist/antd.css";
 
 function App() {
   return (
-    <div className="App">
-    <h1>Hola </h1>
-    </div>
+    <Provider store={store}>
+      <Routers />
+    </Provider>
   );
 }
 

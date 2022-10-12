@@ -1,0 +1,21 @@
+section.ant-layout.dasbohard {
+  flex-direction: row;
+
+  .ant-layout-sider-children {
+    padding: 20px 10px;
+  }
+  .ant-layout-sider {
+    height: 100vh;
+  }
+
+  section.ant-layout.contain {
+    header.ant-layout-header {
+      .logo {
+        h1{
+            font-weight: bold;
+            color: #fff !important;
+        }
+      }
+    }
+  }
+}

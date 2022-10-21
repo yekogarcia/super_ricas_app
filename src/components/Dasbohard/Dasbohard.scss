@@ -10,10 +10,80 @@ section.ant-layout.dasbohard {
 
   section.ant-layout.contain {
     header.ant-layout-header {
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
       .logo {
-        h1{
-            font-weight: bold;
-            color: #fff !important;
+        width: 30%;
+        h1 {
+          color: #fff;
+          font-weight: bold;
+        }
+      }
+      aside {
+        cursor: pointer;
+        width: 25%;
+        z-index: 1;
+        ul.profile {
+          width: 100%;
+          margin: 0;
+          padding: 0;
+
+          li {
+            display: flex;
+
+            .info-profile {
+              position: relative;
+              align-items: center;
+
+              p {
+                height: 20px;
+                margin: -10px 0 0 0;
+                padding-bottom: 30px;
+              }
+            }
+            .icon {
+              span {
+                font-size: 26px;
+              }
+            }
+
+            figure {
+              padding-right: 10px;
+              margin: 0;
+
+              img {
+                display: flex;
+                width: 60px;
+                height: 60px;
+                border: 1px solid #fff;
+                border-radius: 65px;
+              }
+            }
+          }
+        }
+        ul.menu-dropdown {
+          display: none;
+          margin: 0 auto;
+          // margin-top: 5px;
+          align-items: center;
+          li {
+            background: #001529;
+            width: 60%;
+            align-items: center;
+            padding: 15px 0 15px 10px;
+            margin: 0px 0 0 93px;
+            height: 30px;
+            span {
+              padding-right: 10px;
+            }
+            &:hover {
+              background-color: #40a9ff;
+            }
+          }
+        }
+        &:hover {
+          // background-color: #2a95ed;
         }
       }
     }

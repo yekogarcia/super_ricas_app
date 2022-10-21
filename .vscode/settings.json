@@ -1,0 +1,8 @@
+{
+    "docwriter.style": "Auto-detect",
+    "docwriter.language": "Spanish",
+    "cSpell.words": [
+        "Nuevo"
+    ],
+    "dotenv.enableAutocloaking": false
+}

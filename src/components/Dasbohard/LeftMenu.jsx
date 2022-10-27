@@ -22,9 +22,9 @@ function getItem(label, key, icon, children, type) {
 }
 
 const items = [
-  getItem("Productos", "products", <PieChartOutlined />),
-  getItem("Categorias", "categories", <DesktopOutlined />),
   getItem("Zonas", "zones", <ContainerOutlined />),
+  getItem("Categorias", "categories", <DesktopOutlined />),
+  getItem("Productos", "products", <PieChartOutlined />),
   getItem("Inventario", "inventory", <ContainerOutlined />),
   getItem("Informes", "reports", <ContainerOutlined />),
   //   getItem("Navigation One", "sub1", <MailOutlined />, [

@@ -1,10 +1,17 @@
 import { Form, Input, Modal } from "antd";
+const { TextArea } = Input;
 
 export const Forms = (props) => {
   const [form] = Form.useForm();
-  const { open, setOpen, onCreate, title, width, inputs } = props;
+  const { open, setOpen, onCreate, title, width, inputs, row } = props;
 
-  console.log(props);
+  // console.log(props);
+
+  if (row) {
+    form.setFieldsValue(row);
+  } else {
+    form.resetFields();
+  }
 
   return (
     <Modal
@@ -37,7 +44,6 @@ export const Forms = (props) => {
         }}
       >
         {inputs.map(({ label, name, required, type, width }) => {
-          console.log(label);
           return (
             <Form.Item
               style={{
@@ -50,12 +56,12 @@ export const Forms = (props) => {
               label={label}
               rules={[
                 {
-                  required: { required },
+                  required: required,
                   message: "Por favor ingrese un valor!",
                 },
               ]}
             >
-              {type === "input" ? <Input /> : <Input />}
+              {type === "textArea" ? <TextArea /> : <Input />}
             </Form.Item>
           );
         })}

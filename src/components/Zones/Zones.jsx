@@ -1,12 +1,34 @@
 import { Button, Table } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  deleteZones,
+  getZones,
+  saveZones,
+  updateZones,
+} from "../../controllers/fetchDynamics";
+import { Filters } from "../Filters/Filters";
 import { Forms } from "../Forms/Forms";
 import { setColumnsList } from "../utils/setColumnsList";
+
+import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { setOptionsBlock } from "../utils/setOptionsList";
+import { addRow, removeRow, updateRow } from "../utils/rows";
 
 export const Zones = () => {
   const [zones, setZones] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [row, setRow] = useState(false);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setLoading(true);
+    dispatch(getZones()).then((pr) => {
+      setZones(pr);
+      setLoading(false);
+    });
+  }, [dispatch]);
 
   const confColumns = [
     {
@@ -18,27 +40,87 @@ export const Zones = () => {
     {
       label: "Zona",
       name: "nombre",
-      filter: "order.search",
-      width: "wp-300",
+      filter: "search",
+      width: "wp-200",
     },
     {
       label: "Fecha creación",
-      name: "create_datetime",
-      filter: "order",
+      name: "fecha_creacion",
+      filter: "search",
       width: "wp-200",
     },
     {
-      label: "Usuario",
-      name: "user",
-      filter: "order",
+      label: "Descripción",
+      name: "descripcion",
+      filter: "search",
       width: "wp-200",
     },
+    {
+      label: "Fecha modificación",
+      name: "fecha_modificacion",
+      filter: "search",
+      width: "wp-200",
+    },
+    // {
+    //   label: "Usuario",
+    //   name: "user",
+    //   filter: "order",
+    //   width: "wp-200",
+    // },
   ];
-  let columns = setColumnsList(confColumns, zones);
 
   const onCreate = (values) => {
-    console.log(values);
+    setLoading(true);
+    if (!row) {
+      dispatch(saveZones(values)).then((pr) => {
+        setZones(addRow(zones, pr[0]));
+        setLoading(false);
+        setOpen(false);
+      });
+    } else {
+      dispatch(updateZones(values, row.id)).then((pr) => {
+        setZones(updateRow(zones, pr, row.id));
+        setLoading(false);
+        setOpen(false);
+      });
+    }
   };
+
+  const onSearch = (pr) => {
+    console.log(pr);
+    // setLoading(true);
+  };
+
+  const handleUpdate = (pr) => {
+    setOpen(true);
+    setRow(pr);
+  };
+
+  const handleDelete = (values) => {
+    dispatch(deleteZones(values.id)).then((id) => {
+      setZones(removeRow(zones, values.id));
+    });
+  };
+
+  const contextMenu = (record) => {
+    return (
+      <div className="options">
+        <div>
+          <a onClick={() => handleUpdate(record)}>
+            <EditOutlined />
+            Editar
+          </a>
+          <a onClick={() => handleDelete(record)}>
+            <DeleteOutlined />
+            Eliminar
+          </a>
+        </div>
+      </div>
+    );
+  };
+  const block = setOptionsBlock(contextMenu);
+  let columns = setColumnsList(confColumns, zones);
+  columns = block.concat(columns);
 
   const inputs = [
     {
@@ -47,7 +129,14 @@ export const Zones = () => {
       width: "100%",
       required: true,
       type: "input",
-    }
+    },
+    {
+      label: "Descripción",
+      name: "descripcion",
+      width: "100%",
+      required: false,
+      type: "textArea",
+    },
   ];
 
   const propsForm = {
@@ -56,29 +145,41 @@ export const Zones = () => {
     open,
     setOpen,
     onCreate,
-    inputs
+    inputs,
+    row,
   };
 
+  const params = {
+    onSearch,
+    loading,
+    filters: [],
+  };
 
   return (
     <>
-      <Button
-        type="primary"
-        onClick={() => {
-          setOpen(true);
-        }}
-      >
-        Nuevo
-      </Button>
-      <Forms {...propsForm} />
-      <Table
-        columns={columns}
-        dataSource={zones}
-        // pagination={pagination}
-        loading={loading}
-        // onChange={handleTableChange}
-        size="middle"
-      />
+      <section className="contain-table">
+        <aside className="head-table">
+          <Button
+            type="primary"
+            onClick={() => {
+              setRow(false);
+              setOpen(true);
+            }}
+          >
+            Nuevo
+          </Button>
+          <Filters {...params} />
+        </aside>
+        <Forms {...propsForm} />
+        <Table
+          columns={columns}
+          dataSource={zones}
+          // pagination={pagination}
+          loading={loading}
+          // onChange={handleTableChange}
+          size="middle"
+        />
+      </section>
     </>
   );
 };

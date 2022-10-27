@@ -1,0 +1,74 @@
+.ant-layout {
+  width: 92.3%;
+}
+
+.contain-table {
+  padding: 10px;
+
+  .head-table {
+    padding: 10px;
+    display: flex;
+
+    button {
+      margin-right: 20px;
+    }
+  }
+}
+
+.options {
+  div {
+    a {
+      display: flex;
+      padding: 5px 0;
+      align-items: center;
+    }
+  }
+}
+
+.ant-table table {
+  display: grid;
+  overflow-x: auto;
+
+  thead.ant-table-thead {
+    text-transform: uppercase;
+
+    tr {
+      th {
+        font-size: 13px !important;
+        background-color: #001529;
+        color: #fff;
+      }
+    }
+  }
+}
+
+.wp-30 {
+  width: 30px;
+}
+.wp-50 {
+  width: 50px;
+}
+.wp-70 {
+  width: 70px;
+}
+.wp-80 {
+  width: 80px;
+}
+.wp-90 {
+  width: 90px;
+}
+.wp-100 {
+  width: 100px;
+}
+.wp-150 {
+  width: 150px;
+}
+.wp-200 {
+  width: 200px;
+}
+.wp-250 {
+  width: 250px;
+}
+.wp-300 {
+  width: 300px;
+}

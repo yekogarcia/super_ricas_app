@@ -1,23 +1,47 @@
-import { Form, Input, Modal, Select } from "antd";
+import { Form, Input, InputNumber, Modal, Select } from "antd";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { getCategories } from "../../controllers/fetchDynamics";
+import { saveProducts, updateProducts } from "../../controllers/products";
+import { addRow, updateRow } from "../utils/rows";
+import { Products } from "./Products";
 const { Option } = Select;
 
-export const FormProducts = ({ open, setOpen }) => {
+export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
   const [form] = Form.useForm();
-  const [categorie, setCategorie] = useState([]);
+  const dispatch = useDispatch();
+  const [categories, setCategories] = useState([]);
 
-  // useEffect(() => {
-  //   fetch(`${process.env.REACT_APP_API_URL}/category`)
-  //     .then((response) => {
-  //       console.log(response);
-  //     })
-  //     .catch((error) => {
-  //       console.log(error);
-  //     });
-  // }, []);
+  // form.setFieldsValue([]);
+
+  useEffect(() => {
+    dispatch(getCategories()).then((res) => {
+      console.log(res);
+      setCategories(res);
+    });
+  }, [dispatch]);
+
+  if (row) {
+    form.setFieldsValue(row);
+  } else {
+    form.resetFields();
+  }
 
   const onCreate = (values) => {
     console.log(values);
+    if (!row) {
+      dispatch(saveProducts(values)).then((pr) => {
+        setProducts(addRow(products, pr[0]));
+        form.resetFields();
+        setOpen(false);
+      });
+    } else {
+      dispatch(updateProducts(values, row.id)).then((pr) => {
+        setProducts(updateRow(products, pr, row.id));
+        form.resetFields();
+        setOpen(false);
+      });
+    }
   };
 
   return (
@@ -29,12 +53,12 @@ export const FormProducts = ({ open, setOpen }) => {
       width="800px"
       onCancel={() => {
         setOpen(false);
+        form.resetFields();
       }}
       onOk={() => {
         form
           .validateFields()
           .then((values) => {
-            form.resetFields();
             onCreate(values);
           })
           .catch((info) => {
@@ -73,7 +97,7 @@ export const FormProducts = ({ open, setOpen }) => {
             width: "calc(30% - 8px)",
             margin: "4px 4px",
           }}
-          name="categoria"
+          name="id_categoria"
           label="Categoria"
           rules={[
             {
@@ -83,8 +107,11 @@ export const FormProducts = ({ open, setOpen }) => {
           ]}
         >
           <Select>
-            <Option value="ACTIVO">ACTIVO</Option>
-            <Option value="INACTIVO">INACTIVO</Option>
+            {categories.map(({ id, nombre }) => (
+              <Option value={id} key={id}>
+                {nombre}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item
@@ -113,7 +140,12 @@ export const FormProducts = ({ open, setOpen }) => {
             },
           ]}
         >
-          <Input />
+          <InputNumber
+            formatter={(value) =>
+              `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+          />
         </Form.Item>
         <Form.Item
           style={{
@@ -124,7 +156,12 @@ export const FormProducts = ({ open, setOpen }) => {
           name="porcen_comision"
           label="% Comisión"
         >
-          <Input />
+          <InputNumber
+            min={0}
+            max={100}
+            formatter={(value) => `${value}%`}
+            parser={(value) => value.replace("%", "")}
+          />
         </Form.Item>
         <Form.Item
           style={{
@@ -135,7 +172,7 @@ export const FormProducts = ({ open, setOpen }) => {
           name="iva"
           label="IVA"
         >
-          <Input />
+          <InputNumber min={1} max={100} />
         </Form.Item>
         <Form.Item
           style={{
@@ -146,7 +183,7 @@ export const FormProducts = ({ open, setOpen }) => {
           name="factor"
           label="Factor"
         >
-          <Input />
+          <InputNumber min={1} max={100} />
         </Form.Item>
         <Form.Item
           style={{
@@ -157,7 +194,7 @@ export const FormProducts = ({ open, setOpen }) => {
           name="unidad_medida"
           label="Unidad de medida"
         >
-          <Input />
+          <InputNumber min={1} max={100} />
         </Form.Item>
         <Form.Item
           style={{
@@ -167,8 +204,14 @@ export const FormProducts = ({ open, setOpen }) => {
           }}
           name="estado"
           label="Estado"
+          rules={[
+            {
+              required: true,
+              message: "Por favor seleccione un item!",
+            },
+          ]}
         >
-          <Select defaultValue="ACTIVO">
+          <Select>
             <Option value="ACTIVO">ACTIVO</Option>
             <Option value="INACTIVO">INACTIVO</Option>
           </Select>

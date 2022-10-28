@@ -46,7 +46,7 @@ import {
   
     const dat = [
       {
-        title: "Options",
+        title: <AlignLeftOutlined />,
         dataIndex: "options",
         className: "wp-50",
         render: (_, record) => (

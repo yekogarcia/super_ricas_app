@@ -1,5 +1,9 @@
-.ant-layout {
-  width: 92.3%;
+.ant-layout.dasbohard {
+  width: 100%;
+
+  section.ant-layout.contain {
+   width: 85.3%;
+  }
 }
 
 .contain-table {
@@ -25,7 +29,7 @@
   }
 }
 
-.ant-table table {
+table {
   display: grid;
   overflow-x: auto;
 
@@ -33,12 +37,16 @@
     text-transform: uppercase;
 
     tr {
+      display: flex;
       th {
         font-size: 13px !important;
         background-color: #001529;
         color: #fff;
       }
     }
+  }
+  td {
+    font-size: 13px !important;
   }
 }
 

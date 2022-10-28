@@ -31,6 +31,7 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
     console.log(values);
     if (!row) {
       dispatch(saveProducts(values)).then((pr) => {
+        pr[0].key = pr[0].id;
         setProducts(addRow(products, pr[0]));
         form.resetFields();
         setOpen(false);
@@ -97,22 +98,16 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
             width: "calc(30% - 8px)",
             margin: "4px 4px",
           }}
-          name="id_categoria"
-          label="Categoria"
           rules={[
             {
               required: true,
-              message: "Por favor ingrese un valor!",
+              message: "Por favor seleccione un item!",
             },
           ]}
+          name="codigo"
+          label="Código"
         >
-          <Select>
-            {categories.map(({ id, nombre }) => (
-              <Option value={id} key={id}>
-                {nombre}
-              </Option>
-            ))}
-          </Select>
+          <Input />
         </Form.Item>
         <Form.Item
           style={{
@@ -153,6 +148,12 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
             width: "calc(30% - 8px)",
             margin: "4px 4px",
           }}
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
           name="porcen_comision"
           label="% Comisión"
         >
@@ -169,8 +170,14 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
             width: "calc(30% - 8px)",
             margin: "4px 4px",
           }}
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
           name="iva"
-          label="IVA"
+          label="IVA %"
         >
           <InputNumber min={1} max={100} />
         </Form.Item>
@@ -194,7 +201,30 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
           name="unidad_medida"
           label="Unidad de medida"
         >
-          <InputNumber min={1} max={100} />
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(30% - 8px)",
+            margin: "4px 4px",
+          }}
+          name="id_categoria"
+          label="Categoria"
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
+        >
+          <Select>
+            {categories.map(({ id, nombre }) => (
+              <Option value={id} key={id}>
+                {nombre}
+              </Option>
+            ))}
+          </Select>
         </Form.Item>
         <Form.Item
           style={{
@@ -216,7 +246,15 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
             <Option value="INACTIVO">INACTIVO</Option>
           </Select>
         </Form.Item>
-        <Form.Item name="descripcion" label="Descripción">
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(60% - 8px)",
+            margin: "4px 4px",
+          }}
+          name="descripcion"
+          label="Descripción"
+        >
           <Input type="textarea" />
         </Form.Item>
       </Form>

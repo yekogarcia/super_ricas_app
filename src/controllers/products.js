@@ -28,6 +28,7 @@ export const updateProducts = (values, id) => {
     values.usuario = "yekog";
     const resp = await useFetch("products/" + id, { ...values }, "PATCH");
     const body = await resp.json();
+    console.log(body);
     if (resp.ok) {
       message.success(body.message);
       return body.data;
@@ -39,7 +40,6 @@ export const deleteProducts = (id) => {
   return async (dispatch) => {
     const resp = await useFetch("products/" + id, {}, "DELETE");
     const body = await resp.json();
-    console.log(body);
     if (resp.ok) {
       message.success(body.message);
       return body.id;

@@ -43,22 +43,29 @@ export const Products = () => {
       width: "wp-200",
     },
     {
+      label: "Código",
+      name: "codigo",
+      width: "wp-100",
+      filter: "search",
+    },
+    {
       label: "Estado",
       name: "estado",
       filter: "order",
-      width: "wp-200",
+      width: "wp-100",
     },
     {
       label: "Id categoria",
       name: "id_categoria",
-      width: "wp-200",
+      width: "wp-100",
       filter: "order",
+      visible: false
     },
     {
-      label: "Código de barras",
-      name: "codigo_barras",
-      width: "wp-200",
-      filter: "search",
+      label: "Categoría",
+      name: "categoria_text",
+      width: "wp-100",
+      filter: "order",
     },
     {
       label: "Precio",
@@ -73,10 +80,16 @@ export const Products = () => {
       filter: "order",
     },
     {
-      label: "IVA",
+      label: "IVA %",
       name: "iva",
       width: "wp-100",
       filter: "order",
+    },
+    {
+      label: "Unidad de medida",
+      name: "unidad_medida",
+      width: "wp-200",
+      filter: "search",
     },
     {
       label: "Factor",
@@ -85,8 +98,8 @@ export const Products = () => {
       filter: "order",
     },
     {
-      label: "Unidad de medida",
-      name: "unidad_medida",
+      label: "Código de barras",
+      name: "codigo_barras",
       width: "wp-200",
       filter: "search",
     },

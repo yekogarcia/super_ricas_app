@@ -23,12 +23,8 @@ export const Zones = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setLoading(true);
-    dispatch(getZones()).then((pr) => {
-      setZones(pr);
-      setLoading(false);
-    });
-  }, [dispatch]);
+    onSearch();
+  }, []);
 
   const confColumns = [
     {
@@ -86,9 +82,12 @@ export const Zones = () => {
     }
   };
 
-  const onSearch = (pr) => {
-    console.log(pr);
-    // setLoading(true);
+  const onSearch = (values = "") => {
+    setLoading(true);
+    dispatch(getZones(values)).then((pr) => {
+      setZones(pr);
+      setLoading(false);
+    });
   };
 
   const handleUpdate = (pr) => {

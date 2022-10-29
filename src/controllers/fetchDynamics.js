@@ -1,10 +1,9 @@
 import { message } from "antd";
 import { useFetch } from "../hooks/useFetch";
 
-export const getCategories = () => {
+export const getCategories = (values = "") => {
   return async (dispatch) => {
-    const resp = await useFetch("category");
-    console.log(resp);
+    const resp = await useFetch("category/" + values);
     const body = await resp.json();
     if (resp.ok) {
       return body.data;
@@ -12,10 +11,9 @@ export const getCategories = () => {
   };
 };
 
-export const getZones = () => {
+export const getZones = (values = "") => {
   return async (dispatch) => {
-    const resp = await useFetch("zones");
-    console.log(resp);
+    const resp = await useFetch("zones/" + values);
     const body = await resp.json();
     if (resp.ok) {
       return body.data;

@@ -21,13 +21,8 @@ export const Products = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setLoading(true);
-    dispatch(getProducts()).then((pr) => {
-      console.log(pr);
-      setProducts(pr);
-      setLoading(false);
-    });
-  }, [dispatch]);
+    onSearch();
+  }, []);
 
   const confColumns = [
     {
@@ -59,12 +54,12 @@ export const Products = () => {
       name: "id_categoria",
       width: "wp-100",
       filter: "order",
-      visible: false
+      visible: false,
     },
     {
       label: "Categoría",
       name: "categoria_text",
-      width: "wp-100",
+      width: "wp-150",
       filter: "order",
     },
     {
@@ -100,6 +95,12 @@ export const Products = () => {
     {
       label: "Código de barras",
       name: "codigo_barras",
+      width: "wp-200",
+      filter: "search",
+    },
+    {
+      label: "Descripción",
+      name: "descripcion",
       width: "wp-200",
       filter: "search",
     },
@@ -152,14 +153,18 @@ export const Products = () => {
 
   const handleTableChange = () => {};
 
-  const onSearch = (pr) => {
-    console.log(pr);
-    // setLoading(true);
+  const onSearch = (values = "") => {
+    setLoading(true);
+    dispatch(getProducts(values)).then((pr) => {
+      setProducts(pr);
+      setLoading(false);
+    });
   };
 
   const prmsForm = {
     open,
     setOpen,
+    setRow,
     row,
     products,
     setProducts,
@@ -193,9 +198,6 @@ export const Products = () => {
           loading={loading}
           onChange={handleTableChange}
           size="small"
-          // scroll={{
-          //   x: '1300px',
-          // }}
         />
       </section>
     </>

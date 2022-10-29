@@ -2,7 +2,7 @@
   width: 100%;
 
   section.ant-layout.contain {
-   width: 85.3%;
+    width: 85.3%;
   }
 }
 
@@ -79,4 +79,10 @@ table {
 }
 .wp-300 {
   width: 300px;
+}
+.hide {
+  display: none;
+}
+.ant-input-search-button {
+  width: 100%;
 }

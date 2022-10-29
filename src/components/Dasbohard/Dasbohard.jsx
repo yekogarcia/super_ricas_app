@@ -11,6 +11,7 @@ import { Categories } from "../Categories/Categories";
 
 import "./Dasbohard.scss";
 import "../css/style.scss";
+import { Profile } from "../Profile/Profile";
 
 export const Dasbohard = () => {
   return (
@@ -25,6 +26,7 @@ export const Dasbohard = () => {
           </Header>
           <Content>
             <Routes>
+              <Route exact path="/profile" element={<Profile />} />
               <Route exact path="/zones" element={<Zones />} />
               <Route exact path="/categories" element={<Categories />} />
               <Route exact path="/products" element={<Products />} />

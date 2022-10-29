@@ -7,10 +7,14 @@ export const setColumnsList = (cols, data) => {
     // console.log(record);
   };
 
-  cols.forEach(({ type, label, name, filter, width, text }) => {
+  cols.forEach(({ type, label, name, filter, width, visible= true }) => {
     if (!width) {
       width = "wp-150";
     }
+    if (!visible) {
+      width += " hide";
+    }
+    
 
     let col = {
       key: name,

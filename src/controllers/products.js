@@ -1,9 +1,9 @@
 import { message } from "antd";
 import { useFetch } from "../hooks/useFetch";
 
-export const getProducts = () => {
+export const getProducts = (values = "") => {
   return async (dispatch) => {
-    const resp = await useFetch("products");
+    const resp = await useFetch("products/" + values);
     const body = await resp.json();
     if (resp.ok) {
       return body.data;

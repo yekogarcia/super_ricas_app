@@ -5,17 +5,23 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
+import { useNavigate } from "react-router-dom";
 
 // document.querySelector(".menu-dropdown").style = "display:  none";
 
 export const TopMenu = () => {
-  
+  const navigate = useNavigate();
+
   const handleHover = (e) => {
     document.querySelector(".menu-dropdown").style = "display:  block";
-    // console.log("prueba", e);
   };
+
   const handleCloseHover = (e) => {
     document.querySelector(".menu-dropdown").style = "display:  none";
+  };
+
+  const handleViewProfile = (e) => {
+    navigate("profile");
   };
 
   return (
@@ -30,7 +36,11 @@ export const TopMenu = () => {
         items={[]}
       >
       </Menu> */}
-      <aside onMouseOver={handleHover} onMouseLeave={handleCloseHover}>
+      <aside
+        onMouseOver={handleHover}
+        onMouseLeave={handleCloseHover}
+        onClick={handleViewProfile}
+      >
         <ul className="profile">
           <li>
             <figure>

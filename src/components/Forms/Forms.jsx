@@ -2,8 +2,8 @@ import { Form, Input, Modal } from "antd";
 const { TextArea } = Input;
 
 export const Forms = (props) => {
-  const [form] = Form.useForm();
   const { open, setOpen, onCreate, title, width, inputs, row } = props;
+  const [form] = Form.useForm();
 
   // console.log(props);
 
@@ -24,9 +24,7 @@ export const Forms = (props) => {
         setOpen(false);
       }}
       onOk={() => {
-        form
-          .validateFields()
-          .then((values) => {
+        form.validateFields().then((values) => {
             form.resetFields();
             onCreate(values);
           })

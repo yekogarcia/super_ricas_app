@@ -53,7 +53,7 @@ export const LeftMenu = () => {
 
   const onClick = (e) => {
     navigate(e.key);
-    console.log("click ", e);
+    // console.log("click ", e);
   };
 
   return (

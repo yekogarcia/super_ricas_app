@@ -4,10 +4,16 @@ import { useDispatch } from "react-redux";
 import { getCategories } from "../../controllers/fetchDynamics";
 import { saveProducts, updateProducts } from "../../controllers/products";
 import { addRow, updateRow } from "../utils/rows";
-import { Products } from "./Products";
 const { Option } = Select;
 
-export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
+export const FormProducts = ({
+  open,
+  setOpen,
+  setRow,
+  row,
+  products,
+  setProducts,
+}) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
@@ -16,7 +22,6 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
 
   useEffect(() => {
     dispatch(getCategories()).then((res) => {
-      console.log(res);
       setCategories(res);
     });
   }, [dispatch]);
@@ -55,6 +60,7 @@ export const FormProducts = ({ open, setOpen, row, products, setProducts }) => {
       onCancel={() => {
         setOpen(false);
         form.resetFields();
+        setRow(false);
       }}
       onOk={() => {
         form

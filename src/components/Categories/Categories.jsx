@@ -24,12 +24,8 @@ export const Categories = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setLoading(true);
-    dispatch(getCategories()).then((pr) => {
-      setCategories(pr);
-      setLoading(false);
-    });
-  }, [dispatch]);
+    onSearch();
+  }, []);
 
   const confColumns = [
     {
@@ -97,9 +93,13 @@ export const Categories = () => {
       setCategories(removeRow(categories, values.id));
     });
   };
-  const onSearch = (pr) => {
-    console.log(pr);
-    // setLoading(true);
+
+  const onSearch = (values = "") => {
+    setLoading(true);
+    dispatch(getCategories(values)).then((pr) => {
+      setCategories(pr);
+      setLoading(false);
+    });
   };
 
   const contextMenu = (record) => {

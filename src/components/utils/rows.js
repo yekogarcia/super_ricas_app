@@ -37,6 +37,20 @@ export const updateRow = (data, item, id) => {
   return datNew;
 };
 
+export const updateRowdinamic = (data, item, properties, id) => {
+  const datNew = [...data];
+  const index = data.findIndex((dat) => dat.id_producto == id);
+  console.log(item);
+  console.log(id);
+  console.log(index);
+  if (index > -1) {
+    const items = datNew[index];
+    datNew.splice(index, 1, { ...items, ...item });
+  }
+  console.log(datNew);
+  return datNew;
+};
+
 export const addRow = (data, dt) => {
   const datNew = [...data];
   const index = data.findIndex((b) => b.id === dt.id);

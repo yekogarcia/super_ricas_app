@@ -26,13 +26,14 @@ const items = [
   getItem("Categorias", "categories", <DesktopOutlined />),
   getItem("Productos", "products", <PieChartOutlined />),
   getItem("Inventario", "inventory", <ContainerOutlined />),
+  getItem("Entradas / Salidas", "inputs", <ContainerOutlined />),
   getItem("Informes", "reports", <ContainerOutlined />),
-  //   getItem("Navigation One", "sub1", <MailOutlined />, [
-  //     getItem("Option 5", "5"),
-  //     getItem("Option 6", "6"),
-  //     getItem("Option 7", "7"),
-  //     getItem("Option 8", "8"),
-  //   ]),
+  getItem("Devs", "sub1", <MailOutlined />, [
+    getItem("Perfiles", "perfiles"),
+    getItem("Empresas", "empresas"),
+    getItem("Usuarios", "usuarios"),
+  ]),
+  
   //   getItem("Navigation Two", "sub2", <AppstoreOutlined />, [
   //     getItem("Option 9", "9"),
   //     getItem("Option 10", "10"),

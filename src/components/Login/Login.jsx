@@ -1,21 +1,22 @@
 import { useDispatch } from "react-redux";
 import login from "../../assets/login.jpg";
 import { initLogIn } from "../../controllers/auth";
+import { useForm } from "../../hooks/useForm";
 import "./Login.scss";
 
 export const Login = () => {
   const dispatch = useDispatch();
 
-  console.log("login");
+  const [formValues, handleInputChange] = useForm({
+    username: '',
+    password: '',
+  });
+
+  const { username, password } = formValues;
 
   const handleLogIn = (e) => {
     e.preventDefault();
-    const user = {
-      id: 1,
-      name: "yekogarcia",
-      logged: true,
-    };
-    dispatch(initLogIn(user));
+    dispatch(initLogIn({ username, password }));
   };
 
   return (
@@ -23,7 +24,7 @@ export const Login = () => {
       <div className="fondo">
         <div className="content">
           <header>
-            <h1>Super Ricas</h1>
+            <h1>Control de inventarios</h1>
           </header>
           <main>
             <section>
@@ -34,17 +35,21 @@ export const Login = () => {
                   <input
                     type="text"
                     id="user"
+                    name="username"
                     placeholder="Ingrese su usuario"
-                    defaultValue="yekogarcia"
+                    value={username}
+                    onChange={handleInputChange}
                     required
-                    />
+                  />
                 </label>
                 <label htmlFor="password">
                   {/* <span>Contraseña</span> */}
                   <input
                     type="password"
                     id="password"
-                    defaultValue="yekogarcia"
+                    name="password"
+                    value={password}
+                    onChange={handleInputChange}
                     placeholder="Ingrese su contraseña"
                     required
                   />

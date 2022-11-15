@@ -1,5 +1,5 @@
 import { message } from "antd";
-import { useFetch } from "../hooks/useFetch";
+import { useFetch, useFetchToken } from "../hooks/useFetch";
 
 export const getCategories = (values = "") => {
   return async (dispatch) => {
@@ -11,9 +11,9 @@ export const getCategories = (values = "") => {
   };
 };
 
-export const getZones = (values = "") => {
+export const getZones = (values = "", token) => {
   return async (dispatch) => {
-    const resp = await useFetch("zones/" + values);
+    const resp = await useFetchToken("zones/" + values, {}, token);
     const body = await resp.json();
     if (resp.ok) {
       return body.data;

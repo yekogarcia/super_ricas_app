@@ -1,24 +1,26 @@
 import { Button, Table } from "antd";
 import { useState, useEffect } from "react";
 import { setColumnsList } from "../utils/setColumnsList";
-import { FormProducts } from "./FormProducts";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteProducts, getProducts } from "../../controllers/products";
 
 import { Filters } from "../Filters/Filters";
 import { setOptionsBlock } from "../utils/setOptionsList";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-
-import "./Products.scss";
-import "../css/style.scss";
 import { removeRow } from "../utils/rows";
+import { FormInventory } from "./FormInventory";
+import { deleteRowInventory, getInventory } from "../../controllers/inventory";
 
-export const Products = () => {
+import "./Inventory.scss";
+import "../css/style.scss";
+
+export const Inventory = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [row, setRow] = useState(false);
-  const [products, setProducts] = useState([]);
+  const [invent, setInvent] = useState([]);
   const dispatch = useDispatch();
+
+  const { token } = useSelector((state) => state.auth);
 
   useEffect(() => {
     onSearch();
@@ -32,93 +34,69 @@ export const Products = () => {
       width: "wp-50",
     },
     {
-      label: "Nombre producto",
-      name: "nombre",
+      label: "Zona",
+      name: "id_zona",
+      filter: "order",
+      width: "wp-100",
+      visible: false
+    },
+    {
+      label: "Zona",
+      name: "nom_zona",
+      filter: "search",
+      width: "wp-100",
+    },
+    {
+      label: "Id Producto",
+      name: "id_producto",
+      filter: "search",
+      width: "wp-200",
+      visible: false
+    },
+    {
+      label: "Fecha ingreso",
+      name: "fecha_creacion",
+      filter: "search",
+      width: "wp-200",
+    },
+    {
+      label: "Producto",
+      name: "nom_producto",
       filter: "search",
       width: "wp-200",
     },
     {
       label: "Código",
-      name: "codigo",
+      name: "codigo_producto",
       width: "wp-100",
       filter: "search",
     },
     {
-      label: "Estado",
-      name: "estado",
-      filter: "order",
-      width: "wp-100",
-    },
-    {
-      label: "Id categoria",
-      name: "id_categoria",
-      width: "wp-100",
-      filter: "order",
-      visible: false,
-    },
-    {
-      label: "Categoría",
-      name: "categoria_text",
+      label: "Valor unitario",
+      name: "precio_unidad",
       width: "wp-150",
       filter: "order",
     },
     {
-      label: "Precio",
-      name: "precio",
+      label: "Cantidad",
+      name: "cantidad",
       width: "wp-100",
       filter: "order",
     },
     {
-      label: "% Comisión",
-      name: "porcen_comision",
-      width: "wp-100",
+      label: "Valor total",
+      name: "precio_total",
+      width: "wp-150",
       filter: "order",
     },
     {
-      label: "IVA %",
-      name: "iva",
-      width: "wp-100",
+      label: "Estado",
+      name: "estado",
+      width: "wp-150",
       filter: "order",
     },
-    {
-      label: "Unidad de medida",
-      name: "unidad_medida",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Factor",
-      name: "factor",
-      width: "wp-100",
-      filter: "order",
-    },
-    {
-      label: "Código de barras",
-      name: "codigo_barras",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Descripción",
-      name: "descripcion",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Fecha creación",
-      name: "fecha_creacion",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Fecha modificación",
-      name: "fecha_modificacion",
-      width: "wp-200",
-      filter: "search",
-    },
-  ];
 
-  const { token } = useSelector((state) => state.auth);
+  ];
 
   const handleUpdate = (values) => {
     setOpen(true);
@@ -126,8 +104,8 @@ export const Products = () => {
   };
 
   const handleDelete = (values) => {
-    dispatch(deleteProducts(values.id, token)).then((pr) => {
-      setProducts(removeRow(products, values.id));
+    dispatch(deleteRowInventory(values.id, token)).then((pr) => {
+      setInvent(removeRow(invent, values.id));
     });
   };
 
@@ -148,29 +126,30 @@ export const Products = () => {
     );
   };
   const block = setOptionsBlock(contextMenu);
-  let columns = setColumnsList(confColumns, products);
+  let columns = setColumnsList(confColumns, invent);
   columns = block.concat(columns);
 
   const pagination = [];
 
   const handleTableChange = () => {};
 
-
   const onSearch = (values = "") => {
     setLoading(true);
-    dispatch(getProducts(values, token)).then((pr) => {
-      setProducts(pr);
+    dispatch(getInventory(values, token)).then((res) => {
+      console.log(res);
+      setInvent(res);
       setLoading(false);
     });
   };
+
 
   const prmsForm = {
     open,
     setOpen,
     setRow,
     row,
-    products,
-    setProducts,
+    invent,
+    setInvent,
     token
   };
 
@@ -194,10 +173,10 @@ export const Products = () => {
           </Button>
           <Filters {...prmsFilters} />
         </aside>
-        <FormProducts {...prmsForm} />
+        <FormInventory {...prmsForm} />
         <Table
           columns={columns}
-          dataSource={products}
+          dataSource={invent}
           pagination={pagination}
           loading={loading}
           onChange={handleTableChange}

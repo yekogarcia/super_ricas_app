@@ -13,9 +13,14 @@
     margin: auto;
 
     header {
-      padding: 20px;
+      padding: 80px 0 20px 0;
       text-align: center;
       color: #fff;
+      h1{
+        color: #fff;
+        font-weight: bold;;
+        margin: 0;
+      }
     }
     main {
       border-radius: 5px;

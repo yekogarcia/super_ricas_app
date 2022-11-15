@@ -1,6 +1,6 @@
 import { Button, Table } from "antd";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteZones,
   getZones,
@@ -82,9 +82,11 @@ export const Zones = () => {
     }
   };
 
+  const { token } = useSelector((state) => state.auth);
+
   const onSearch = (values = "") => {
     setLoading(true);
-    dispatch(getZones(values)).then((pr) => {
+    dispatch(getZones(values, token)).then((pr) => {
       setZones(pr);
       setLoading(false);
     });

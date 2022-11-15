@@ -1,9 +1,9 @@
 import { message } from "antd";
-import { useFetch } from "../hooks/useFetch";
+import { useFetchToken } from "../hooks/useFetch";
 
-export const getProducts = (values = "") => {
+export const getProducts = (values = "", token) => {
   return async (dispatch) => {
-    const resp = await useFetch("products/" + values);
+    const resp = await useFetchToken("products/" + values,{}, token);
     const body = await resp.json();
     if (resp.ok) {
       return body.data;
@@ -11,10 +11,30 @@ export const getProducts = (values = "") => {
   };
 };
 
-export const saveProducts = (values) => {
+export const getProductsId = (values = "", token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("products/id/" + values,{}, token);
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};
+
+export const getProductsConcat = (values = "", token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("products/concat/produc/" + values,{}, token);
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};
+
+export const saveProducts = (values, token) => {
   return async (dispatch) => {
     values.usuario = "yekog";
-    const resp = await useFetch("products", { ...values }, "POST");
+    const resp = await useFetchToken("products", { ...values },token, "POST");
     const body = await resp.json();
     if (resp.ok) {
       message.success(body.message);
@@ -23,10 +43,10 @@ export const saveProducts = (values) => {
   };
 };
 
-export const updateProducts = (values, id) => {
+export const updateProducts = (values, id, token) => {
   return async (dispatch) => {
     values.usuario = "yekog";
-    const resp = await useFetch("products/" + id, { ...values }, "PATCH");
+    const resp = await useFetchToken("products/" + id, { ...values },token, "PATCH");
     const body = await resp.json();
     console.log(body);
     if (resp.ok) {
@@ -36,9 +56,9 @@ export const updateProducts = (values, id) => {
   };
 };
 
-export const deleteProducts = (id) => {
+export const deleteProducts = (id, token) => {
   return async (dispatch) => {
-    const resp = await useFetch("products/" + id, {}, "DELETE");
+    const resp = await useFetchToken("products/" + id, {},token, "DELETE");
     const body = await resp.json();
     if (resp.ok) {
       message.success(body.message);

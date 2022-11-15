@@ -8,10 +8,12 @@ import { TopMenu } from "./TopMenu";
 import { Products } from "../Products/Products";
 import { Zones } from "../Zones/Zones";
 import { Categories } from "../Categories/Categories";
+import { Profile } from "../Profile/Profile";
+import { Inventory } from "../Inventory/Inventory";
+import { InputsAndOutputs } from "../InputsAndOutputs/InputsAndOutputs";
 
 import "./Dasbohard.scss";
 import "../css/style.scss";
-import { Profile } from "../Profile/Profile";
 
 export const Dasbohard = () => {
   return (
@@ -30,6 +32,8 @@ export const Dasbohard = () => {
               <Route exact path="/zones" element={<Zones />} />
               <Route exact path="/categories" element={<Categories />} />
               <Route exact path="/products" element={<Products />} />
+              <Route exact path="/inventory" element={<Inventory />} />
+              <Route exact path="/inputs" element={<InputsAndOutputs />} />
             </Routes>
           </Content>
           <Footer>Footer</Footer>

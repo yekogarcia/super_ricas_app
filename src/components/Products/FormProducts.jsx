@@ -13,6 +13,7 @@ export const FormProducts = ({
   row,
   products,
   setProducts,
+  token
 }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -35,14 +36,14 @@ export const FormProducts = ({
   const onCreate = (values) => {
     console.log(values);
     if (!row) {
-      dispatch(saveProducts(values)).then((pr) => {
+      dispatch(saveProducts(values, token)).then((pr) => {
         pr[0].key = pr[0].id;
         setProducts(addRow(products, pr[0]));
         form.resetFields();
         setOpen(false);
       });
     } else {
-      dispatch(updateProducts(values, row.id)).then((pr) => {
+      dispatch(updateProducts(values, row.id, token)).then((pr) => {
         setProducts(updateRow(products, pr, row.id));
         form.resetFields();
         setOpen(false);

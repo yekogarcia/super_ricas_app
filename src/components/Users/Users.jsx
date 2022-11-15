@@ -1,19 +1,19 @@
 import { Button, Table } from "antd";
 import { useState, useEffect } from "react";
 import { setColumnsList } from "../utils/setColumnsList";
-import { FormProducts } from "./FormProducts";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deleteProducts, getProducts } from "../../controllers/products";
 
 import { Filters } from "../Filters/Filters";
 import { setOptionsBlock } from "../utils/setOptionsList";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-
-import "./Products.scss";
-import "../css/style.scss";
 import { removeRow } from "../utils/rows";
+import { FormUser } from "./FormUser";
 
-export const Products = () => {
+import "./Inventory.scss";
+import "../css/style.scss";
+
+export const Users = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const [row, setRow] = useState(false);
@@ -32,93 +32,37 @@ export const Products = () => {
       width: "wp-50",
     },
     {
-      label: "Nombre producto",
+      label: "Nombre",
       name: "nombre",
       filter: "search",
       width: "wp-200",
+      visible: false
     },
     {
-      label: "Código",
-      name: "codigo",
-      width: "wp-100",
+      label: "Email",
+      name: "email",
       filter: "search",
-    },
-    {
-      label: "Estado",
-      name: "estado",
-      filter: "order",
-      width: "wp-100",
-    },
-    {
-      label: "Id categoria",
-      name: "id_categoria",
-      width: "wp-100",
-      filter: "order",
-      visible: false,
-    },
-    {
-      label: "Categoría",
-      name: "categoria_text",
-      width: "wp-150",
-      filter: "order",
-    },
-    {
-      label: "Precio",
-      name: "precio",
-      width: "wp-100",
-      filter: "order",
-    },
-    {
-      label: "% Comisión",
-      name: "porcen_comision",
-      width: "wp-100",
-      filter: "order",
-    },
-    {
-      label: "IVA %",
-      name: "iva",
-      width: "wp-100",
-      filter: "order",
-    },
-    {
-      label: "Unidad de medida",
-      name: "unidad_medida",
       width: "wp-200",
+    },
+    {
+      label: "Perfil",
+      name: "perfil",
+      width: "wp-100",
       filter: "search",
     },
     {
-      label: "Factor",
-      name: "factor",
+      label: "Zona",
+      name: "zona",
+      filter: "order",
+      width: "wp-100",
+    },
+    {
+      label: "Cantidad",
+      name: "cantidad",
       width: "wp-100",
       filter: "order",
-    },
-    {
-      label: "Código de barras",
-      name: "codigo_barras",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Descripción",
-      name: "descripcion",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Fecha creación",
-      name: "fecha_creacion",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Fecha modificación",
-      name: "fecha_modificacion",
-      width: "wp-200",
-      filter: "search",
     },
   ];
-
-  const { token } = useSelector((state) => state.auth);
 
   const handleUpdate = (values) => {
     setOpen(true);
@@ -126,7 +70,7 @@ export const Products = () => {
   };
 
   const handleDelete = (values) => {
-    dispatch(deleteProducts(values.id, token)).then((pr) => {
+    dispatch(deleteProducts(values.id)).then((pr) => {
       setProducts(removeRow(products, values.id));
     });
   };
@@ -155,10 +99,9 @@ export const Products = () => {
 
   const handleTableChange = () => {};
 
-
   const onSearch = (values = "") => {
     setLoading(true);
-    dispatch(getProducts(values, token)).then((pr) => {
+    dispatch(getProducts(values)).then((pr) => {
       setProducts(pr);
       setLoading(false);
     });
@@ -171,7 +114,6 @@ export const Products = () => {
     row,
     products,
     setProducts,
-    token
   };
 
   const prmsFilters = {
@@ -194,7 +136,7 @@ export const Products = () => {
           </Button>
           <Filters {...prmsFilters} />
         </aside>
-        <FormProducts {...prmsForm} />
+        <FormUser {...prmsForm} />
         <Table
           columns={columns}
           dataSource={products}

@@ -58,15 +58,20 @@ const EditableCell = (props) => {
   const save = async () => {
     try {
       const values = await form.validateFields();
-      // console.log(values);
+      console.log(values);
       toggleEdit();
       if (typeof values.cantidad !== "undefined") {
-        record.precio_total = record.precio_unidad * values.cantidad;
-        record.valor_iva= (record.precio_total * record.iva)  / 100;
-        record.valor_comision= (record.precio_total * record.porcen_comision)  / 100;
-        record.precio_total = Intl.NumberFormat().format(record.precio_total);
-        record.valor_iva= Intl.NumberFormat().format(record.valor_iva);
-        record.valor_comision= Intl.NumberFormat().format(record.valor_comision);
+
+        console.log(record.precio_unidad.replace(".", ''));
+        record.precio_total = parseFloat(record.precio_unidad) * values.cantidad;
+        console.log(parseFloat(record.precio_unidad));
+        console.log(record);
+        // record.valor_iva= (record.precio_total * record.iva)  / 100;
+        // record.valor_comision= (record.precio_total * record.porcen_comision)  / 100;
+
+        // record.precio_total = Intl.NumberFormat().format(record.precio_total);
+        // record.valor_iva= Intl.NumberFormat().format(record.valor_iva);
+        // record.valor_comision= Intl.NumberFormat().format(record.valor_comision);
       }
       if (typeof values.cantidad_salida !== "undefined") {
         if (values.cantidad_salida <= record.cantidad) {

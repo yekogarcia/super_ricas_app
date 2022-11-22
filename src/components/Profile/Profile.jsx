@@ -4,9 +4,27 @@ import login from "../../assets/login.jpg";
 import { InboxOutlined, UploadOutlined } from "@ant-design/icons";
 
 import "./Profile.scss";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { getUser } from "../../controllers/auth";
+import { useState } from "react";
 
 export const Profile = () => {
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const [user, setUser] = useState([]);
+
+  const { token, key } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getUser("", token, key)).then((res) => {
+      delete res[0].password;
+      setUser(res);
+    });
+  }, []);
+
+  console.log(user[0]);
+  user.length > 0 ? form.setFieldsValue(user[0]) : form.setFieldsValue({});
 
   const fileList = [
     {
@@ -164,7 +182,7 @@ export const Profile = () => {
               name="current_password"
               label="Contraseña actual"
             >
-              <Input />
+              <Input.Password />
             </Form.Item>
             <Form.Item
               style={{
@@ -175,7 +193,7 @@ export const Profile = () => {
               name="password"
               label="Contraseña nueva"
             >
-              <Input />
+              <Input.Password />
             </Form.Item>
             <Form.Item
               style={{
@@ -186,7 +204,7 @@ export const Profile = () => {
               name="confirm_paswword"
               label="Confirmar contraseña"
             >
-              <Input />
+              <Input.Password />
             </Form.Item>
             <Button type="primary" htmlType="submit">
               Actualizar Datos

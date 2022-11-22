@@ -1,6 +1,16 @@
 import { message } from "antd";
-import { useFetch } from "../hooks/useFetch";
+import { useFetch, useFetchToken } from "../hooks/useFetch";
 import { types } from "../types/types";
+
+export const getUser = (values = "", token, id) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("users/" + id, values, token);
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};
 
 export const initLogIn = (user) => {
   return async (dispatch) => {
@@ -13,7 +23,7 @@ export const initLogIn = (user) => {
       window.localStorage.setItem("token", body.data.token);
       window.sessionStorage.setItem("userSession", JSON.stringify(body.data));
     } else {
-      message.success(body.message);
+      message.error(body.message);
       return false;
     }
     console.log(body);

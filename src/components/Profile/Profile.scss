@@ -37,15 +37,15 @@ section.profile {
       }
     }
   }
-  
+
   form {
     .update-password {
-      padding: 5px;
+      padding: 0 5px 0 5px;
       border-bottom: 2px solid #1890ff;
       margin-bottom: 10px;
 
       a {
-        font-size: 18px;
+        font-size: 16px;
 
         &:hover {
           font-weight: bold;

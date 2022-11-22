@@ -9,8 +9,9 @@ import { PublicRoutes } from "./PublicRoutes";
 
 export const Routers = () => {
 const dispatch = useDispatch();
-const user = useSelector((state) => state.auth);
-console.log(user);
+// const user = useSelector((state) => state.auth);
+const user = JSON.parse(window.sessionStorage.getItem('userSession'));
+// console.log(user);
 
 useEffect(() => {
   dispatch(checkLogIn(user))

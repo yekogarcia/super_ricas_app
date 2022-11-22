@@ -59,6 +59,21 @@ export const InputsAndOutputs = () => {
       name: "estado",
       width: "wp-100",
     },
+    {
+      label: "Valor total",
+      name: "precio_total",
+      width: "wp-150",
+    },
+    {
+      label: "Valor venta",
+      name: "valor_venta",
+      width: "wp-150",
+    },
+    {
+      label: "Valor comisión",
+      name: "valor_comision",
+      width: "wp-150",
+    },
   ];
 
   const handleUpdate = (values) => {
@@ -135,13 +150,22 @@ export const InputsAndOutputs = () => {
         <a onClick={() => handleImprimir(record)}>Imprimir</a>
       ) : null,
   });
+  // columns.push({
+  //   title: "Salida",
+  //   dataIndex: "salida",
+  //   className: "wp-100",
+  //   render: (_, record) =>
+  //     invent.length >= 1 ? (
+  //       <a onClick={() => handleOutputs(record)}>Dar salida</a>
+  //     ) : null,
+  // });
   columns.push({
-    title: "Salida",
-    dataIndex: "salida",
+    title: "Ingresos",
+    dataIndex: "ingresos",
     className: "wp-100",
     render: (_, record) =>
       invent.length >= 1 ? (
-        <a onClick={() => handleOutputs(record)}>Dar salida</a>
+        <a onClick={() => handleOutputs(record)}>Ingresos</a>
       ) : null,
   });
 

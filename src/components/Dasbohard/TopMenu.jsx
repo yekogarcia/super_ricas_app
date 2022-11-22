@@ -5,12 +5,15 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { handleLogout } from "../../controllers/auth";
 
 // document.querySelector(".menu-dropdown").style = "display:  none";
 
 export const TopMenu = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleHover = (e) => {
     document.querySelector(".menu-dropdown").style = "display:  block";
@@ -61,7 +64,9 @@ export const TopMenu = () => {
               <UserOutlined />
               Perfil
             </li>
-            <li>
+            <li onClick={() => {
+              dispatch(handleLogout());
+            }}>
               <ArrowRightOutlined />
               Cerrar sesión
             </li>

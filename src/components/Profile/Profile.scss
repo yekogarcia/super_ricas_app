@@ -1,5 +1,66 @@
 section.profile {
-    width: 60%;
-    margin: auto;
-    border: 1px solid #000;
+  padding: 30px 50px;
+  width: 60%;
+  margin: auto;
+  background: #fff;
+  border-radius: 5px;
+
+  .head {
+    display: flex;
+
+    figure {
+      display: flex;
+      width: 150px;
+      border: 2px solid #000;
+      border-radius: 5px;
+
+      img {
+        padding: 5px;
+        display: flex;
+        width: 150px;
+      }
+    }
+
+    div {
+      margin: 15px;
+      align-items: center;
+      margin-top: 85px;
+
+      h1,
+      h4 {
+        margin: 0;
+        padding: 0;
+        font-weight: bold;
+      }
+      h1 {
+        font-size: 28px;
+      }
+    }
+  }
+  form {
+    .update-password {
+      padding: 5px;
+      border-bottom: 2px solid #1890ff;
+      margin-bottom: 10px;
+
+      a {
+        font-size: 18px;
+
+        &:hover {
+          font-weight: bold;
+        }
+      }
+    }
+  }
+}
+.ant-layout.dasbohard section.ant-layout.contain {
+  height: 100vh;
+
+  .ant-layout-content {
+    height: 100%;
+    overflow: auto;
+  }
+  .ant-layout-footer {
+    padding: 5px 50px;
+  }
 }

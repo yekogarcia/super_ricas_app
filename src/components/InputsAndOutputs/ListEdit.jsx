@@ -58,11 +58,15 @@ const EditableCell = (props) => {
   const save = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
+      // console.log(values);
       toggleEdit();
       if (typeof values.cantidad !== "undefined") {
         record.precio_total = record.precio_unidad * values.cantidad;
-        // record.precio_total = Intl.NumberFormat().format(record.precio_total);
+        record.valor_iva= (record.precio_total * record.iva)  / 100;
+        record.valor_comision= (record.precio_total * record.porcen_comision)  / 100;
+        record.precio_total = Intl.NumberFormat().format(record.precio_total);
+        record.valor_iva= Intl.NumberFormat().format(record.valor_iva);
+        record.valor_comision= Intl.NumberFormat().format(record.valor_comision);
       }
       if (typeof values.cantidad_salida !== "undefined") {
         if (values.cantidad_salida <= record.cantidad) {
@@ -208,18 +212,22 @@ export const ListEdit = ({ dataSource, setDataSource, update, visible }) => {
       editable: true,
     },
     {
+      label: "Valor IVA",
+      name: "valor_iva",
+      width: "wp-100",
+      filter: "order",
+    },
+    {
       label: "Valor comisión",
       name: "valor_comision",
       width: "wp-100",
       filter: "order",
-      visible: visible,
     },
     {
       label: "Valor venta",
       name: "valor_venta",
       width: "wp-150",
       filter: "order",
-      visible: visible,
     },
   ];
 
@@ -263,7 +271,15 @@ export const ListEdit = ({ dataSource, setDataSource, update, visible }) => {
             precio_total: res[0].precio * value.cantidad,
             iva: res[0].iva,
             porcen_comision: res[0].porcen_comision,
+            valor_iva: (res[0].precio * value.cantidad) * res[0].iva / 100,
+            valor_comision: (res[0].precio * value.cantidad) * res[0].porcen_comision / 100,
           };
+
+          newData.precio_unidad = Intl.NumberFormat().format(newData.precio_unidad);
+          newData.precio_total = Intl.NumberFormat().format(newData.precio_total);
+          newData.valor_iva = Intl.NumberFormat().format(newData.valor_iva);
+          newData.valor_comision = Intl.NumberFormat().format(newData.valor_comision);
+
           setDataSource([...dataSource, newData]);
         } else {
           message.warning("La cantidad tiene que ser mayor a 0!");

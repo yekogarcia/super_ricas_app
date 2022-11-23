@@ -126,7 +126,7 @@ const EditableCell = (props) => {
   return <td {...restProps}>{childNode}</td>;
 };
 
-export const ListEdit = ({ dataSource, setDataSource, update, visible }) => {
+export const ListEdit = ({ dataSource, setDataSource, update, visible, loading }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
 
@@ -280,10 +280,10 @@ export const ListEdit = ({ dataSource, setDataSource, update, visible }) => {
             valor_comision: (res[0].precio * value.cantidad) * res[0].porcen_comision / 100,
           };
 
-          newData.precio_unidad = Intl.NumberFormat().format(newData.precio_unidad);
-          newData.precio_total = Intl.NumberFormat().format(newData.precio_total);
-          newData.valor_iva = Intl.NumberFormat().format(newData.valor_iva);
-          newData.valor_comision = Intl.NumberFormat().format(newData.valor_comision);
+          // newData.precio_unidad = Intl.NumberFormat().format(newData.precio_unidad);
+          // newData.precio_total = Intl.NumberFormat().format(newData.precio_total);
+          // newData.valor_iva = Intl.NumberFormat().format(newData.valor_iva);
+          // newData.valor_comision = Intl.NumberFormat().format(newData.valor_comision);
 
           setDataSource([...dataSource, newData]);
         } else {
@@ -426,6 +426,7 @@ export const ListEdit = ({ dataSource, setDataSource, update, visible }) => {
         bordered
         dataSource={dataSource}
         columns={columns}
+        loading={loading}
       />
     </div>
   );

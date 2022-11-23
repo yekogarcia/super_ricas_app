@@ -29,11 +29,14 @@ export const FormInputsAndOutputs = ({
   const [zones, setZones] = useState([]);
   const [fecha, setFecha] = useState(moment().format("YYYY-MM-DD"));
   const [dataSource, setDataSource] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (row) {
+      setLoading(true);
       dispatch(getInventoryDet("", token, row.id)).then(function (res) {
         setDataSource(res);
+        setLoading(false);
       });
       row.fecha_dia = moment(row.fecha_dia, "YYYY-MM-DD");
       setFecha(row.fecha_dia);
@@ -44,7 +47,6 @@ export const FormInputsAndOutputs = ({
     }
   }, [row]);
 
-  
   useEffect(() => {
     dispatch(getZones("", token)).then((pr) => {
       setZones(pr);
@@ -179,6 +181,7 @@ export const FormInputsAndOutputs = ({
         setDataSource={setDataSource}
         update={update}
         visible={visible}
+        loading={loading}
       />
     </Modal>
   );

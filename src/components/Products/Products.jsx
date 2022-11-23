@@ -155,7 +155,6 @@ export const Products = () => {
 
   const handleTableChange = () => {};
 
-
   const onSearch = (values = "") => {
     setLoading(true);
     dispatch(getProducts(values, token)).then((pr) => {
@@ -171,7 +170,7 @@ export const Products = () => {
     row,
     products,
     setProducts,
-    token
+    token,
   };
 
   const prmsFilters = {

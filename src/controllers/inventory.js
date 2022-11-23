@@ -1,5 +1,6 @@
 import { message } from "antd";
 import { useFetchToken } from "../hooks/useFetch";
+import { checkSession } from "./auth";
 
 export const getInventory = (values = "", token) => {
   return async (dispatch) => {
@@ -8,6 +9,7 @@ export const getInventory = (values = "", token) => {
       values,
       token
     );
+    dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
       return body.data;
@@ -21,6 +23,7 @@ export const getInventoryDet = (values = "", token, id) => {
       values,
       token
     );
+    dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
       return body.data;
@@ -36,6 +39,7 @@ export const saveInventory = (values, token) => {
       token,
       "POST"
     );
+    dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
       message.success(body.message);
@@ -52,6 +56,7 @@ export const updateInventory = (values, id, token) => {
       token,
       "PATCH"
     );
+    dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
       message.success(body.message);
@@ -68,6 +73,7 @@ export const deleteRowInventory = (id, token) => {
       token,
       "DELETE"
     );
+    dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
       message.success(body.message);
@@ -84,6 +90,7 @@ export const deleteRowInventoryDetId = (id, token) => {
       token,
       "DELETE"
     );
+    dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
       message.success(body.message);

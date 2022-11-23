@@ -132,15 +132,16 @@ export const InputsAndOutputs = () => {
   let columns = setColumnsList(confColumns, invent);
   columns = block.concat(columns);
 
-  columns.push({
-    title: "Ver / Editar",
-    dataIndex: "ver",
-    className: "wp-150",
-    render: (_, record) =>
-      invent.length >= 1 ? (
-        <a onClick={() => handleUpdate(record)}>Ver / Editar</a>
-      ) : null,
-  });
+  // columns.push({
+  //   title: "Ver / Editar",
+  //   dataIndex: "ver",
+  //   className: "wp-150",
+  //   render: (_, record) =>
+  //     invent.length >= 1 ? (
+  //       <a onClick={() => handleUpdate(record)}>Ver / Editar</a>
+  //     ) : null,
+  // });
+
   columns.push({
     title: "Imprimir",
     dataIndex: "imprimir",
@@ -159,6 +160,7 @@ export const InputsAndOutputs = () => {
   //       <a onClick={() => handleOutputs(record)}>Dar salida</a>
   //     ) : null,
   // });
+  
   columns.push({
     title: "Ingresos",
     dataIndex: "ingresos",

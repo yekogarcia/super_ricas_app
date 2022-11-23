@@ -45,9 +45,17 @@ export const checkLogIn = (user) => {
 
 export const handleLogout = () => {
   return (dispatch) => {
-    console.log("prueba");
     window.sessionStorage.clear();
     window.localStorage.clear();
     dispatch(SingOff());
+  };
+};
+
+export const checkSession = (status) => {
+  return (dispatch) => {
+    if (status === 401) {
+      dispatch(handleLogout());
+      message.error("Session invalida, inicie session de nuevo por favor");
+    }
   };
 };

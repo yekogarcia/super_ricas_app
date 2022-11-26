@@ -1,7 +1,7 @@
 import { Button, Popconfirm, Table } from "antd";
 import { useEffect } from "react";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   deleteCategories,
   getCategories,
@@ -22,6 +22,8 @@ export const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [row, setRow] = useState(false);
   const dispatch = useDispatch();
+
+  const { token, user_login } = useSelector((state) => state.auth);
 
   useEffect(() => {
     onSearch();
@@ -68,14 +70,15 @@ export const Categories = () => {
 
   const onCreate = (values) => {
     setLoading(true);
+    values.usuario = user_login;
     if (!row) {
-      dispatch(saveCategories(values)).then((pr) => {
+      dispatch(saveCategories(values, token)).then((pr) => {
         setLoading(false);
         setOpen(false);
         setCategories(addRow(categories, pr[0]));
       });
     } else {
-      dispatch(updateCategories(values, row.id)).then((pr) => {
+      dispatch(updateCategories(values, row.id, token)).then((pr) => {
         setLoading(false);
         setOpen(false);
         setCategories(updateRow(categories, pr, row.id));
@@ -89,7 +92,9 @@ export const Categories = () => {
   };
 
   const handleDelete = (values) => {
-    dispatch(deleteCategories(values.id)).then((pr) => {
+    setLoading(true);
+    dispatch(deleteCategories(values.id, token)).then((pr) => {
+      setLoading(false);
       setCategories(removeRow(categories, values.id));
     });
   };

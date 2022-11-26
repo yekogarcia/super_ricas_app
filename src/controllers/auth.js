@@ -22,11 +22,11 @@ export const initLogIn = (user) => {
       dispatch(starSesion(body.data));
       window.localStorage.setItem("token", body.data.token);
       window.sessionStorage.setItem("userSession", JSON.stringify(body.data));
+      return true;
     } else {
       message.error(body.message);
       return false;
     }
-    console.log(body);
   };
 };
 

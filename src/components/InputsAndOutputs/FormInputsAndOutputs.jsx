@@ -108,6 +108,7 @@ export const FormInputsAndOutputs = ({
       okText="Guardar"
       cancelText="Cancelar"
       width="1200px"
+      maskClosable={false}
       onCancel={() => {
         setOpen(false);
         form.resetFields();

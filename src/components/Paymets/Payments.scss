@@ -1,0 +1,16 @@
+
+.pays {
+  .ant-table-footer {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  .total{
+    color: #1890ff;
+  }
+  .income{
+    color: green;
+  }
+  .missing{
+    color: red;
+  }
+}

@@ -98,3 +98,41 @@ export const deleteRowInventoryDetId = (id, token) => {
     }
   };
 };
+
+export const savePayments = (values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("payments", { ...values }, token, "POST");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    console.log(body);
+    if (resp.ok) {
+      message.success(body.message);
+      return body.ok;
+    }
+  };
+};
+
+export const getPayments = (token, id) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("payments/" + id, "", token);
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    console.log(body);
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};
+
+export const deletePayments = (token, id) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("payments/" + id, {}, token, "DELETE");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    console.log(body);
+    if (resp.ok) {
+      message.success(body.message);
+      return body.id;
+    }
+  };
+};

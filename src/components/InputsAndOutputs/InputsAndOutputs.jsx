@@ -5,20 +5,29 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { Filters } from "../Filters/Filters";
 import { setOptionsBlock } from "../utils/setOptionsList";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  EditOutlined,
+  DeleteOutlined,
+  FormOutlined,
+  PrinterOutlined,
+} from "@ant-design/icons";
 import { removeRow } from "../utils/rows";
 import { deleteRowInventory, getInventory } from "../../controllers/inventory";
 
 import "./InputsAndOutputs.scss";
 import "../css/style.scss";
 import { FormInputsAndOutputs } from "./FormInputsAndOutputs";
+import { FormPayments } from "../Paymets/FormPayments";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openPay, setOpenPay] = useState(false);
   const [row, setRow] = useState(false);
+  const [rowIn, setRowIn] = useState(false);
   const [visible, setVisible] = useState(false);
   const [update, setUpdate] = useState(true);
+  const [visualize, setVisualize ] = useState(true);
   const [invent, setInvent] = useState([]);
   const dispatch = useDispatch();
 
@@ -60,18 +69,33 @@ export const InputsAndOutputs = () => {
       width: "wp-100",
     },
     {
-      label: "Valor total",
+      label: "Total",
       name: "precio_total",
       width: "wp-150",
     },
     {
-      label: "Valor venta",
+      label: "Total venta",
       name: "valor_venta",
       width: "wp-150",
     },
     {
-      label: "Valor comisión",
+      label: "Total IVA",
+      name: "valor_iva",
+      width: "wp-150",
+    },
+    {
+      label: "Total comisión",
       name: "valor_comision",
+      width: "wp-150",
+    },
+    {
+      label: "Valor ingresos",
+      name: "valor_ingresos",
+      width: "wp-150",
+    },
+    {
+      label: "Valor pendiente",
+      name: "valor_pendiente",
       width: "wp-150",
     },
   ];
@@ -93,20 +117,22 @@ export const InputsAndOutputs = () => {
     setVisible(true);
   };
 
-  const handleImprimir = (values) => {
-    setOpen(true);
-    setRow(values);
-  };
-
   const handleDelete = (values) => {
     dispatch(deleteRowInventory(values.id, token)).then((pr) => {
       setInvent(removeRow(invent, values.id));
     });
   };
 
+  const handlePrint = (values) => {
+    // setOpen(true);
+    setRow(values);
+  };
+  const handleAddPay = (values) => {
+    console.log(values);
+    setOpenPay(true);
+    setRowIn(values);
+  };
 
-
-  
   const contextMenu = (record) => {
     return (
       <div className="options">
@@ -119,6 +145,14 @@ export const InputsAndOutputs = () => {
             <a onClick={() => handleDelete(record)}>
               <DeleteOutlined />
               Eliminar
+            </a>
+            <a onClick={() => handleAddPay(record)}>
+              <FormOutlined />
+              Agregar ingresos
+            </a>
+            <a onClick={() => handlePrint(record)}>
+              <PrinterOutlined />
+              Imprimir
             </a>
           </div>
         ) : (
@@ -148,7 +182,7 @@ export const InputsAndOutputs = () => {
     className: "wp-100",
     render: (_, record) =>
       invent.length >= 1 ? (
-        <a onClick={() => handleImprimir(record)}>Imprimir</a>
+        <a onClick={() => handlePrint(record)}>Imprimir</a>
       ) : null,
   });
   // columns.push({
@@ -160,16 +194,6 @@ export const InputsAndOutputs = () => {
   //       <a onClick={() => handleOutputs(record)}>Dar salida</a>
   //     ) : null,
   // });
-  
-  columns.push({
-    title: "Ingresos",
-    dataIndex: "ingresos",
-    className: "wp-100",
-    render: (_, record) =>
-      invent.length >= 1 ? (
-        <a onClick={() => handleOutputs(record)}>Ingresos</a>
-      ) : null,
-  });
 
   const pagination = [];
 
@@ -195,6 +219,16 @@ export const InputsAndOutputs = () => {
     visible,
   };
 
+  const prmsPays = {
+    openPay,
+    setOpenPay,
+    setRowIn,
+    rowIn,
+    invent,
+    setInvent,
+    visualize
+  };
+
   const prmsFilters = {
     onSearch,
     loading,
@@ -218,6 +252,7 @@ export const InputsAndOutputs = () => {
           <Filters {...prmsFilters} />
         </aside>
         <FormInputsAndOutputs {...prmsForm} />
+        <FormPayments {...prmsPays} />
         <Table
           columns={columns}
           dataSource={invent}

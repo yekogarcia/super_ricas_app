@@ -61,30 +61,31 @@ const EditableCell = (props) => {
       console.log(values);
       toggleEdit();
       if (typeof values.cantidad !== "undefined") {
-
-        console.log(record.precio_unidad.replace(".", ''));
-        record.precio_total = parseFloat(record.precio_unidad) * values.cantidad;
-        console.log(parseFloat(record.precio_unidad));
+        console.log(record.precio_unidad.replace(".", ""));
         console.log(record);
-        // record.valor_iva= (record.precio_total * record.iva)  / 100;
-        // record.valor_comision= (record.precio_total * record.porcen_comision)  / 100;
+        record.precio_total =
+          parseFloat(record.precio_unidad) * values.cantidad;
+        record.valor_iva = (record.precio_total * record.iva) / 100;
+        record.valor_comision =
+          (record.precio_total * record.porcen_comision) / 100;
+        record.valor_venta = record.precio_total - record.valor_iva;
 
         // record.precio_total = Intl.NumberFormat().format(record.precio_total);
         // record.valor_iva= Intl.NumberFormat().format(record.valor_iva);
         // record.valor_comision= Intl.NumberFormat().format(record.valor_comision);
       }
-      if (typeof values.cantidad_salida !== "undefined") {
-        if (values.cantidad_salida <= record.cantidad) {
-          record.valor_venta = record.precio_unidad * values.cantidad_salida;
-          record.valor_comision =
-            (record.valor_venta * record.porcen_comision) / 100;
-        } else {
-          values.cantidad_salida = 0;
-          message.warning(
-            "La cantidad salida no puede ser mayor que la cantidad ingresada!"
-          );
-        }
-      }
+      // if (typeof values.cantidad_salida !== "undefined") {
+      //   if (values.cantidad_salida <= record.cantidad) {
+      //     record.valor_venta = record.precio_unidad * values.cantidad_salida;
+      //     record.valor_comision =
+      //       (record.valor_venta * record.porcen_comision) / 100;
+      //   } else {
+      //     values.cantidad_salida = 0;
+      //     message.warning(
+      //       "La cantidad salida no puede ser mayor que la cantidad ingresada!"
+      //     );
+      //   }
+      // }
       handleSave({
         ...record,
         ...values,
@@ -126,7 +127,13 @@ const EditableCell = (props) => {
   return <td {...restProps}>{childNode}</td>;
 };
 
-export const ListEdit = ({ dataSource, setDataSource, update, visible, loading }) => {
+export const ListEdit = ({
+  dataSource,
+  setDataSource,
+  update,
+  visible,
+  loading,
+}) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
 
@@ -266,6 +273,12 @@ export const ListEdit = ({ dataSource, setDataSource, update, visible, loading }
         );
       } else {
         if (value.cantidad > 0) {
+          let precio_total = res[0].precio * value.cantidad;
+          let valor_iva = (res[0].precio * value.cantidad * res[0].iva) / 100;
+          let valor_comision =
+            (res[0].precio * value.cantidad * res[0].porcen_comision) / 100;
+          let valor_venta = precio_total - valor_iva;
+          
           const newData = {
             key: res[0].id,
             id_producto: res[0].id,
@@ -273,11 +286,12 @@ export const ListEdit = ({ dataSource, setDataSource, update, visible, loading }
             cantidad: value.cantidad,
             codigo_producto: res[0].codigo,
             precio_unidad: res[0].precio,
-            precio_total: res[0].precio * value.cantidad,
+            precio_total: precio_total,
             iva: res[0].iva,
             porcen_comision: res[0].porcen_comision,
-            valor_iva: (res[0].precio * value.cantidad) * res[0].iva / 100,
-            valor_comision: (res[0].precio * value.cantidad) * res[0].porcen_comision / 100,
+            valor_iva: valor_iva,
+            valor_comision: valor_comision,
+            valor_venta: valor_venta,
           };
 
           // newData.precio_unidad = Intl.NumberFormat().format(newData.precio_unidad);
@@ -427,6 +441,7 @@ export const ListEdit = ({ dataSource, setDataSource, update, visible, loading }
         dataSource={dataSource}
         columns={columns}
         loading={loading}
+        size="small"
       />
     </div>
   );

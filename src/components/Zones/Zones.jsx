@@ -22,6 +22,8 @@ export const Zones = () => {
   const [row, setRow] = useState(false);
   const dispatch = useDispatch();
 
+  const { token, user_login } = useSelector((state) => state.auth);
+
   useEffect(() => {
     onSearch();
   }, []);
@@ -32,6 +34,12 @@ export const Zones = () => {
       name: "id",
       filter: "order",
       width: "wp-50",
+    },
+    {
+      label: "Codigo",
+      name: "codigo",
+      filter: "search",
+      width: "wp-100",
     },
     {
       label: "Zona",
@@ -66,15 +74,16 @@ export const Zones = () => {
   ];
 
   const onCreate = (values) => {
+    values.usuario = user_login;
     setLoading(true);
     if (!row) {
-      dispatch(saveZones(values)).then((pr) => {
+      dispatch(saveZones(values, token)).then((pr) => {
         setZones(addRow(zones, pr[0]));
         setLoading(false);
         setOpen(false);
       });
     } else {
-      dispatch(updateZones(values, row.id)).then((pr) => {
+      dispatch(updateZones(values, row.id, token)).then((pr) => {
         setZones(updateRow(zones, pr, row.id));
         setLoading(false);
         setOpen(false);
@@ -82,7 +91,6 @@ export const Zones = () => {
     }
   };
 
-  const { token } = useSelector((state) => state.auth);
 
   const onSearch = (values = "") => {
     setLoading(true);
@@ -98,8 +106,10 @@ export const Zones = () => {
   };
 
   const handleDelete = (values) => {
-    dispatch(deleteZones(values.id)).then((id) => {
+    setLoading(true);
+    dispatch(deleteZones(values.id, token)).then((id) => {
       setZones(removeRow(zones, values.id));
+      setLoading(false);
     });
   };
 
@@ -124,6 +134,13 @@ export const Zones = () => {
   columns = block.concat(columns);
 
   const inputs = [
+    {
+      label: "Codigo",
+      name: "codigo",
+      width: "100%",
+      required: true,
+      type: "input",
+    },
     {
       label: "Nombre Zona",
       name: "nombre",

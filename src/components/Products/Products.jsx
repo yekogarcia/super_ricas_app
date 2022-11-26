@@ -126,8 +126,10 @@ export const Products = () => {
   };
 
   const handleDelete = (values) => {
+    setLoading(true);
     dispatch(deleteProducts(values.id, token)).then((pr) => {
       setProducts(removeRow(products, values.id));
+      setLoading(false);
     });
   };
 

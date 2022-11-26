@@ -24,22 +24,22 @@ export const getZones = (values = "", token) => {
   };
 };
 
-export const saveCategories = (values) => {
+export const saveCategories = (values, token) => {
   return async (dispatch) => {
-    values.usuario = "yekog";
-    const resp = await useFetch("category", { ...values }, "POST");
+    const resp = await useFetchToken("category", { ...values }, token, "POST");
     dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
+      message.success(body.message);
       return body.data;
     }
   };
 };
 
-export const saveZones = (values) => {
+export const saveZones = (values, token) => {
   return async (dispatch) => {
-    values.usuario = "yekog";
-    const resp = await useFetch("zones", { ...values }, "POST");
+    console.log(values);
+    const resp = await useFetchToken("zones", { ...values }, token, "POST");
     dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (body.ok) {
@@ -49,10 +49,14 @@ export const saveZones = (values) => {
   };
 };
 
-export const updateCategories = (values, id) => {
+export const updateCategories = (values, id, token) => {
   return async (dispatch) => {
-    values.usuario = "yekog";
-    const resp = await useFetch("category/" + id, { ...values }, "PATCH");
+    const resp = await useFetchToken(
+      "category/" + id,
+      { ...values },
+      token,
+      "PATCH"
+    );
     dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (body.ok) {
@@ -62,10 +66,14 @@ export const updateCategories = (values, id) => {
   };
 };
 
-export const updateZones = (values, id) => {
+export const updateZones = (values, id, token) => {
   return async (dispatch) => {
-    values.usuario = "yekog";
-    const resp = await useFetch("zones/" + id, { ...values }, "PATCH");
+    const resp = await useFetchToken(
+      "zones/" + id,
+      { ...values },
+      token,
+      "PATCH"
+    );
     dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (body.ok) {
@@ -75,10 +83,10 @@ export const updateZones = (values, id) => {
   };
 };
 
-export const deleteCategories = (id) => {
+export const deleteCategories = (id, token) => {
   return async (dispatch) => {
-    const resp = await useFetch("category/" + id, {}, "DELETE");
-    dispatch(checkSession(resp.status));
+    const resp = await useFetchToken("category/" + id, {}, token, "DELETE");
+    // dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (body.ok) {
       message.success(body.message);
@@ -87,9 +95,9 @@ export const deleteCategories = (id) => {
   };
 };
 
-export const deleteZones = (id) => {
+export const deleteZones = (id, token) => {
   return async (dispatch) => {
-    const resp = await useFetch("zones/" + id, {}, "DELETE");
+    const resp = await useFetchToken("zones/" + id, {}, token, "DELETE");
     dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (body.ok) {

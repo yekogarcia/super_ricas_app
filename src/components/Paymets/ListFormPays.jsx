@@ -30,7 +30,6 @@ export const ListFormPays = ({
 
   useEffect(() => {}, []);
 
-  rowIn.valor_venta = 500000;
 
   const handleDelete = (record) => {
     console.log(record);

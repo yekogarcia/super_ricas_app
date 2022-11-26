@@ -21,7 +21,7 @@ export const FormPayments = ({
   const [pays, setPays] = useState([]);
   const [loading, setLoading] = useState(false);
   const [valor, setValor] = useState(0);
-  
+
   const { token, user_login } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -29,6 +29,7 @@ export const FormPayments = ({
     dispatch(getPayments(token, rowIn.id)).then((res) => {
       console.log(res);
       setPays(res);
+      setValor(rowIn.valor_ingresos);
     });
   }, [rowIn]);
 

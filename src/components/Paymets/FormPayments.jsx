@@ -2,6 +2,7 @@ import { Button, Form, message, Modal } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPayments, savePayments } from "../../controllers/inventory";
+import { formatArrayMoney, unformatArrayMoney } from "../utils/utils";
 import { ListFormPays } from "./ListFormPays";
 import "./Payments.scss";
 
@@ -15,6 +16,7 @@ export const FormPayments = ({
   visualize,
   invent,
   setInvent,
+  onSearch
 }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -24,11 +26,39 @@ export const FormPayments = ({
 
   const { token, user_login } = useSelector((state) => state.auth);
 
+  let defaultColumns = [
+    {
+      label: "Id",
+      name: "id",
+      width: "wp-50",
+      visible: false,
+    },
+    {
+      label: "Concepto",
+      name: "concepto",
+      filter: "search",
+      width: "wp-150",
+    },
+    {
+      label: "Fecha",
+      name: "fecha",
+      filter: "search",
+      width: "wp-150",
+    },
+    {
+      label: "Valor",
+      name: "valor",
+      width: "wp-150",
+      filter: "order.search",
+      format: "money",
+    },
+  ];
+
   useEffect(() => {
     setLoading(false);
     dispatch(getPayments(token, rowIn.id)).then((res) => {
       console.log(res);
-      setPays(res);
+      setPays(formatArrayMoney(res, defaultColumns));
       setValor(rowIn.valor_ingresos);
     });
   }, [rowIn]);
@@ -40,7 +70,7 @@ export const FormPayments = ({
       pays[i].usuario = user_login;
     }
     console.log(pays);
-    values.pays = pays;
+    values.pays = unformatArrayMoney(pays, defaultColumns);
     setLoading(true);
     dispatch(savePayments(values, token)).then((res) => {
       console.log(res);
@@ -48,6 +78,7 @@ export const FormPayments = ({
       setPays([]);
       setValor(0);
       setOpenPay(false);
+      onSearch();
     });
   };
 
@@ -57,7 +88,7 @@ export const FormPayments = ({
       title="Agregar ingresos por zona"
       okText="Guardar"
       cancelText="Cancelar"
-      width="600px"
+      width="700px"
       maskClosable={false}
       onCancel={() => {
         setOpenPay(false);
@@ -77,6 +108,7 @@ export const FormPayments = ({
         rowIn={rowIn}
         setValor={setValor}
         valor={valor}
+        defaultColumns={defaultColumns}
       />
     </Modal>
   );

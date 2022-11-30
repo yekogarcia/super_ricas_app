@@ -1,4 +1,4 @@
-import { DatePicker, Form, message, Modal, Select } from "antd";
+import { DatePicker, Form, InputNumber, message, Modal, Select } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -11,6 +11,7 @@ import {
 import { addRow, updateRow } from "../utils/rows";
 import { ListEdit } from "./ListEdit";
 import moment from "moment";
+import { formatArrayMoney, unformatArrayMoney, unformatMoney } from "../utils/utils";
 const { Option } = Select;
 
 export const FormInputsAndOutputs = ({
@@ -23,6 +24,7 @@ export const FormInputsAndOutputs = ({
   token,
   update,
   visible,
+  onSearch,
 }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -31,15 +33,101 @@ export const FormInputsAndOutputs = ({
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  let defaultColumns = [
+    {
+      label: "Id",
+      name: "id",
+      width: "wp-50",
+      visible: false,
+    },
+    {
+      label: "Producto",
+      name: "id_producto",
+      width: "wp-100",
+      visible: false,
+    },
+    {
+      label: "Producto",
+      name: "nomb_producto",
+      filter: "search",
+      width: "wp-150",
+    },
+    {
+      label: "Cantidad",
+      name: "cantidad",
+      width: "wp-100",
+      filter: "order",
+      editable: true,
+    },
+    {
+      label: "Codigo",
+      filter: "search",
+      width: "wp-100",
+      name: "codigo_producto",
+    },
+    {
+      label: "Valor unitario",
+      width: "wp-100",
+      name: "precio_unidad",
+      format: "money",
+    },
+    {
+      label: "Subtotal",
+      width: "wp-150",
+      name: "precio_total",
+      format: "money",
+    },
+    {
+      label: "IVA",
+      width: "wp-70",
+      name: "iva",
+    },
+    {
+      label: "Valor IVA",
+      name: "valor_iva",
+      width: "wp-100",
+      filter: "order",
+      format: "money",
+    },
+    {
+      label: "Comisión",
+      width: "wp-100",
+      name: "porcen_comision",
+    },
+    {
+      label: "Valor comisión",
+      name: "valor_comision",
+      width: "wp-100",
+      filter: "order",
+      format: "money",
+    },
+    {
+      label: "Cantidad salida",
+      name: "cantidad_salida",
+      width: "wp-100",
+      filter: "order",
+      visible: visible,
+      editable: true,
+    },
+    {
+      label: "Total",
+      name: "valor_venta",
+      width: "wp-150",
+      filter: "order",
+      format: "money",
+    },
+  ];
+
   useEffect(() => {
     if (row) {
       setLoading(true);
       dispatch(getInventoryDet("", token, row.id)).then(function (res) {
-        setDataSource(res);
+        setDataSource(formatArrayMoney(res, defaultColumns));
         setLoading(false);
       });
       row.fecha_dia = moment(row.fecha_dia, "YYYY-MM-DD");
       setFecha(row.fecha_dia);
+      row.saldo_base = unformatMoney(row.saldo_base);
       form.setFieldsValue(row);
     } else {
       setFecha(moment().format("YYYY-MM-DD"));
@@ -55,14 +143,19 @@ export const FormInputsAndOutputs = ({
 
   const onCreate = (values) => {
     // console.log(values);
-    // console.log(invent);
+    setLoading(true);
     values.fecha_dia = moment(values.fecha_dia["_d"]).format("YYYY-MM-DD");
-    values.detalles = dataSource;
+    const dataFormat = unformatArrayMoney(dataSource, defaultColumns);
+    values.detalles = dataFormat;
 
-    if (dataSource.length === 0) {
+    console.log(dataFormat);
+    // return;
+
+    if (dataFormat.length === 0) {
       message.warning("No puedes guardar, sin agregar almenos un producto");
       return;
     }
+    console.log(dataFormat);
     if (!row) {
       const exist = invent.filter(
         (dt) =>
@@ -74,21 +167,25 @@ export const FormInputsAndOutputs = ({
       }
       dispatch(saveInventory(values, token)).then((res) => {
         res[0].key = res[0].id;
-        setInvent(addRow(invent, res[0]));
+        // setInvent(addRow(invent, res[0]));
+        onSearch();
         setOpen(false);
         form.resetFields();
         setDataSource([]);
+        setLoading(false);
       });
     } else {
       console.log(values);
       values.id = row.id;
       dispatch(updateInventory(values, row.id, token)).then((res) => {
         console.log(res);
-        setInvent(updateRow(invent, res[0], row.id));
+        // setInvent(updateRow(invent, res[0], row.id));
+        onSearch();
         setOpen(false);
         setRow(false);
         form.resetFields();
         setDataSource([]);
+        setLoading(false);
       });
     }
   };
@@ -98,7 +195,10 @@ export const FormInputsAndOutputs = ({
   };
 
   setTimeout(function () {
-    form.setFieldValue("fecha_dia", moment(fecha, "YYYY-MM-DD"));
+    if(!row){
+      form.setFieldValue("fecha_dia", moment(fecha, "YYYY-MM-DD"));
+      form.setFieldValue("saldo_base", 0);
+    }
   }, 500);
 
   return (
@@ -176,8 +276,25 @@ export const FormInputsAndOutputs = ({
             ))}
           </Select>
         </Form.Item>
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(30% - 8px)",
+            margin: "0px 4px 16px 4px",
+          }}
+          name="saldo_base"
+          label="Saldo base"
+        >
+          <InputNumber
+            formatter={(value) =>
+              `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+            }
+            parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+          />
+        </Form.Item>
       </Form>
       <ListEdit
+        defaultColumns={defaultColumns}
         dataSource={dataSource}
         setDataSource={setDataSource}
         update={update}

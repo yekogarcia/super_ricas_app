@@ -5,6 +5,7 @@ import {
   InputNumber,
   message,
   Popconfirm,
+  Select,
   Table,
 } from "antd";
 import moment from "moment";
@@ -12,6 +13,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePayments } from "../../controllers/inventory";
 import { setColumnsList } from "../utils/setColumnsList";
+import { formatMoney, unformatMoney } from "../utils/utils";
 
 export const ListFormPays = ({
   pays,
@@ -21,6 +23,7 @@ export const ListFormPays = ({
   rowIn,
   setValor,
   valor,
+  defaultColumns
 }) => {
   const [form] = Form.useForm();
   const [count, setCount] = useState(0);
@@ -30,7 +33,6 @@ export const ListFormPays = ({
 
   useEffect(() => {}, []);
 
-
   const handleDelete = (record) => {
     console.log(record);
     if (typeof record.id !== "undefined") {
@@ -38,36 +40,17 @@ export const ListFormPays = ({
         const newData = pays.filter((item) => item.key !== record.key);
         setPays(newData);
         setCount(count - 1);
-        setValor(valor - record.valor);
+        setValor(valor - unformatMoney(record.valor));
       });
     } else {
       const newData = pays.filter((item) => item.key !== record.key);
       setPays(newData);
       setCount(count - 1);
-      setValor(valor - record.valor);
+      setValor(valor - unformatMoney(record.valor));
     }
   };
 
-  let defaultColumns = [
-    {
-      label: "Id",
-      name: "id",
-      width: "wp-50",
-      visible: false,
-    },
-    {
-      label: "Fecha",
-      name: "fecha",
-      filter: "search",
-      width: "wp-200",
-    },
-    {
-      label: "Valor",
-      name: "valor",
-      width: "wp-200",
-      filter: "order.search",
-    },
-  ];
+ 
 
   defaultColumns = setColumnsList(defaultColumns, pays);
 
@@ -98,8 +81,9 @@ export const ListFormPays = ({
       setCount(count + 1);
       setValor(valor + value.valor);
       const newData = {
+        concepto: value.concepto,
         fecha: moment(value.fecha["_d"]).format("YYYY-MM-DD"),
-        valor: value.valor,
+        valor: formatMoney(value.valor),
         key: count,
       };
 
@@ -123,11 +107,10 @@ export const ListFormPays = ({
   //   };
 
   const selectRef = useRef(null);
+  setTimeout(function () {
+    form.setFieldValue("concepto", "INGRESO");
+  }, 200);
 
-  const onChange = (value) => {
-    console.log(value);
-  };
-  const onSearch = (value) => {};
   return (
     <div className="pays">
       {visualize ? (
@@ -142,7 +125,38 @@ export const ListFormPays = ({
           <Form.Item
             style={{
               display: "inline-block",
-              width: "calc(30% - 8px)",
+              width: "calc(20% - 8px)",
+              margin: "0px 4px 16px 4px",
+            }}
+            name="concepto"
+            label="Concepto"
+            rules={[
+              {
+                required: true,
+                message: "Por favor ingrese un valor!",
+              },
+            ]}
+          >
+            <Select
+              placeholder="Seleccione"
+              options={[
+                {
+                  key: "INGRESO",
+                  value: "INGRESO",
+                  label: "INGRESO",
+                },
+                {
+                  key: "DESCUENTO",
+                  value: "DESCUENTO",
+                  label: "DESCUENTO",
+                },
+              ]}
+            />
+          </Form.Item>
+          <Form.Item
+            style={{
+              display: "inline-block",
+              width: "calc(25% - 8px)",
               margin: "0px 4px 16px 4px",
             }}
             name="fecha"
@@ -159,7 +173,7 @@ export const ListFormPays = ({
           <Form.Item
             style={{
               display: "inline-block",
-              width: "calc(30% - 8px)",
+              width: "calc(25% - 8px)",
               margin: "0px 4px 16px 4px",
             }}
             name="valor"
@@ -211,9 +225,10 @@ export const ListFormPays = ({
         // title={() => 'Header'}
         footer={() => (
           <>
-            <div className="total">Total: {rowIn.valor_venta}</div>
-            <div className="income">Ingresos: {valor}</div>
-            <div className="missing">Faltante: {rowIn.valor_venta - valor}</div>
+            <div className="total">Total: {formatMoney(rowIn.valor_venta)}</div>
+            <div className="income">Ingresos: {formatMoney(valor)}</div>
+            <div className="missing">Faltante: {formatMoney(rowIn.valor_venta - valor)}</div>
+            {/* <div className="missing">Faltante: { formatMoney(unformatMoney(rowIn.valor_venta) - unformatMoney(valor))}</div> */}
           </>
         )}
       />

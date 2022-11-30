@@ -28,6 +28,7 @@ export const Dasbohard = () => {
           </Header>
           <Content>
             <Routes>
+              <Route exact path="/" element={<InputsAndOutputs />} />
               <Route exact path="/profile" element={<Profile />} />
               <Route exact path="/zones" element={<Zones />} />
               <Route exact path="/categories" element={<Categories />} />

@@ -18,6 +18,7 @@ import "./InputsAndOutputs.scss";
 import "../css/style.scss";
 import { FormInputsAndOutputs } from "./FormInputsAndOutputs";
 import { FormPayments } from "../Paymets/FormPayments";
+import { formatArrayMoney, unformatMoney } from "../utils/utils";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
@@ -55,13 +56,13 @@ export const InputsAndOutputs = () => {
       label: "Zona",
       name: "zona_text",
       filter: "search",
-      width: "wp-200",
+      width: "wp-180",
     },
     {
       label: "Fecha ingreso",
       name: "fecha_dia",
       filter: "search",
-      width: "wp-200",
+      width: "wp-150",
     },
     {
       label: "Estado",
@@ -69,34 +70,46 @@ export const InputsAndOutputs = () => {
       width: "wp-100",
     },
     {
-      label: "Total",
+      label: "Subtotal",
       name: "precio_total",
-      width: "wp-150",
-    },
-    {
-      label: "Total venta",
-      name: "valor_venta",
-      width: "wp-150",
+      width: "wp-120",
+      format: "money"
     },
     {
       label: "Total IVA",
       name: "valor_iva",
-      width: "wp-150",
+      width: "wp-120",
+      format: "money"
+    },
+    {
+      label: "Total",
+      name: "valor_venta",
+      width: "wp-120",
+      format: "money"
     },
     {
       label: "Total comisión",
       name: "valor_comision",
       width: "wp-150",
+      format: "money"
     },
     {
       label: "Valor ingresos",
       name: "valor_ingresos",
       width: "wp-150",
+      format: "money"
     },
     {
       label: "Valor pendiente",
       name: "valor_pendiente",
       width: "wp-150",
+      format: "money"
+    },
+    {
+      label: "Saldo base",
+      name: "saldo_base",
+      width: "wp-100",
+      format: "money"
     },
   ];
 
@@ -130,6 +143,8 @@ export const InputsAndOutputs = () => {
   const handleAddPay = (values) => {
     console.log(values);
     setOpenPay(true);
+    values.valor_venta = unformatMoney(values.valor_venta)
+    values.valor_ingresos = unformatMoney(values.valor_ingresos)
     setRowIn(values);
   };
 
@@ -202,7 +217,7 @@ export const InputsAndOutputs = () => {
   const onSearch = (values = "") => {
     setLoading(true);
     dispatch(getInventory(values, token)).then((res) => {
-      setInvent(res);
+      setInvent(formatArrayMoney(res, confColumns));
       setLoading(false);
     });
   };
@@ -217,6 +232,7 @@ export const InputsAndOutputs = () => {
     token,
     update,
     visible,
+    onSearch
   };
 
   const prmsPays = {
@@ -226,7 +242,8 @@ export const InputsAndOutputs = () => {
     rowIn,
     invent,
     setInvent,
-    visualize
+    visualize,
+    onSearch
   };
 
   const prmsFilters = {
@@ -260,6 +277,7 @@ export const InputsAndOutputs = () => {
           loading={loading}
           onChange={handleTableChange}
           size="small"
+          bordered
         />
       </section>
     </>

@@ -17,19 +17,24 @@ export const setColumnsList = (cols, data = []) => {
       visible = true,
       editable,
       typeInput,
+      format,
     }) => {
+      let styleClass = "";
       if (!width) {
         width = "wp-150";
       }
       if (!visible) {
         width += " hide";
       }
+      if (format === "money") {
+        styleClass += " aling-right";
+      }
 
       let col = {
         key: name,
         title: label,
         dataIndex: name,
-        className: width,
+        className: width + styleClass,
         editable,
         typeInput,
       };

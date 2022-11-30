@@ -19,6 +19,7 @@ import "../css/style.scss";
 import { FormInputsAndOutputs } from "./FormInputsAndOutputs";
 import { FormPayments } from "../Paymets/FormPayments";
 import { formatArrayMoney, unformatMoney } from "../utils/utils";
+import { render } from "react-dom";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
@@ -28,7 +29,8 @@ export const InputsAndOutputs = () => {
   const [rowIn, setRowIn] = useState(false);
   const [visible, setVisible] = useState(false);
   const [update, setUpdate] = useState(true);
-  const [visualize, setVisualize ] = useState(true);
+  const [visualize, setVisualize] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(true);
   const [invent, setInvent] = useState([]);
   const dispatch = useDispatch();
 
@@ -73,43 +75,43 @@ export const InputsAndOutputs = () => {
       label: "Subtotal",
       name: "precio_total",
       width: "wp-120",
-      format: "money"
+      format: "money",
     },
     {
       label: "Total IVA",
       name: "valor_iva",
       width: "wp-120",
-      format: "money"
+      format: "money",
     },
     {
       label: "Total",
       name: "valor_venta",
       width: "wp-120",
-      format: "money"
+      format: "money",
     },
     {
       label: "Total comisión",
       name: "valor_comision",
       width: "wp-150",
-      format: "money"
+      format: "money",
     },
     {
       label: "Valor ingresos",
       name: "valor_ingresos",
       width: "wp-150",
-      format: "money"
+      format: "money",
     },
     {
       label: "Valor pendiente",
       name: "valor_pendiente",
       width: "wp-150",
-      format: "money"
+      format: "money",
     },
     {
       label: "Saldo base",
       name: "saldo_base",
       width: "wp-100",
-      format: "money"
+      format: "money",
     },
   ];
 
@@ -133,6 +135,7 @@ export const InputsAndOutputs = () => {
   const handleDelete = (values) => {
     dispatch(deleteRowInventory(values.id, token)).then((pr) => {
       setInvent(removeRow(invent, values.id));
+      setShowConfirm(false);
     });
   };
 
@@ -143,8 +146,8 @@ export const InputsAndOutputs = () => {
   const handleAddPay = (values) => {
     console.log(values);
     setOpenPay(true);
-    values.valor_venta = unformatMoney(values.valor_venta)
-    values.valor_ingresos = unformatMoney(values.valor_ingresos)
+    values.valor_venta = unformatMoney(values.valor_venta);
+    values.valor_ingresos = unformatMoney(values.valor_ingresos);
     setRowIn(values);
   };
 
@@ -157,10 +160,27 @@ export const InputsAndOutputs = () => {
               <EditOutlined />
               Editar
             </a>
-            <a onClick={() => handleDelete(record)}>
-              <DeleteOutlined />
-              Eliminar
-            </a>
+            {/* <a onClick={() => handleDelete(record)}> */}
+            <Popconfirm
+              title="¿Esta seguro de elimar este registro?"
+              open={showConfirm}
+              placement="right"
+              onConfirm={() => {
+                handleDelete(record);
+              }}
+              onCancel={() => {
+                setShowConfirm(false);
+              }}
+            >
+              <a
+                onClick={() => {
+                  setShowConfirm(true);
+                }}
+              >
+                <DeleteOutlined />
+                Eliminar
+              </a>
+            </Popconfirm>
             <a onClick={() => handleAddPay(record)}>
               <FormOutlined />
               Agregar ingresos
@@ -232,7 +252,7 @@ export const InputsAndOutputs = () => {
     token,
     update,
     visible,
-    onSearch
+    onSearch,
   };
 
   const prmsPays = {
@@ -243,7 +263,7 @@ export const InputsAndOutputs = () => {
     invent,
     setInvent,
     visualize,
-    onSearch
+    onSearch,
   };
 
   const prmsFilters = {

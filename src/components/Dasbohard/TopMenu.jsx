@@ -5,7 +5,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../../controllers/auth";
 
@@ -14,6 +14,8 @@ import { handleLogout } from "../../controllers/auth";
 export const TopMenu = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const {user_login} = useSelector((state) => state.auth);
 
   const handleHover = (e) => {
     document.querySelector(".menu-dropdown").style = "display:  block";
@@ -51,7 +53,7 @@ export const TopMenu = () => {
             </figure>
             <div className="info-profile">
               <p>
-                <b>Ender Garcia</b>
+                <b>{user_login}</b>
               </p>
               <p>Super Administrador</p>
             </div>

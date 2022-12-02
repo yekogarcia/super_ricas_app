@@ -8,8 +8,10 @@ import { setOptionsBlock } from "../utils/setOptionsList";
 import {
   EditOutlined,
   DeleteOutlined,
-  FormOutlined,
   PrinterOutlined,
+  CheckOutlined,
+  FileAddOutlined,
+  FullscreenOutlined
 } from "@ant-design/icons";
 import { removeRow } from "../utils/rows";
 import { deleteRowInventory, getInventory } from "../../controllers/inventory";
@@ -152,9 +154,11 @@ export const InputsAndOutputs = () => {
   };
 
   const contextMenu = (record) => {
+    console.log(record);
+    const vp = unformatMoney(record.valor_pendiente);
     return (
       <div className="options">
-        {record.estado == "INGRESADA" ? (
+        {record.estado === "INGRESADA" ? (
           <div>
             <a onClick={() => handleUpdate(record)}>
               <EditOutlined />
@@ -182,17 +186,34 @@ export const InputsAndOutputs = () => {
               </a>
             </Popconfirm>
             <a onClick={() => handleAddPay(record)}>
-              <FormOutlined />
+              <FileAddOutlined />
               Agregar ingresos
             </a>
-            <a onClick={() => handlePrint(record)}>
-              <PrinterOutlined />
-              Imprimir
-            </a>
+            {vp <= 0 ?
+              <a onClick={() => handlePrint(record)}>
+                <CheckOutlined />
+                Finalizar
+              </a>
+              : ""}
           </div>
         ) : (
-          ""
+          <div>
+            <a onClick={() => handlePrint(record)}>
+              <FullscreenOutlined />
+              Ver Ingresos
+            </a>
+            <a onClick={() => handlePrint(record)}>
+              <FullscreenOutlined />
+              Ver Detalles
+            </a>
+          </div>
         )}
+        <div>
+          <a onClick={() => handlePrint(record)}>
+            <PrinterOutlined />
+            Imprimir
+          </a>
+        </div>
       </div>
     );
   };
@@ -232,7 +253,7 @@ export const InputsAndOutputs = () => {
 
   const pagination = [];
 
-  const handleTableChange = () => {};
+  const handleTableChange = () => { };
 
   const onSearch = (values = "") => {
     setLoading(true);

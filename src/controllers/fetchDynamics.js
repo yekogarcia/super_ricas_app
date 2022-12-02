@@ -106,3 +106,29 @@ export const deleteZones = (id, token) => {
     }
   };
 };
+
+export const updateProfile = (values, id, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("users/profile/" + id, { ...values }, token, "PATCH");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (body.ok) {
+      message.success(body.message);
+      return body.data;
+    }
+  };
+};
+
+export const validatePassword = (values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("users/password/", { ...values }, token, "POST");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (body.ok) {
+      message.success(body.message);
+    } else {
+      message.error(body.message);
+    }
+    return body.ok;
+  };
+};

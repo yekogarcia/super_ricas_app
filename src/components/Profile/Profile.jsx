@@ -8,11 +8,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getUser } from "../../controllers/auth";
 import { useState } from "react";
+import {
+  updateProfile,
+  validatePassword,
+} from "../../controllers/fetchDynamics";
 
 export const Profile = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const [user, setUser] = useState([]);
+  const [enable, setEnable] = useState(true);
 
   const { token, key } = useSelector((state) => state.auth);
 
@@ -57,6 +62,39 @@ export const Profile = () => {
     },
   };
 
+  const handleSave = (values) => {
+    console.log(values);
+    console.log(key);
+    dispatch(updateProfile(values, key, token)).then((res) => {
+      console.log(res);
+    });
+  };
+
+  const handleValidatePassword = () => {
+    const value = form.getFieldValue("current_password");
+    const dat = {
+      id: key,
+      password: value,
+    };
+    console.log(value);
+    if (typeof value !== 'undefined') {
+      dispatch(validatePassword(dat, token)).then((res) => {
+        setEnable(!res);
+      });
+    }
+  };
+
+  const handleEqualsPasswords = () => {
+    const password = form.getFieldValue("password");
+    const confirm = form.getFieldValue("confirm_paswword");
+    console.log(password);
+    if (password !== confirm) {
+      message.error('La confirmación de contraseña es incorrecta!');
+      form.setFieldValue('password', '');
+      form.setFieldValue('confirm_paswword', '');
+    }
+  };
+
   return (
     <>
       <section className="profile">
@@ -86,21 +124,16 @@ export const Profile = () => {
               }}
               name="photo"
               label="Foto de perfil"
-              rules={[
-                {
-                  required: true,
-                  message: "Por favor ingrese un valor!",
-                },
-              ]}
             >
-              <Upload
+              {/* <Upload
                 action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                 listType="picture"
                 defaultFileList={[...fileList]}
                 maxCount={1}
               >
                 <Button icon={<UploadOutlined />}>Subir foto de perfil</Button>
-              </Upload>
+              </Upload> */}
+              <Input />
             </Form.Item>
             <Form.Item
               style={{
@@ -182,7 +215,7 @@ export const Profile = () => {
               name="current_password"
               label="Contraseña actual"
             >
-              <Input.Password />
+              <Input.Password onBlur={handleValidatePassword} />
             </Form.Item>
             <Form.Item
               style={{
@@ -193,7 +226,7 @@ export const Profile = () => {
               name="password"
               label="Contraseña nueva"
             >
-              <Input.Password />
+              <Input.Password disabled={enable} />
             </Form.Item>
             <Form.Item
               style={{
@@ -204,9 +237,22 @@ export const Profile = () => {
               name="confirm_paswword"
               label="Confirmar contraseña"
             >
-              <Input.Password />
+              <Input.Password onBlur={handleEqualsPasswords} disabled={enable} />
             </Form.Item>
-            <Button type="primary" htmlType="submit">
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => {
+                form
+                  .validateFields()
+                  .then((values) => {
+                    handleSave(values);
+                  })
+                  .catch((info) => {
+                    console.log("Validate Failed:", info);
+                  });
+              }}
+            >
               Actualizar Datos
             </Button>
           </Form>

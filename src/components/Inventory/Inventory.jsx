@@ -136,7 +136,6 @@ export const Inventory = () => {
   const onSearch = (values = "") => {
     setLoading(true);
     dispatch(getInventory(values, token)).then((res) => {
-      console.log(res);
       setInvent(res);
       setLoading(false);
     });

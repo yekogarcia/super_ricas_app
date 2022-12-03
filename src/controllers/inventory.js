@@ -117,7 +117,6 @@ export const getPayments = (token, id) => {
     const resp = await useFetchToken("payments/" + id, "", token);
     dispatch(checkSession(resp.status));
     const body = await resp.json();
-    console.log(body);
     if (resp.ok) {
       return body.data;
     }

@@ -148,9 +148,6 @@ export const FormInputsAndOutputs = ({
     const dataFormat = unformatArrayMoney(dataSource, defaultColumns);
     values.detalles = dataFormat;
 
-    console.log(dataFormat);
-    // return;
-
     if (dataFormat.length === 0) {
       message.warning("No puedes guardar, sin agregar almenos un producto");
       return;

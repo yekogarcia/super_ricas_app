@@ -38,7 +38,6 @@ const starSesion = (user) => ({
 const SingOff = () => ({ type: types.authLogout });
 
 export const checkLogIn = (user) => {
-  console.log(user);
   return async (dispatch) => {
     dispatch(starSesion(user));
   };

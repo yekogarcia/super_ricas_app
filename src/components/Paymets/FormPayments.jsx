@@ -57,7 +57,6 @@ export const FormPayments = ({
   useEffect(() => {
     setLoading(false);
     dispatch(getPayments(token, rowIn.id)).then((res) => {
-      console.log(res);
       setPays(formatArrayMoney(res, defaultColumns));
       setValor(rowIn.valor_ingresos);
     });
@@ -69,11 +68,9 @@ export const FormPayments = ({
       pays[i].id_zona = rowIn.id_zona;
       pays[i].usuario = user_login;
     }
-    console.log(pays);
     values.pays = unformatArrayMoney(pays, defaultColumns);
     setLoading(true);
     dispatch(savePayments(values, token)).then((res) => {
-      console.log(res);
       setLoading(false);
       setPays([]);
       setValor(0);

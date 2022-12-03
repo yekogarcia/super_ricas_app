@@ -146,7 +146,6 @@ export const InputsAndOutputs = () => {
     setRow(values);
   };
   const handleAddPay = (values) => {
-    console.log(values);
     setOpenPay(true);
     values.valor_venta = unformatMoney(values.valor_venta);
     values.valor_ingresos = unformatMoney(values.valor_ingresos);
@@ -154,7 +153,6 @@ export const InputsAndOutputs = () => {
   };
 
   const contextMenu = (record) => {
-    console.log(record);
     const vp = unformatMoney(record.valor_pendiente);
     return (
       <div className="options">

@@ -8,6 +8,7 @@ import { Menu } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { handleLogout } from "../../controllers/auth";
+import login from "../../assets/login.jpg";
 
 // document.querySelector(".menu-dropdown").style = "display:  none";
 
@@ -15,7 +16,7 @@ export const TopMenu = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const {user_login} = useSelector((state) => state.auth);
+  const {perfil_text, name, } = useSelector((state) => state.auth);
 
   const handleHover = (e) => {
     document.querySelector(".menu-dropdown").style = "display:  block";
@@ -49,13 +50,13 @@ export const TopMenu = () => {
         <ul className="profile">
           <li>
             <figure>
-              <img src="" alt="foto" />
+              <img src={login} alt="foto" />
             </figure>
             <div className="info-profile">
               <p>
-                <b>{user_login}</b>
+                <b>{name}</b>
               </p>
-              <p>Super Administrador</p>
+              <p>{perfil_text}</p>
             </div>
             <div className="icon">
               <CaretDownOutlined />

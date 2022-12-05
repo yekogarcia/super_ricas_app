@@ -203,6 +203,7 @@ export const Products = () => {
           loading={loading}
           onChange={handleTableChange}
           size="small"
+          bordered
         />
       </section>
     </>

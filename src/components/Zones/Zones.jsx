@@ -195,7 +195,8 @@ export const Zones = () => {
           // pagination={pagination}
           loading={loading}
           // onChange={handleTableChange}
-          size="middle"
+          size="small"
+          bordered
         />
       </section>
     </>

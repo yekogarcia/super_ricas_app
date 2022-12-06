@@ -1,17 +1,16 @@
 import { Button, Table } from "antd";
 import { useState, useEffect } from "react";
 import { setColumnsList } from "../utils/setColumnsList";
-import { useDispatch } from "react-redux";
-import { deleteProducts, getProducts } from "../../controllers/products";
+import { useDispatch, useSelector } from "react-redux";
 
 import { Filters } from "../Filters/Filters";
 import { setOptionsBlock } from "../utils/setOptionsList";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { removeRow } from "../utils/rows";
 import { FormUser } from "./FormUser";
+import { getUsers } from "../../controllers/fetchDynamics";
 
-import "./Inventory.scss";
-import "../css/style.scss";
+// import "../css/style.scss";
 
 export const Users = () => {
   const [loading, setLoading] = useState(false);
@@ -19,6 +18,8 @@ export const Users = () => {
   const [row, setRow] = useState(false);
   const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
+
+  const { token, user_login } = useSelector((state) => state.auth);
 
   useEffect(() => {
     onSearch();
@@ -33,16 +34,21 @@ export const Users = () => {
     },
     {
       label: "Nombre",
-      name: "nombre",
+      name: "name",
       filter: "search",
-      width: "wp-200",
-      visible: false
+      width: "wp-150"
+    },
+    {
+      label: "Usuario",
+      name: "user_login",
+      filter: "search",
+      width: "wp-100",
     },
     {
       label: "Email",
       name: "email",
       filter: "search",
-      width: "wp-200",
+      width: "wp-150",
     },
     {
       label: "Perfil",
@@ -51,15 +57,26 @@ export const Users = () => {
       filter: "search",
     },
     {
-      label: "Zona",
-      name: "zona",
+      label: "Celuar",
+      name: "cell_phone",
       filter: "order",
       width: "wp-100",
     },
     {
-      label: "Cantidad",
-      name: "cantidad",
+      label: "Estado",
+      name: "state",
       width: "wp-100",
+      filter: "order",
+    },
+    {
+      label: "Photo",
+      name: "photo",
+      width: "wp-150",
+    },
+    {
+      label: "Fecha creación",
+      name: "create_datetime",
+      width: "wp-200",
       filter: "order",
     },
   ];
@@ -70,9 +87,9 @@ export const Users = () => {
   };
 
   const handleDelete = (values) => {
-    dispatch(deleteProducts(values.id)).then((pr) => {
-      setProducts(removeRow(products, values.id));
-    });
+    // dispatch(deleteProducts(values.id)).then((pr) => {
+    //   setProducts(removeRow(products, values.id));
+    // });
   };
 
   const contextMenu = (record) => {
@@ -101,7 +118,7 @@ export const Users = () => {
 
   const onSearch = (values = "") => {
     setLoading(true);
-    dispatch(getProducts(values)).then((pr) => {
+    dispatch(getUsers(values, token)).then((pr) => {
       setProducts(pr);
       setLoading(false);
     });

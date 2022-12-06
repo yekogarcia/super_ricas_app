@@ -132,3 +132,15 @@ export const validatePassword = (values, token) => {
     return body.ok;
   };
 };
+
+
+export const getUsers = (values = "", token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("users/" + values, {}, token);
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};

@@ -30,9 +30,9 @@ const items = [
   getItem("Devoluciones", "devolutions", <ContainerOutlined />),
   // getItem("Informes", "reports", <ContainerOutlined />),
   // getItem("Devs", "sub1", <MailOutlined />, [
-  //   getItem("Perfiles", "perfiles"),
-  //   getItem("Empresas", "empresas"),
-  //   getItem("Usuarios", "usuarios"),
+  //   getItem("Perfiles", "profiles"),
+  //   getItem("Empresas", "company"),
+  //   getItem("Usuarios", "users"),
   // ]),
   
   //   getItem("Navigation Two", "sub2", <AppstoreOutlined />, [

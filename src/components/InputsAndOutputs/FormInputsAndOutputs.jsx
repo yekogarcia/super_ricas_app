@@ -32,6 +32,7 @@ export const FormInputsAndOutputs = ({
   const [fecha, setFecha] = useState(moment().format("YYYY-MM-DD"));
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [saldoBase, setSaldoBase] = useState(0);
 
   let defaultColumns = [
     {
@@ -194,7 +195,7 @@ export const FormInputsAndOutputs = ({
   setTimeout(function () {
     if(!row){
       form.setFieldValue("fecha_dia", moment(fecha, "YYYY-MM-DD"));
-      form.setFieldValue("saldo_base", 0);
+      form.setFieldValue("saldo_base", saldoBase);
     }
   }, 500);
 
@@ -211,6 +212,7 @@ export const FormInputsAndOutputs = ({
         form.resetFields();
         setDataSource([]);
         setRow(false);
+        setSaldoBase(0)
       }}
       onOk={() => {
         update || visible
@@ -282,7 +284,7 @@ export const FormInputsAndOutputs = ({
           name="saldo_base"
           label="Saldo base"
         >
-          <InputNumber
+          <InputNumber onBlur={(e)=>{setSaldoBase(form.getFieldValue('saldo_base'))}}
             formatter={(value) =>
               `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }

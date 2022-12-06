@@ -21,7 +21,6 @@ import "../css/style.scss";
 import { FormInputsAndOutputs } from "./FormInputsAndOutputs";
 import { FormPayments } from "../Paymets/FormPayments";
 import { formatArrayMoney, unformatMoney } from "../utils/utils";
-import { render } from "react-dom";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);

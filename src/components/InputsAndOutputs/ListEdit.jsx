@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteRowInventoryDetId } from "../../controllers/inventory";
 import { getProductsConcat, getProductsId } from "../../controllers/products";
 import { setColumnsList } from "../utils/setColumnsList";
-import { formatMoney } from "../utils/utils";
+import { formatMoney, unformatMoney } from "../utils/utils";
 const EditableContext = React.createContext(null);
 
 const EditableRow = ({ index, ...props }) => {
@@ -59,12 +59,11 @@ const EditableCell = (props) => {
   const save = async () => {
     try {
       const values = await form.validateFields();
-      console.log(values);
       toggleEdit();
       if (typeof values.cantidad !== "undefined") {
         console.log(record);
         record.precio_total = Math.round(
-          parseFloat(record.precio_unidad) * values.cantidad
+          unformatMoney(record.precio_unidad) * values.cantidad
         );
         record.valor_iva = Math.round((record.precio_total * record.iva) / 100);
         record.valor_comision = Math.round(
@@ -77,22 +76,12 @@ const EditableCell = (props) => {
         record.valor_comision = formatMoney(record.valor_comision);
         record.valor_venta = formatMoney(record.valor_venta);
       }
-      // if (typeof values.cantidad_salida !== "undefined") {
-      //   if (values.cantidad_salida <= record.cantidad) {
-      //     record.valor_venta = record.precio_unidad * values.cantidad_salida;
-      //     record.valor_comision =
-      //       (record.valor_venta * record.porcen_comision) / 100;
-      //   } else {
-      //     values.cantidad_salida = 0;
-      //     message.warning(
-      //       "La cantidad salida no puede ser mayor que la cantidad ingresada!"
-      //     );
-      //   }
-      // }
+      
       handleSave({
         ...record,
         ...values,
       });
+      
     } catch (errInfo) {
       console.log("Save failed:", errInfo);
     }

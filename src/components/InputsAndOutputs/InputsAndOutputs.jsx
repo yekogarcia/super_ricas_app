@@ -234,32 +234,14 @@ export const InputsAndOutputs = () => {
   let columns = setColumnsList(confColumns, invent);
   columns = block.concat(columns);
 
-  // columns.push({
-  //   title: "Ver / Editar",
-  //   dataIndex: "ver",
-  //   className: "wp-150",
-  //   render: (_, record) =>
-  //     invent.length >= 1 ? (
-  //       <a onClick={() => handleUpdate(record)}>Ver / Editar</a>
-  //     ) : null,
-  // });
 
-  columns.push({
-    title: "Imprimir",
-    dataIndex: "imprimir",
-    className: "wp-100",
-    render: (_, record) =>
-      invent.length >= 1 ? (
-        <a onClick={() => handlePrint(record)}>Imprimir</a>
-      ) : null,
-  });
   // columns.push({
-  //   title: "Salida",
-  //   dataIndex: "salida",
+  //   title: "Imprimir",
+  //   dataIndex: "imprimir",
   //   className: "wp-100",
   //   render: (_, record) =>
   //     invent.length >= 1 ? (
-  //       <a onClick={() => handleOutputs(record)}>Dar salida</a>
+  //       <a onClick={() => handlePrint(record)}>Imprimir</a>
   //     ) : null,
   // });
 
@@ -323,11 +305,11 @@ export const InputsAndOutputs = () => {
         </aside>
         <FormInputsAndOutputs {...prmsForm} />
         <FormPayments {...prmsPays} />
-        <PaymentComission 
-        isModalOpen={isModalOpen}
-         setIsModalOpen={setIsModalOpen}
-         setRowIn={setRowIn}
-         rowIn={rowIn} />
+        <PaymentComission
+          isModalOpen={isModalOpen}
+          setIsModalOpen={setIsModalOpen}
+          setRowIn={setRowIn}
+          rowIn={rowIn} />
         <Table
           columns={columns}
           dataSource={invent}

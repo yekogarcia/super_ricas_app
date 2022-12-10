@@ -9,7 +9,7 @@ export const PaymentComission = ({ isModalOpen, setIsModalOpen, setRowIn, rowIn 
     const [income, setIncome] = useState(0)
     const [comission, setComission] = useState(0)
     const { token, user_login } = useSelector((state) => state.auth);
-   
+
     useEffect(() => {
         dispatch(getIncomes(token, rowIn.id)).then(res => {
             setComission(Math.round(rowIn.valor_comision * res.valor / rowIn.valor_venta));
@@ -29,12 +29,11 @@ export const PaymentComission = ({ isModalOpen, setIsModalOpen, setRowIn, rowIn 
             setIsModalOpen(false);
         })
     };
-    const 
-    handleCancel = () => {
+    const handleCancel = () => {
         setIsModalOpen(false);
         setRowIn([])
     };
-    
+
     return (
         <>
             <Modal

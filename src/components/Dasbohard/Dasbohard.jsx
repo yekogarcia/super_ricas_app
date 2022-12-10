@@ -15,6 +15,7 @@ import { InputsAndOutputs } from "../InputsAndOutputs/InputsAndOutputs";
 import "./Dasbohard.scss";
 import "../css/style.scss";
 import { Users } from "../Users/Users";
+import {  Returns } from "../Returns/Returns";
 
 export const Dasbohard = () => {
   return (
@@ -39,6 +40,7 @@ export const Dasbohard = () => {
               <Route exact path="/users" element={<Users />} />
               <Route exact path="/profiles" element={<InputsAndOutputs />} />
               <Route exact path="/company" element={<InputsAndOutputs />} />
+              <Route exact path="/devolutions" element={<Returns />} />
             </Routes>
           </Content>
           <Footer>Footer</Footer>

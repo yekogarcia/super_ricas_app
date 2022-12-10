@@ -21,6 +21,7 @@ import "../css/style.scss";
 import { FormInputsAndOutputs } from "./FormInputsAndOutputs";
 import { FormPayments } from "../Paymets/FormPayments";
 import { formatArrayMoney, unformatMoney } from "../utils/utils";
+import { PaymentComission } from "../Paymets/PaymentComission";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,8 @@ export const InputsAndOutputs = () => {
   const [visualize, setVisualize] = useState(true);
   const [showConfirm, setShowConfirm] = useState(true);
   const [invent, setInvent] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const dispatch = useDispatch();
 
   const { token } = useSelector((state) => state.auth);
@@ -151,6 +154,14 @@ export const InputsAndOutputs = () => {
     setRowIn(values);
   };
 
+  const showModal = (record) => {
+    setIsModalOpen(true);
+    record.valor_venta = unformatMoney(record.valor_venta);
+    record.valor_ingresos = unformatMoney(record.valor_ingresos);
+    record.valor_comision = unformatMoney(record.valor_comision);
+    setRowIn(record);
+  };
+
   const contextMenu = (record) => {
     const vp = unformatMoney(record.valor_pendiente);
     return (
@@ -185,6 +196,10 @@ export const InputsAndOutputs = () => {
             <a onClick={() => handleAddPay(record)}>
               <FileAddOutlined />
               Agregar ingresos
+            </a>
+            <a onClick={() => showModal(record)}>
+              <FileAddOutlined />
+              Pagar comisión diaria
             </a>
             {vp <= 0 ?
               <a onClick={() => handlePrint(record)}>
@@ -308,6 +323,11 @@ export const InputsAndOutputs = () => {
         </aside>
         <FormInputsAndOutputs {...prmsForm} />
         <FormPayments {...prmsPays} />
+        <PaymentComission 
+        isModalOpen={isModalOpen}
+         setIsModalOpen={setIsModalOpen}
+         setRowIn={setRowIn}
+         rowIn={rowIn} />
         <Table
           columns={columns}
           dataSource={invent}

@@ -135,3 +135,27 @@ export const deletePayments = (token, id) => {
     }
   };
 };
+
+
+export const getIncomes = (token, id) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("payments/pay_commission/" + id, "", token);
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data[0];
+    }
+  };
+};
+
+export const saveComission = (values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("payments/pay_commission", { ...values }, token, "POST");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      message.success(body.message);
+      return body.ok;
+    }
+  };
+};

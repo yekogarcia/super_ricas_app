@@ -84,6 +84,7 @@ export const ListFormPays = ({
         concepto: value.concepto,
         fecha: moment(value.fecha["_d"]).format("YYYY-MM-DD"),
         valor: formatMoney(value.valor),
+        estado: 'ACTIVO',
         key: count,
       };
 

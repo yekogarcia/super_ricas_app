@@ -52,6 +52,12 @@ export const FormPayments = ({
       filter: "order.search",
       format: "money",
     },
+    {
+      label: "Estado",
+      name: "estado",
+      width: "wp-100",
+      filter: "order"
+    }
   ];
 
   useEffect(() => {
@@ -85,7 +91,7 @@ export const FormPayments = ({
       title="Agregar ingresos por zona"
       okText="Guardar"
       cancelText="Cancelar"
-      width="700px"
+      width="800px"
       maskClosable={false}
       onCancel={() => {
         setOpenPay(false);

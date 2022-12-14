@@ -1,4 +1,4 @@
-import { Button, Popconfirm, Table } from "antd";
+import { Button, Form, Popconfirm, Table } from "antd";
 import { useState, useEffect } from "react";
 import { setColumnsList } from "../utils/setColumnsList";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +22,7 @@ import { FormInputsAndOutputs } from "./FormInputsAndOutputs";
 import { FormPayments } from "../Paymets/FormPayments";
 import { formatArrayMoney, unformatMoney } from "../utils/utils";
 import { PaymentComission } from "../Paymets/PaymentComission";
+import moment from "moment";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
@@ -35,6 +36,11 @@ export const InputsAndOutputs = () => {
   const [showConfirm, setShowConfirm] = useState(true);
   const [invent, setInvent] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [fechaEnd, setFechaEnd] = useState(moment().format("YYYY-MM-DD"));
+  const [fechaInit, setFechaInit] = useState(moment().add(-30, 'days').format("YYYY-MM-DD"));
+
+
+  const [form] = Form.useForm();
 
   const dispatch = useDispatch();
 
@@ -250,6 +256,7 @@ export const InputsAndOutputs = () => {
   const handleTableChange = () => { };
 
   const onSearch = (values = "") => {
+    console.log(values);
     setLoading(true);
     dispatch(getInventory(values, token)).then((res) => {
       setInvent(formatArrayMoney(res, confColumns));
@@ -281,11 +288,36 @@ export const InputsAndOutputs = () => {
     onSearch,
   };
 
+
+  const onChangeDates = (record) => {
+    if(record){
+      setFechaInit(moment(record[0]["_d"]).format("YYYY-MM-DD"));
+      setFechaEnd(moment(record[1]["_d"]).format("YYYY-MM-DD"));
+    }
+  }
+
   const prmsFilters = {
     onSearch,
+    form,
     loading,
-    filters: [],
+    filters: [
+      {
+        label: "Buscar",
+        name: "buscar",
+        type: "search"
+      },
+      {
+        label: "Fechas",
+        name: "fechas",
+        type: "range_date",
+        func: onChangeDates
+      }
+    ],
   };
+
+  setTimeout(function () {
+    form.setFieldValue("fechas", [moment(fechaInit, "YYYY-MM-DD"), moment(fechaEnd, "YYYY-MM-DD")]);
+  }, 500);
 
   return (
     <>

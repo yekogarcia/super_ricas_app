@@ -1,4 +1,4 @@
-import { Button, Table } from "antd"
+import { Button, Form, Table } from "antd"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { deleteReturns, getReturns } from "../../controllers/products";
@@ -9,6 +9,7 @@ import { FormReturns } from "./FormReturns";
 
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { removeRow } from "../utils/rows";
+import moment from "moment";
 
 
 export const Returns = () => {
@@ -17,6 +18,10 @@ export const Returns = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const dispatch = useDispatch();
+  const [fechaEnd, setFechaEnd] = useState(moment().format("YYYY-MM-DD"));
+  const [fechaInit, setFechaInit] = useState(moment().add(-30, 'days').format("YYYY-MM-DD"));
+
+  const [form] = Form.useForm();
 
   const { token } = useSelector((state) => state.auth);
 
@@ -105,18 +110,44 @@ export const Returns = () => {
     setOpen(true);
     setRow(record)
   }
-  
+
+
   const handleDelete = record => {
     console.log(record);
     dispatch(deleteReturns(record.id, token)).then(res => {
       setReturns(removeRow(returns, record.id));
     });
   }
+
+  const onChangeDates = (record) => {
+    if(record){
+      setFechaInit(moment(record[0]["_d"]).format("YYYY-MM-DD"));
+      setFechaEnd(moment(record[1]["_d"]).format("YYYY-MM-DD"));
+    }
+  }
+
   const prmsFilters = {
     onSearch,
     loading,
-    filters: [],
+    form,
+    filters: [
+      {
+        label: "Buscar",
+        name: "buscar",
+        type: "search"
+      },
+      {
+        label: "Fechas",
+        name: "fechas",
+        type: "range_date",
+        func: onChangeDates
+      }
+    ],
   };
+
+  setTimeout(function () {
+    form.setFieldValue("fechas", [moment(fechaInit, "YYYY-MM-DD"), moment(fechaEnd, "YYYY-MM-DD")]);
+  }, 500);
 
   return (
     <>

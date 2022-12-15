@@ -48,7 +48,7 @@ export const Filters = ({ onSearch, form, loading, filters }) => {
     const filtros = {
       buscar: filters.buscar,
       fecha_inicio: typeof filters.fechas !== 'undefined' ? moment(filters.fechas[0]["_d"]).format("YYYY-MM-DD") : '',
-      fecha_fin: typeof filters.fechas !== 'undefined' ? moment(filters.fechas[0]["_d"]).format("YYYY-MM-DD") : ''
+      fecha_fin: typeof filters.fechas !== 'undefined' ? moment(filters.fechas[1]["_d"]).format("YYYY-MM-DD") : ''
     }
     // console.log(filtros)
     onSearch(filtros);

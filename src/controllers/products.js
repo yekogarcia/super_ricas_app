@@ -82,9 +82,9 @@ export const deleteProducts = (id, token) => {
   };
 };
 
-export const getReturns = (id = "", token) => {
+export const getReturns = (id = "",values, token) => {
   return async (dispatch) => {
-    const resp = await useFetchToken("returns/" + id, {}, token);
+    const resp = await useFetchToken("returns/filters/" + id, {...values}, token, "POST");
     dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {

@@ -98,9 +98,9 @@ export const Returns = () => {
   defaultColumns = block.concat(defaultColumns);
 
 
-  const onSearch = () => {
+  const onSearch = (record) => {
     setLoading(true);
-    dispatch(getReturns("", token)).then(res => {
+    dispatch(getReturns("",record, token)).then(res => {
       setReturns(res);
       setLoading(false);
     });

@@ -51,19 +51,19 @@ export const FormInputsAndOutputs = ({
       label: "Producto",
       name: "nomb_producto",
       filter: "search",
-      width: "wp-150",
+      width: "wp-200",
     },
     {
-      label: "Cantidad",
+      label: "Cant",
       name: "cantidad",
-      width: "wp-100",
+      width: "wp-50",
       filter: "order",
       editable: true,
     },
     {
       label: "Codigo",
       filter: "search",
-      width: "wp-100",
+      width: "wp-90",
       name: "codigo_producto",
     },
     {
@@ -74,7 +74,7 @@ export const FormInputsAndOutputs = ({
     },
     {
       label: "Subtotal",
-      width: "wp-150",
+      width: "wp-100",
       name: "precio_total",
       format: "money",
     },

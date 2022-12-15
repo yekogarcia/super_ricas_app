@@ -6,8 +6,9 @@ export const getInventory = (values = "", token) => {
   return async (dispatch) => {
     const resp = await useFetchToken(
       "inventario_det/inven_zonas",
-      values,
-      token
+      {...values},
+      token,
+      "POST"
     );
     dispatch(checkSession(resp.status));
     const body = await resp.json();

@@ -32,7 +32,7 @@ export const InputsAndOutputs = () => {
   const [rowIn, setRowIn] = useState(false);
   const [visible, setVisible] = useState(false);
   const [update, setUpdate] = useState(true);
-  const [visualize, setVisualize] = useState(false);
+  const [visualize, setVisualize] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
   const [invent, setInvent] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);

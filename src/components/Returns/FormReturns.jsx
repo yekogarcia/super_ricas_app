@@ -130,7 +130,7 @@ export const FormReturns = ({
         <Form.Item
           style={{
             display: "inline-block",
-            width: "calc(50% - 8px)",
+            width: "calc(30% - 8px)",
             margin: "0px 4px 16px 4px",
           }}
           name="fecha"
@@ -147,7 +147,47 @@ export const FormReturns = ({
         <Form.Item
           style={{
             display: "inline-block",
-            width: "calc(50% - 8px)",
+            width: "calc(30% - 8px)",
+            margin: "0px 4px 16px 4px",
+          }}
+          name="tipo"
+          label="Tipo devolución"
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
+        >
+          <Select
+            className="select_produ"
+            // onChange={onChangeProduct}
+            // showSearch
+            optionFilterProp="children"
+            // onSearch={onSearch}
+            options={[
+              {
+                label: "PNC",
+                value: "PNC",
+                key: "PNC",
+              },
+              {
+                label: "OBSEQUIOS",
+                value: "OBSEQUIOS",
+                key: "OBSEQUIOS",
+              },
+              {
+                label: "DEVOLUCIÓN",
+                value: "DEVOLUCIÓN",
+                key: "DEVOLUCIÓN",
+              },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(40% - 8px)",
             margin: "0px 4px 16px 4px",
           }}
           name="id_zona"

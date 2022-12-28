@@ -151,6 +151,11 @@ export const ListFormPays = ({
                   value: "DESCUENTO",
                   label: "DESCUENTO",
                 },
+                {
+                  key: "FIADO",
+                  value: "FIADO",
+                  label: "FIADO",
+                },
               ]}
             />
           </Form.Item>

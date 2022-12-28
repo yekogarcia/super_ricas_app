@@ -43,6 +43,12 @@ export const Returns = () => {
       width: "wp-200",
     },
     {
+      label: "Tipo devolución",
+      name: "tipo",
+      filter: "search",
+      width: "wp-200",
+    },
+    {
       label: "Id Zona",
       name: "id_zona",
       filter: "search",

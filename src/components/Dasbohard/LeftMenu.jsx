@@ -25,8 +25,8 @@ const items = [
   getItem("Zonas", "zones", <ContainerOutlined />),
   getItem("Categorias", "categories", <DesktopOutlined />),
   getItem("Productos", "products", <PieChartOutlined />),
-  // getItem("Inventario", "inventory", <ContainerOutlined />),
   getItem("Mercancía Zonas", "inputs", <ContainerOutlined />),
+  getItem("Inventario", "inventory", <ContainerOutlined />),
   getItem("Devoluciones", "devolutions", <ContainerOutlined />),
   // getItem("Informes", "reports", <ContainerOutlined />),
   // getItem("Devs", "sub1", <MailOutlined />, [

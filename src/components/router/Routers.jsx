@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { checkLogIn } from "../../controllers/auth";
 import { Dasbohard } from "../Dasbohard/Dasbohard";
 import { Login } from "../Login/Login";
+import { Public } from "../Login/Public";
 import { PrivateRoutes } from "./PrivateRoutes";
 import { PublicRoutes } from "./PublicRoutes";
 
@@ -25,7 +26,7 @@ useEffect(() => {
           path="/*"
           element={
             <PublicRoutes>
-              <Login />
+              <Public />
             </PublicRoutes>
           }
         />

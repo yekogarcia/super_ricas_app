@@ -8,14 +8,27 @@ import { getZoneSales } from "../../controllers/inventory";
 
 import moment from 'moment';
 
-import "./Inventory.scss";
+import { formatArrayMoney, formatMoney } from "../utils/utils";
+
 import "../css/style.scss";
-import { FooterTable } from "../Footers/FooterTable";
-import { formatArrayMoney } from "../utils/utils";
+import "./Inventory.scss";
+
+export const FooterTotSales = ({ total, comision, pendiente }) => {
+  return (
+    <footer className="sales">
+      <b>Valor total: {formatMoney(total)}</b>
+      <b>Valor total comisión:  {formatMoney(comision)}</b>
+      <b>Valor total pendiente:  {formatMoney(pendiente)}</b>
+    </footer>
+  )
+}
 
 export const Inventory = () => {
   const [loading, setLoading] = useState(false);
   const [invent, setInvent] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [comision, setComision] = useState(0);
+  const [pendiente, setPendiente] = useState(0);
   const dispatch = useDispatch();
 
   const [form] = Form.useForm();
@@ -82,6 +95,17 @@ export const Inventory = () => {
   const onSearch = (values = "") => {
     setLoading(true);
     dispatch(getZoneSales(values, token)).then((res) => {
+      let tot = 0;
+      let totComi = 0;
+      let totPend = 0;
+      for (let i = 0; i < res.length; i++) {
+        tot += parseFloat(res[i].precio_total)
+        totComi += parseFloat(res[i].valor_comision === null ? 0 : res[i].valor_comision);
+        totPend += parseFloat(res[i].valor_pendiente === null ? 0 : res[i].valor_pendiente);
+      }
+      setTotal(tot);
+      setComision(totComi);
+      setPendiente(totPend);
       setInvent(formatArrayMoney(res, confColumns));
       setLoading(false);
     });
@@ -140,7 +164,8 @@ export const Inventory = () => {
           loading={loading}
           onChange={handleTableChange}
           size="small"
-          footer={() => <FooterTable />}
+          // footer={() => <FooterTable />}
+          footer={() => <FooterTotSales total={total} comision={comision} pendiente={pendiente} />}
         />
 
       </section>

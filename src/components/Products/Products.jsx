@@ -12,6 +12,7 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./Products.scss";
 import "../css/style.scss";
 import { removeRow } from "../utils/rows";
+import { formatArrayMoney } from "../utils/utils";
 
 export const Products = () => {
   const [loading, setLoading] = useState(false);
@@ -67,6 +68,7 @@ export const Products = () => {
       name: "precio",
       width: "wp-100",
       filter: "order",
+      format: "money"
     },
     {
       label: "% Comisión",
@@ -79,6 +81,12 @@ export const Products = () => {
       name: "iva",
       width: "wp-100",
       filter: "order",
+    },
+    {
+      label: "Descripción",
+      name: "descripcion",
+      width: "wp-200",
+      filter: "search",
     },
     {
       label: "Unidad de medida",
@@ -95,12 +103,6 @@ export const Products = () => {
     {
       label: "Código de barras",
       name: "codigo_barras",
-      width: "wp-200",
-      filter: "search",
-    },
-    {
-      label: "Descripción",
-      name: "descripcion",
       width: "wp-200",
       filter: "search",
     },
@@ -160,7 +162,7 @@ export const Products = () => {
   const onSearch = (values = "") => {
     setLoading(true);
     dispatch(getProducts(values, token)).then((pr) => {
-      setProducts(pr);
+      setProducts(formatArrayMoney(pr, confColumns));
       setLoading(false);
     });
   };
@@ -180,6 +182,10 @@ export const Products = () => {
     loading,
     filters: [],
   };
+  const onChangePagination = (current, pageSize) => {
+    console.log(current);
+    console.log(pageSize);
+  }
 
   return (
     <>
@@ -199,7 +205,9 @@ export const Products = () => {
         <Table
           columns={columns}
           dataSource={products}
-          pagination={pagination}
+          // pagination={pagination}
+          // pagination={{ simple: "simple", defaultCurrent: 1, total: products.length }}
+          pagination={{ size: "small", total: products.length, showSizeChanger: "showSizeChanger", showQuickJumper: "showQuickJumper", onShowSizeChange: onChangePagination  }}
           loading={loading}
           onChange={handleTableChange}
           size="small"

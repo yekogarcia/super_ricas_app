@@ -1,24 +1,24 @@
-import { Button, Table } from "antd";
+import { Table, Form, Pagination } from "antd";
 import { useState, useEffect } from "react";
 import { setColumnsList } from "../utils/setColumnsList";
 import { useDispatch, useSelector } from "react-redux";
 
 import { Filters } from "../Filters/Filters";
-import { setOptionsBlock } from "../utils/setOptionsList";
-import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import { removeRow } from "../utils/rows";
-import { FormInventory } from "./FormInventory";
-import { deleteRowInventory, getInventory } from "../../controllers/inventory";
+import { getZoneSales } from "../../controllers/inventory";
+
+import moment from 'moment';
 
 import "./Inventory.scss";
 import "../css/style.scss";
+import { FooterTable } from "../Footers/FooterTable";
+import { formatArrayMoney } from "../utils/utils";
 
 export const Inventory = () => {
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [row, setRow] = useState(false);
   const [invent, setInvent] = useState([]);
   const dispatch = useDispatch();
+
+  const [form] = Form.useForm();
 
   const { token } = useSelector((state) => state.auth);
 
@@ -42,16 +42,9 @@ export const Inventory = () => {
     },
     {
       label: "Zona",
-      name: "nom_zona",
+      name: "zona_text",
       filter: "search",
       width: "wp-100",
-    },
-    {
-      label: "Id Producto",
-      name: "id_producto",
-      filter: "search",
-      width: "wp-200",
-      visible: false
     },
     {
       label: "Fecha ingreso",
@@ -60,127 +53,96 @@ export const Inventory = () => {
       width: "wp-200",
     },
     {
-      label: "Producto",
-      name: "nom_producto",
-      filter: "search",
-      width: "wp-200",
-    },
-    {
-      label: "Código",
-      name: "codigo_producto",
-      width: "wp-100",
-      filter: "search",
-    },
-    {
-      label: "Valor unitario",
-      name: "precio_unidad",
-      width: "wp-150",
-      filter: "order",
-    },
-    {
-      label: "Cantidad",
-      name: "cantidad",
-      width: "wp-100",
-      filter: "order",
-    },
-    {
       label: "Valor total",
       name: "precio_total",
       width: "wp-150",
-      filter: "order",
+      format: "money",
     },
     {
-      label: "Estado",
-      name: "estado",
+      label: "Valor comisión",
+      name: "valor_comision",
       width: "wp-150",
-      filter: "order",
+      format: "money",
+    },
+    {
+      label: "Valor pendiente",
+      name: "valor_pendiente",
+      width: "wp-200",
+      format: "money",
     },
 
   ];
 
-  const handleUpdate = (values) => {
-    setOpen(true);
-    setRow(values);
-  };
-
-  const handleDelete = (values) => {
-    dispatch(deleteRowInventory(values.id, token)).then((pr) => {
-      setInvent(removeRow(invent, values.id));
-    });
-  };
-
-  const contextMenu = (record) => {
-    return (
-      <div className="options">
-        <div>
-          <a onClick={() => handleUpdate(record)}>
-            <EditOutlined />
-            Editar
-          </a>
-          <a onClick={() => handleDelete(record)}>
-            <DeleteOutlined />
-            Eliminar
-          </a>
-        </div>
-      </div>
-    );
-  };
-  const block = setOptionsBlock(contextMenu);
   let columns = setColumnsList(confColumns, invent);
-  columns = block.concat(columns);
 
   const pagination = [];
 
-  const handleTableChange = () => {};
+  const handleTableChange = () => { };
 
   const onSearch = (values = "") => {
     setLoading(true);
-    dispatch(getInventory(values, token)).then((res) => {
-      setInvent(res);
+    dispatch(getZoneSales(values, token)).then((res) => {
+      setInvent(formatArrayMoney(res, confColumns));
       setLoading(false);
     });
   };
+  const [fechaEnd, setFechaEnd] = useState(moment().format("YYYY-MM-DD"));
+  const [fechaInit, setFechaInit] = useState(moment().add(-30, 'days').format("YYYY-MM-DD"));
 
-
-  const prmsForm = {
-    open,
-    setOpen,
-    setRow,
-    row,
-    invent,
-    setInvent,
-    token
-  };
+  const onChangeDates = (record) => {
+    if (record) {
+      setFechaInit(moment(record[0]["_d"]).format("YYYY-MM-DD"));
+      setFechaEnd(moment(record[1]["_d"]).format("YYYY-MM-DD"));
+    }
+  }
+  const onChangePagination = (current, pageSize) => {
+    console.log(current);
+    console.log(pageSize);
+  }
 
   const prmsFilters = {
     onSearch,
+    form,
     loading,
-    filters: [],
+    filters: [
+      {
+        label: "Buscar",
+        name: "buscar",
+        type: "search"
+      },
+      {
+        label: "Fechas",
+        name: "fechas",
+        type: "range_date",
+        func: onChangeDates
+      }
+    ],
   };
 
   return (
     <>
       <section className="contain-table">
         <aside className="head-table">
-          <Button
-            type="primary"
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            Nuevo
-          </Button>
           <Filters {...prmsFilters} />
         </aside>
-        <FormInventory {...prmsForm} />
         <Table
+          bordered
           columns={columns}
           dataSource={invent}
-          pagination={pagination}
+          // pagination={{ simple: "simple", defaultCurrent: 10, total: invent.length }}
+          pagination={{
+            size: "small",
+            total: invent.length,
+            showSizeChanger: "showSizeChanger",
+            showQuickJumper: "showQuickJumper",
+            onShowSizeChange: onChangePagination
+          }}
           loading={loading}
           onChange={handleTableChange}
           size="small"
+          footer={() => <FooterTable />}
         />
+
       </section>
     </>
   );

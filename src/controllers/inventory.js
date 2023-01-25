@@ -2,11 +2,11 @@ import { message } from "antd";
 import { useFetchToken } from "../hooks/useFetch";
 import { checkSession } from "./auth";
 
-export const getInventory = (values = "", token) => {
+export const getZoneSales = (values = "", token) => {
   return async (dispatch) => {
     const resp = await useFetchToken(
-      "inventario_det/inven_zonas",
-      {...values},
+      "sale/vent_zonas",
+      { ...values },
       token,
       "POST"
     );
@@ -17,6 +17,23 @@ export const getInventory = (values = "", token) => {
     }
   };
 };
+
+export const getInventory = (values = "", token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken(
+      "inventario_det/inven_zonas",
+      { ...values },
+      token,
+      "POST"
+    );
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};
+
 export const getInventoryDet = (values = "", token, id) => {
   return async (dispatch) => {
     const resp = await useFetchToken(

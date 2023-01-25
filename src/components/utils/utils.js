@@ -16,7 +16,8 @@ export const formatArrayMoney = (array, columns) => {
   cols.forEach((col) => {
     for (let i = 0; i < array.length; i++) {
       const element = array[i];
-      array[i][col.name] = formatMoney(element[col.name]);
+      console.log(element[col.name])
+        array[i][col.name] = formatMoney(element[col.name]);
     }
   });
   return array;

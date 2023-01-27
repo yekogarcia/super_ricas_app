@@ -1,13 +1,18 @@
-import { Spin } from "antd";
+import { message, Spin } from "antd";
 import { useState } from "react";
 import { useForm } from "../../hooks/useForm";
 import send from "../../assets/send.png";
-import password from "../../assets/password.png";
+import img_password from "../../assets/password.png";
+import { useDispatch } from "react-redux";
 
 import "./Login.scss";
+import { sendEmailRecovery, sendNewPassRecovery } from "../../controllers/auth";
+import { useNavigate } from "react-router-dom";
 
 
 export const RecoveryPass = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     // const { match: { params } } = props;
     // console.log(params.id)
@@ -15,9 +20,11 @@ export const RecoveryPass = () => {
 
     const [formValues, handleInputChange] = useForm({
         email: "",
+        password: "",
+        newpassword: ""
     });
 
-    const { email } = formValues;
+    const { email, password, newpassword } = formValues;
 
     function getVariableGetByName() {
         var variables = {};
@@ -30,15 +37,41 @@ export const RecoveryPass = () => {
     const res = getVariableGetByName();
     console.log(res);
 
-    const handleRecovery = () => {
+    const handleEmailRecovery = (e) => {
+        e.preventDefault();
+        setLoading(true);
+        dispatch(sendEmailRecovery({ email })).then(res => {
+            console.log(res);
+            setLoading(false);
+        });
+    }
+
+    const handleRecovery = (e) => {
+        e.preventDefault();
+        if (formValues.password !== formValues.newpassword) {
+            message.warning("Las contraseñas no coinciden, verifica por favor!")
+            return;
+        }
+        const t = getVariableGetByName();
+        t.newpassword = newpassword;
+        console.log(t);
+        setLoading(true);
+        dispatch(sendNewPassRecovery(t)).then(res => {
+            setLoading(false);
+            if (res) {
+                navigate("/");
+            }
+        });
+
 
     }
+
+
     return (
         <>
             {typeof res.token === 'undefined' ?
                 <>
-
-                    <form onSubmit={handleRecovery}>
+                    <form onSubmit={handleEmailRecovery} >
                         <Spin spinning={loading}>
                             <h1>Recuperar contraseña</h1>
                             <label htmlFor="email">
@@ -77,16 +110,16 @@ export const RecoveryPass = () => {
                                     id="password"
                                     name="password"
                                     placeholder="Password"
-                                    value={email}
+                                    value={password}
                                     onChange={handleInputChange}
                                     required
                                 />
                                 <input
-                                    type="confirm_password"
-                                    id="confirm_password"
-                                    name="confirm_password"
+                                    type="password"
+                                    id="newpassword"
+                                    name="newpassword"
                                     placeholder="confirmar password"
-                                    value={email}
+                                    value={newpassword}
                                     onChange={handleInputChange}
                                     required
                                 />
@@ -99,7 +132,7 @@ export const RecoveryPass = () => {
                             Se enviará al correo link para la recuperación de su contraseña!
                         </p> */}
                         <figure>
-                            <img src={password} alt="Send icons created by smalllikeart - Flaticon" />
+                            <img src={img_password} alt="Send icons created by smalllikeart - Flaticon" />
                         </figure>
                     </article>
                 </>

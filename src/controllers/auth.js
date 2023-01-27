@@ -59,3 +59,37 @@ export const checkSession = (status) => {
     }
   };
 };
+
+
+export const sendEmailRecovery = (email) => {
+  return async (dispatch) => {
+    console.log(email)
+    const res = await useFetch("login/recovery", { ...email }, "POST");
+    const body = await res.json();
+    if (body.ok) {
+      message.success(body.message);
+      return true;
+    } else {
+      message.error(body.message);
+      return false;
+    }
+  };
+};
+
+export const sendNewPassRecovery = (pr) => {
+  return async (dispatch) => {
+    console.log(pr)
+    const res = await useFetch("login/change-password", { ...pr }, "POST");
+    const body = await res.json();
+    console.log(body)
+    if (body.ok) {
+      message.success(body.message);
+      return true;
+    } else {
+      message.error(body.message);
+      return false;
+    }
+  };
+};
+
+

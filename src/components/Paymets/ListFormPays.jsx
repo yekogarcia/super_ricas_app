@@ -31,7 +31,7 @@ export const ListFormPays = ({
 
   const { token } = useSelector((state) => state.auth);
 
-  useEffect(() => {}, []);
+  useEffect(() => { }, []);
 
   const handleDelete = (record) => {
     console.log(record);
@@ -50,7 +50,7 @@ export const ListFormPays = ({
     }
   };
 
- 
+
 
   defaultColumns = setColumnsList(defaultColumns, pays);
 
@@ -79,6 +79,11 @@ export const ListFormPays = ({
     // );
     if (value.valor > 0) {
       setCount(count + 1);
+      let valPendiente = rowIn.valor_venta - valor;
+      if (valPendiente <= value.valor) {
+        message.warning("El valor no puede ser mayor al valor pendiente!");
+        return;
+      }
       setValor(valor + value.valor);
       const newData = {
         concepto: value.concepto,

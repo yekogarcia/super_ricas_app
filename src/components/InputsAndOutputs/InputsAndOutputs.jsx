@@ -58,6 +58,12 @@ export const InputsAndOutputs = () => {
       width: "wp-50",
     },
     {
+      label: "Codigo factura",
+      name: "codigo",
+      filter: "search",
+      width: "wp-100",
+    },
+    {
       label: "Zona",
       name: "id_zona",
       filter: "order",
@@ -121,6 +127,18 @@ export const InputsAndOutputs = () => {
     {
       label: "Saldo base",
       name: "saldo_base",
+      width: "wp-100",
+      format: "money",
+    },
+    {
+      label: "Total descuento",
+      name: "total_descuento",
+      width: "wp-100",
+      format: "money",
+    },
+    {
+      label: "Valor Fiado",
+      name: "valor_fiado",
       width: "wp-100",
       format: "money",
     },

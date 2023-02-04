@@ -1,4 +1,4 @@
-import { DatePicker, Form, InputNumber, message, Modal, Select } from "antd";
+import { DatePicker, Form, Input, InputNumber, message, Modal, Select } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
@@ -193,7 +193,7 @@ export const FormInputsAndOutputs = ({
   };
 
   setTimeout(function () {
-    if(!row){
+    if (!row) {
       form.setFieldValue("fecha_dia", moment(fecha, "YYYY-MM-DD"));
       form.setFieldValue("saldo_base", saldoBase);
     }
@@ -217,13 +217,13 @@ export const FormInputsAndOutputs = ({
       onOk={() => {
         update || visible
           ? form
-              .validateFields()
-              .then((values) => {
-                onCreate(values);
-              })
-              .catch((info) => {
-                console.log("Validate Failed:", info);
-              })
+            .validateFields()
+            .then((values) => {
+              onCreate(values);
+            })
+            .catch((info) => {
+              console.log("Validate Failed:", info);
+            })
           : message.error("No puede editar, verifique por favor!");
       }}
     >
@@ -238,7 +238,7 @@ export const FormInputsAndOutputs = ({
         <Form.Item
           style={{
             display: "inline-block",
-            width: "calc(30% - 8px)",
+            width: "calc(20% - 8px)",
             margin: "0px 4px 16px 4px",
           }}
           name="fecha_dia"
@@ -255,7 +255,7 @@ export const FormInputsAndOutputs = ({
         <Form.Item
           style={{
             display: "inline-block",
-            width: "calc(30% - 8px)",
+            width: "calc(25% - 8px)",
             margin: "0px 4px 16px 4px",
           }}
           name="id_zona"
@@ -278,13 +278,30 @@ export const FormInputsAndOutputs = ({
         <Form.Item
           style={{
             display: "inline-block",
-            width: "calc(30% - 8px)",
+            width: "calc(20% - 8px)",
+            margin: "0px 4px 16px 4px",
+          }}
+          name="codigo"
+          label="Codigo factura"
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(25% - 8px)",
             margin: "0px 4px 16px 4px",
           }}
           name="saldo_base"
           label="Saldo base"
         >
-          <InputNumber onBlur={(e)=>{setSaldoBase(form.getFieldValue('saldo_base'))}}
+          <InputNumber onBlur={(e) => { setSaldoBase(form.getFieldValue('saldo_base')) }}
             formatter={(value) =>
               `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
             }

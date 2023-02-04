@@ -40,13 +40,17 @@ export const ListFormPays = ({
         const newData = pays.filter((item) => item.key !== record.key);
         setPays(newData);
         setCount(count - 1);
-        setValor(valor - unformatMoney(record.valor));
+        if (record.concepto !== 'FIADO') {
+          setValor(valor - unformatMoney(record.valor));
+        }
       });
     } else {
       const newData = pays.filter((item) => item.key !== record.key);
       setPays(newData);
       setCount(count - 1);
-      setValor(valor - unformatMoney(record.valor));
+      if (record.concepto !== 'FIADO') {
+        setValor(valor - unformatMoney(record.valor));
+      }
     }
   };
 
@@ -84,7 +88,9 @@ export const ListFormPays = ({
         message.warning("El valor no puede ser mayor al valor pendiente!");
         return;
       }
-      setValor(valor + value.valor);
+      if (value.concepto !== 'FIADO') {
+        setValor(valor + value.valor);
+      }
       const newData = {
         concepto: value.concepto,
         fecha: moment(value.fecha["_d"]).format("YYYY-MM-DD"),

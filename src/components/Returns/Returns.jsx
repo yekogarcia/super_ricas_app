@@ -59,7 +59,7 @@ export const Returns = () => {
       label: "Fecha",
       name: "fecha",
       filter: "search",
-      width: "wp-100",
+      width: "wp-200",
     },
     {
       label: "Tipo devolución",
@@ -109,16 +109,18 @@ export const Returns = () => {
   const contextMenu = (record) => {
     return (
       <div className="options">
-        <div>
-          <a onClick={() => handleUpdate(record)}>
-            <EditOutlined />
-            Editar
-          </a>
-          <a onClick={() => handleDelete(record)}>
-            <DeleteOutlined />
-            Eliminar
-          </a>
-        </div>
+        {record.estado !== 'APLICADA' ?
+          <div>
+            <a onClick={() => handleUpdate(record)}>
+              <EditOutlined />
+              Editar
+            </a>
+            <a onClick={() => handleDelete(record)}>
+              <DeleteOutlined />
+              Eliminar
+            </a>
+          </div>
+          : ""}
       </div>
     );
   };
@@ -130,7 +132,7 @@ export const Returns = () => {
 
   const onSearch = (record) => {
     setLoading(true);
-    
+
     console.log(record);
     dispatch(getReturns("", record, token)).then(res => {
       // console.log(res);

@@ -2,7 +2,7 @@ import { Divider, Form, Modal, Radio, Table } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getReturns } from "../../controllers/products";
+import { applyDevolutions, getReturns } from "../../controllers/products";
 import { setColumnsList } from "../utils/setColumnsList";
 
 export const ApplyDevolution = ({ isOpenApplyDev, setIsOpenApplyDev, token, setRowIn, rowIn }) => {
@@ -131,6 +131,10 @@ export const ApplyDevolution = ({ isOpenApplyDev, setIsOpenApplyDev, token, setR
         dat.cod_factura = rowIn.codigo;
         dat.devolutions = rowSelect;
         console.log(dat)
+        dispatch(applyDevolutions(dat, token)).then(res => {
+            console.log(res);
+            setIsOpenApplyDev(false);
+        });
     }
     return (
         <Modal

@@ -134,3 +134,15 @@ export const deleteReturns = (id, token) => {
     }
   };
 };
+
+export const applyDevolutions = (values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("returns/apply_return", { ...values }, token, "POST");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      message.success(body.message);
+      return body.data;
+    }
+  };
+};

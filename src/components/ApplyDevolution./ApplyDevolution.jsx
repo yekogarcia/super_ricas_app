@@ -79,18 +79,15 @@ export const ApplyDevolution = ({ isOpenApplyDev, setIsOpenApplyDev, token, setR
 
     useEffect(() => {
         setLoading(true);
-        console.log(rowIn)
         let record = {
             zona: rowIn.id_zona,
             estado: 'PENDIENTE',
             tipo_devolucion: 'DEVOLUCIÓN'
         }
         dispatch(getReturns("", record, token)).then(res => {
-            console.log(res);
             let val = 0;
             for (let i = 0; i < res.length; i++) {
                 val = res[i].cantidad * res[i].precio;
-                console.log(val);
                 res[i].valor_iva = Math.round(val * res[i].iva / 100);
                 res[i].valor_total = val + res[i].valor_iva;
                 res[i].iva = `% ${res[i].iva}`;

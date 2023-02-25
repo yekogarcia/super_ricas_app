@@ -133,7 +133,7 @@ export const Returns = () => {
     
     console.log(record);
     dispatch(getReturns("", record, token)).then(res => {
-      console.log(res);
+      // console.log(res);
       setReturns(res);
       setLoading(false);
     });
@@ -146,7 +146,7 @@ export const Returns = () => {
 
 
   const handleDelete = record => {
-    console.log(record);
+    // console.log(record);
     dispatch(deleteReturns(record.id, token)).then(res => {
       setReturns(removeRow(returns, record.id));
     });

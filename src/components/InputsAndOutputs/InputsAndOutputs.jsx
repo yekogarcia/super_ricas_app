@@ -285,7 +285,7 @@ export const InputsAndOutputs = () => {
   const handleTableChange = () => { };
 
   const onSearch = (values = "") => {
-    console.log(values);
+    // console.log(values);
     setLoading(true);
     dispatch(getInventory(values, token)).then((res) => {
       setInvent(formatArrayMoney(res, confColumns));

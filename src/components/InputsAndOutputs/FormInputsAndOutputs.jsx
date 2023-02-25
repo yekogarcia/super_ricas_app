@@ -153,7 +153,7 @@ export const FormInputsAndOutputs = ({
       message.warning("No puedes guardar, sin agregar almenos un producto");
       return;
     }
-    console.log(dataFormat);
+    // console.log(dataFormat);
     values.total_iva = 0;
     values.total_comision = 0;
     values.total_venta = 0;
@@ -181,10 +181,10 @@ export const FormInputsAndOutputs = ({
         setLoading(false);
       });
     } else {
-      console.log(values);
+      // console.log(values);
       values.id = row.id;
       dispatch(updateInventory(values, row.id, token)).then((res) => {
-        console.log(res);
+        // console.log(res);
         // setInvent(updateRow(invent, res[0], row.id));
         onSearch();
         setOpen(false);

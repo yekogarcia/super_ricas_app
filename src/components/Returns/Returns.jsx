@@ -10,6 +10,7 @@ import { FormReturns } from "./FormReturns";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import { removeRow } from "../utils/rows";
 import moment from "moment";
+import { getZones } from "../../controllers/fetchDynamics";
 
 
 export const Returns = () => {
@@ -17,9 +18,11 @@ export const Returns = () => {
   const [row, setRow] = useState([]);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [zones, setZones] = useState([]);
   const dispatch = useDispatch();
   const [fechaEnd, setFechaEnd] = useState(moment().format("YYYY-MM-DD"));
   const [fechaInit, setFechaInit] = useState(moment().add(-30, 'days').format("YYYY-MM-DD"));
+
 
   const [form] = Form.useForm();
 
@@ -27,6 +30,22 @@ export const Returns = () => {
 
   useEffect(() => {
     onSearch()
+    dispatch(getZones("", token)).then((pr) => {
+      let options = [{
+        key: "TODOS",
+        value: "",
+        label: "TODOS"
+      }];
+      for (let i = 0; i < pr.length; i++) {
+        options.push(
+          {
+            key: pr[i].id,
+            value: pr[i].id,
+            label: pr[i].nombre
+          })
+      }
+      setZones(options);
+    });
   }, [])
 
 
@@ -40,26 +59,31 @@ export const Returns = () => {
       label: "Fecha",
       name: "fecha",
       filter: "search",
-      width: "wp-200",
+      width: "wp-100",
     },
     {
       label: "Tipo devolución",
-      name: "tipo",
+      name: "tipo_devolucion",
       filter: "search",
-      width: "wp-200",
+      width: "wp-150",
     },
     {
       label: "Id Zona",
       name: "id_zona",
-      filter: "search",
       width: "wp-150",
       visible: false
+    },
+    {
+      label: "Estado",
+      name: "estado",
+      filter: "search",
+      width: "wp-100",
     },
     {
       label: "Zona",
       name: "zona_text",
       filter: "search",
-      width: "wp-250",
+      width: "wp-200",
     },
     {
       label: "Id prodducto",
@@ -72,12 +96,12 @@ export const Returns = () => {
       label: "Producto",
       name: "producto_text",
       filter: "search",
-      width: "wp-250",
+      width: "wp-300",
     },
     {
       label: "Cantidad",
       name: "cantidad",
-      width: "wp-150",
+      width: "wp-100",
       filter: "order",
     }
   ];
@@ -106,7 +130,10 @@ export const Returns = () => {
 
   const onSearch = (record) => {
     setLoading(true);
-    dispatch(getReturns("",record, token)).then(res => {
+    
+    console.log(record);
+    dispatch(getReturns("", record, token)).then(res => {
+      console.log(res);
       setReturns(res);
       setLoading(false);
     });
@@ -126,7 +153,7 @@ export const Returns = () => {
   }
 
   const onChangeDates = (record) => {
-    if(record){
+    if (record) {
       setFechaInit(moment(record[0]["_d"]).format("YYYY-MM-DD"));
       setFechaEnd(moment(record[1]["_d"]).format("YYYY-MM-DD"));
     }
@@ -141,6 +168,35 @@ export const Returns = () => {
         label: "Buscar",
         name: "buscar",
         type: "search"
+      },
+      {
+        label: "Zonas",
+        name: "zona",
+        type: "select",
+        options: zones
+      },
+      {
+        label: "Estado",
+        name: "estado",
+        type: "select",
+        defaultValue: '',
+        options: [
+          {
+            key: 'TODOS',
+            value: '',
+            label: 'TODOS',
+          },
+          {
+            key: 'PENDIENTE',
+            value: 'PENDIENTE',
+            label: 'PENDIENTE',
+          },
+          {
+            key: 'APLICADA',
+            value: 'APLICADA',
+            label: 'APLICADA',
+          }
+        ]
       },
       {
         label: "Fechas",

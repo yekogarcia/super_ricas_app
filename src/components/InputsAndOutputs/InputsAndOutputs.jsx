@@ -23,6 +23,7 @@ import { FormPayments } from "../Paymets/FormPayments";
 import { formatArrayMoney, unformatMoney } from "../utils/utils";
 import { PaymentComission } from "../Paymets/PaymentComission";
 import moment from "moment";
+import { ApplyDevolution } from "../ApplyDevolution./ApplyDevolution";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
@@ -36,6 +37,7 @@ export const InputsAndOutputs = () => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [invent, setInvent] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpenApplyDev, setIsOpenApplyDev] = useState(false);
   const [fechaEnd, setFechaEnd] = useState(moment().format("YYYY-MM-DD"));
   const [fechaInit, setFechaInit] = useState(moment().add(-30, 'days').format("YYYY-MM-DD"));
 
@@ -172,6 +174,10 @@ export const InputsAndOutputs = () => {
     // setOpen(true);
     setRow(values);
   };
+  const handleApply = (values) => {
+    setIsOpenApplyDev(true)
+    setRowIn(values);
+  };
   const handleAddPay = (values) => {
     setOpenPay(true);
     values.valor_venta = unformatMoney(values.valor_venta);
@@ -221,6 +227,10 @@ export const InputsAndOutputs = () => {
             <a onClick={() => handleAddPay(record)}>
               <FileAddOutlined />
               Agregar ingresos
+            </a>
+            <a onClick={() => handleApply(record)}>
+              <FileAddOutlined />
+              Aplicar devoluciones
             </a>
             <a onClick={() => showModal(record)}>
               <FileAddOutlined />
@@ -309,7 +319,7 @@ export const InputsAndOutputs = () => {
 
 
   const onChangeDates = (record) => {
-    if(record){
+    if (record) {
       setFechaInit(moment(record[0]["_d"]).format("YYYY-MM-DD"));
       setFechaEnd(moment(record[1]["_d"]).format("YYYY-MM-DD"));
     }
@@ -361,6 +371,13 @@ export const InputsAndOutputs = () => {
           setIsModalOpen={setIsModalOpen}
           setRowIn={setRowIn}
           rowIn={rowIn} />
+        <ApplyDevolution
+          isOpenApplyDev={isOpenApplyDev}
+          setIsOpenApplyDev={setIsOpenApplyDev}
+          token={token}
+          setRowIn={setRowIn}
+          rowIn={rowIn}
+        />
         <Table
           columns={columns}
           dataSource={invent}

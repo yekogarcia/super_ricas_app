@@ -1,7 +1,7 @@
 import { DatePicker, Form, InputNumber, message, Modal, Select } from "antd";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getZones } from "../../controllers/fetchDynamics";
 import { addRow, updateRow } from "../utils/rows";
 import moment from "moment";
@@ -22,6 +22,9 @@ export const FormReturns = ({
   const [products, setProducts] = useState([]);
   const [fecha, setFecha] = useState(moment().format("YYYY-MM-DD"));
   const [loading, setLoading] = useState(false);
+
+  const { user_login } = useSelector((state) => state.auth);
+
 
 
   useEffect(() => {
@@ -59,6 +62,7 @@ export const FormReturns = ({
     // values.producto_text = 'prueba';
     // values.zona_text = 'prueba';
     values.fecha = moment(values.fecha["_d"]).format("YYYY-MM-DD");
+    values.usuario = user_login;
     console.log(values);
     if (!row) {
       dispatch(saveReturns(values, token)).then((res) => {
@@ -150,7 +154,7 @@ export const FormReturns = ({
             width: "calc(30% - 8px)",
             margin: "0px 4px 16px 4px",
           }}
-          name="tipo"
+          name="tipo_devolucion"
           label="Tipo devolución"
           rules={[
             {

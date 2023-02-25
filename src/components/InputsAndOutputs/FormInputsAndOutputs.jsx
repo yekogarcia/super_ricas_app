@@ -154,6 +154,14 @@ export const FormInputsAndOutputs = ({
       return;
     }
     console.log(dataFormat);
+    values.total_iva = 0;
+    values.total_comision = 0;
+    values.total_venta = 0;
+    for (let i = 0; i < dataFormat.length; i++) {
+      values.total_iva += parseFloat(dataFormat[i].valor_iva);
+      values.total_comision += parseFloat(dataFormat[i].valor_comision);
+      values.total_venta += parseFloat(dataFormat[i].valor_venta);
+    }
     if (!row) {
       const exist = invent.filter(
         (dt) =>

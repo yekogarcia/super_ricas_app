@@ -134,7 +134,7 @@ export const InputsAndOutputs = () => {
     },
     {
       label: "Total descuento",
-      name: "total_descuento",
+      name: "valor_descuento",
       width: "wp-100",
       format: "money",
     },

@@ -82,9 +82,9 @@ export const deleteProducts = (id, token) => {
   };
 };
 
-export const getReturns = (id = "",values, token) => {
+export const getReturns = (id = "", values, token) => {
   return async (dispatch) => {
-    const resp = await useFetchToken("returns/filters/" + id, {...values}, token, "POST");
+    const resp = await useFetchToken("returns/filters/" + id, { ...values }, token, "POST");
     dispatch(checkSession(resp.status));
     const body = await resp.json();
     if (resp.ok) {
@@ -142,6 +142,78 @@ export const applyDevolutions = (values, token) => {
     const body = await resp.json();
     if (resp.ok) {
       message.success(body.message);
+      return body.data;
+    }
+  };
+};
+
+
+export const saveBalance = (values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("balances", { ...values }, token, "POST");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      message.success(body.message);
+      return body.data;
+    }
+  };
+};
+
+export const updateBalance = (values, id, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("balances/" + id, { ...values }, token, "PATCH");
+    const body = await resp.json();
+    console.log(body);
+    if (resp.ok) {
+      message.success(body.message);
+      return body.data;
+    }
+  };
+};
+
+
+export const getBalance = (id = "", values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("balances" + id, { ...values }, token, "GET");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};
+
+export const deleBalanceDetId = (id, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("balances/saldos_det/" + id, {}, token, "DELETE");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      message.success(body.message);
+      return body.id;
+    }
+  };
+};
+
+export const deleBalanceId = (id, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("balances/" + id, {}, token, "DELETE");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      message.success(body.message);
+      return body.id;
+    }
+  };
+};
+
+export const getBalanceProducts = (id = "", values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("balances/filters/" + id, { ...values }, token, "POST");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
       return body.data;
     }
   };

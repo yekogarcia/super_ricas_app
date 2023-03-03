@@ -11,7 +11,7 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteRowInventoryDetId } from "../../controllers/inventory";
-import { getProductsConcat, getProductsId } from "../../controllers/products";
+import { getBalanceProducts, getProductsConcat, getProductsId } from "../../controllers/products";
 import { setColumnsList } from "../utils/setColumnsList";
 import { formatMoney, unformatMoney } from "../utils/utils";
 const EditableContext = React.createContext(null);
@@ -76,12 +76,12 @@ const EditableCell = (props) => {
         record.valor_comision = formatMoney(record.valor_comision);
         record.valor_venta = formatMoney(record.valor_venta);
       }
-      
+
       handleSave({
         ...record,
         ...values,
       });
-      
+
     } catch (errInfo) {
       console.log("Save failed:", errInfo);
     }
@@ -221,6 +221,13 @@ export const ListEdit = ({
     });
   };
 
+  const handleApplySaldos = () => {
+    dispatch(getBalanceProducts("", { id_zona: dataSource[0].id_zona }, token)).then(res => {
+      console.log(res);
+      // setDataSource(res);
+    });
+  }
+
   const handleSave = (row) => {
     const newData = [...dataSource];
     const index = newData.findIndex((item) => row.key === item.key);
@@ -260,7 +267,7 @@ export const ListEdit = ({
   const onChange = (value) => {
     console.log(value);
   };
-  const onSearch = (value) => {};
+  const onSearch = (value) => { };
   return (
     <div>
       {update ? (
@@ -340,6 +347,17 @@ export const ListEdit = ({
             }}
           >
             Agregar producto
+          </Button>
+          <Button
+            onClick={handleApplySaldos}
+            type="primary"
+            style={{
+              marginBottom: 0,
+              marginTop: 31,
+              marginLeft: 10,
+            }}
+          >
+            Aplicar saldos
           </Button>
         </Form>
       ) : (

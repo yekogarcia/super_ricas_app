@@ -103,7 +103,13 @@ export const Returns = () => {
       name: "cantidad",
       width: "wp-100",
       filter: "order",
-    }
+    },
+    {
+      label: "No Factura",
+      name: "num_factura",
+      width: "wp-100",
+      filter: "order",
+    },
   ];
 
   const contextMenu = (record) => {

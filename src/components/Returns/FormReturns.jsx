@@ -86,7 +86,7 @@ export const FormReturns = ({
   };
 
   const onChageDate = (value) => {
-    // setFecha(moment(value["_d"]).format("YYYY-MM-DD"));
+    setFecha(moment(value["_d"]).format("YYYY-MM-DD"));
   };
   const onChangeProduct = (value) => {
     console.log(value);

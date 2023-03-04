@@ -33,6 +33,7 @@ export const FormInputsAndOutputs = ({
   const [dataSource, setDataSource] = useState([]);
   const [loading, setLoading] = useState(false);
   const [saldoBase, setSaldoBase] = useState(0);
+  const [zona, setZona] = useState(0);
 
   let defaultColumns = [
     {
@@ -48,6 +49,12 @@ export const FormInputsAndOutputs = ({
       visible: false,
     },
     {
+      label: "Codigo",
+      filter: "search",
+      width: "wp-90",
+      name: "codigo_producto",
+    },
+    {
       label: "Producto",
       name: "nomb_producto",
       filter: "search",
@@ -59,12 +66,6 @@ export const FormInputsAndOutputs = ({
       width: "wp-50",
       filter: "order",
       editable: true,
-    },
-    {
-      label: "Codigo",
-      filter: "search",
-      width: "wp-90",
-      name: "codigo_producto",
     },
     {
       label: "Valor unitario",
@@ -275,7 +276,7 @@ export const FormInputsAndOutputs = ({
             },
           ]}
         >
-          <Select>
+          <Select onBlur={()=>{setZona(form.getFieldValue("id_zona"))}}>
             {zones.map(({ id, nombre }) => (
               <Option value={id} key={id}>
                 {nombre}
@@ -324,6 +325,7 @@ export const FormInputsAndOutputs = ({
         update={update}
         visible={visible}
         loading={loading}
+        zona={zona}
       />
     </Modal>
   );

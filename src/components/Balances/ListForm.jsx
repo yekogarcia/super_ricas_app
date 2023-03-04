@@ -16,54 +16,21 @@ import { setColumnsList } from "../utils/setColumnsList";
 import { formatMoney, unformatMoney } from "../utils/utils";
 
 export const ListForm = ({
+    defaultColumns,
     dataSource,
     setDataSource,
     loading,
+    products,
+    datProd,
     update,
     visible,
 }) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
 
-    const [products, setProducts] = useState([]);
     const { token } = useSelector((state) => state.auth);
 
-    let defaultColumns = [
-        {
-            label: "id",
-            name: "id",
-            width: "wp-50",
-            visible: false
-        },
-        {
-            label: "id_producto",
-            name: "producto",
-            width: "wp-50",
-            visible: false
-        },
-        {
-            label: "Producto",
-            name: "producto_text",
-            filter: "search",
-            width: "wp-300",
-        },
-        {
-            label: "Cantidad",
-            name: "cantidad",
-            width: "wp-150",
-            filter: "order",
-        },
-    ]
-
-    useEffect(() => {
-        dispatch(getProductsConcat("", token)).then((pr) => {
-            const data = [];
-            pr.map(({ id, nombre }) => {
-                data.push({ value: id, label: nombre });
-            });
-            setProducts(data);
-        });
-    }, []);
+   
 
     const handleDelete = (record) => {
         console.log(record);
@@ -97,33 +64,51 @@ export const ListForm = ({
 
     const handleAdd = (value) => {
         console.log(value);
-        dispatch(getProductsId(value.id_producto, token)).then((res) => {
-            //   console.log(res);
-            const findDt = dataSource.filter(
-                (dt) => dt.id_producto === value.id_producto
+        console.log(datProd);
+        const findDt = dataSource.filter(
+            (dt) => dt.id_producto === value.id_producto
+        );
+        if (findDt.length > 0) {
+            message.error(
+                "Ya existe un producto agregado, no puede agregar el mismo producto!"
             );
-            if (findDt.length > 0) {
-                message.error(
-                    "Ya existe un producto agregado, no puede agregar el mismo producto!"
-                );
-            } else {
-                if (value.cantidad > 0) {
-                    const newData = {
-                        key: res[0].id,
-                        id_producto: res[0].id,
-                        producto_text: res[0].nombre,
-                        cantidad: value.cantidad
-                    };
+        } else {
+            if (value.cantidad > 0) {
+                const res = datProd.find(({ id_producto }) => id_producto == value.id_producto)
+                console.log(res);
 
-                    setDataSource([...dataSource, newData]);
-                } else {
-                    message.warning("La cantidad tiene que ser mayor a 0!");
+                let precio_total = Math.round(res.precio_unidad * value.cantidad);
+                let valor_iva = Math.round(
+                    (res.precio_unidad * value.cantidad * res.iva) / 100
+                );
+                let valor_comision = Math.round(
+                    (res.precio_unidad * value.cantidad * res.porcen_comision) / 100
+                );
+                let valor_venta = Math.round(precio_total + valor_iva);
+                const newData = {
+                    key: res.id_producto,
+                    id_producto: res.id_producto,
+                    nomb_producto: res.producto_text,
+                    producto_text: res.producto_text,
+                    cantidad: value.cantidad,
+                    codigo_producto: res.codigo_producto,
+                    precio_unidad: formatMoney(res.precio_unidad),
+                    precio_total: formatMoney(precio_total),
+                    iva: res.iva,
+                    porcen_comision: res.porcen_comision,
+                    valor_iva: formatMoney(valor_iva),
+                    valor_comision: formatMoney(valor_comision),
+                    valor_venta: formatMoney(valor_venta),
                 }
+                setDataSource([...dataSource, newData]);
+            } else {
+                message.warning("La cantidad tiene que ser mayor a 0!");
             }
-            selectRef.current.focus();
-            //   form.setFieldValue("cantidad", '');
-            form.resetFields();
-        });
+        }
+        selectRef.current.focus();
+        //   form.setFieldValue("cantidad", '');
+        form.resetFields();
+
     };
 
     const handleSave = (row) => {
@@ -174,7 +159,7 @@ export const ListForm = ({
                 <Form.Item
                     style={{
                         display: "inline-block",
-                        width: "calc(50% - 8px)",
+                        width: "calc(30% - 8px)",
                         margin: "0px 4px 16px 4px",
                     }}
                     name="id_producto"
@@ -187,6 +172,8 @@ export const ListForm = ({
                     ]}
                 >
                     <Select
+                        loading={loading}
+                        disabled={loading}
                         className="select_produ"
                         ref={selectRef}
                         onChange={onChange}
@@ -207,7 +194,7 @@ export const ListForm = ({
                 <Form.Item
                     style={{
                         display: "inline-block",
-                        width: "calc(27% - 8px)",
+                        width: "calc(20% - 8px)",
                         margin: "0px 4px 16px 4px",
                     }}
                     name="cantidad"

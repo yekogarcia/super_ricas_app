@@ -218,3 +218,14 @@ export const getBalanceProducts = (id = "", values, token) => {
     }
   };
 };
+
+export const getProductFactBalance = (id = "", token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("balances/cons_invetario/" + id, {}, token, "GET");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};

@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteRowInventoryDetId } from "../../controllers/inventory";
 import { getBalanceProducts, getProductsConcat, getProductsId } from "../../controllers/products";
 import { setColumnsList } from "../utils/setColumnsList";
-import { formatMoney, unformatMoney } from "../utils/utils";
+import { formatArrayMoney, formatMoney, unformatMoney } from "../utils/utils";
 const EditableContext = React.createContext(null);
 
 const EditableRow = ({ index, ...props }) => {
@@ -126,9 +126,11 @@ export const ListEdit = ({
   visible,
   loading,
   defaultColumns,
+  zona
 }) => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const cols = defaultColumns;
 
   const [products, setProducts] = useState([]);
   const { token } = useSelector((state) => state.auth);
@@ -222,10 +224,14 @@ export const ListEdit = ({
   };
 
   const handleApplySaldos = () => {
-    dispatch(getBalanceProducts("", { id_zona: dataSource[0].id_zona }, token)).then(res => {
-      console.log(res);
-      // setDataSource(res);
-    });
+    if (zona !== 0) {
+      dispatch(getBalanceProducts("", { id_zona: zona }, token)).then(res => {
+        console.log(res);
+        setDataSource(formatArrayMoney(res, cols));
+      });
+    }else{
+      message.error("Debe seleccionar una zona");
+    }
   }
 
   const handleSave = (row) => {

@@ -17,6 +17,7 @@ import "../css/style.scss";
 import { Users } from "../Users/Users";
 import {  Returns } from "../Returns/Returns";
 import { Balances } from "../Balances/Balances";
+import { ViewGeneral } from "../ViewGeneral/ViewGeneral";
 
 export const Dasbohard = () => {
   return (
@@ -43,6 +44,7 @@ export const Dasbohard = () => {
               <Route exact path="/company" element={<InputsAndOutputs />} />
               <Route exact path="/devolutions" element={<Returns />} />
               <Route exact path="/balance" element={<Balances />} />
+              <Route exact path="/view" element={<ViewGeneral />} />
             </Routes>
           </Content>
           <Footer>Footer</Footer>

@@ -29,6 +29,7 @@ const items = [
   getItem("Ventas zonas", "inventory", <ContainerOutlined />),
   getItem("Devoluciones", "devolutions", <ContainerOutlined />),
   getItem("Saldos", "balance", <ContainerOutlined />),
+  getItem("Vista general", "view", <ContainerOutlined />),
   // getItem("Informes", "reports", <ContainerOutlined />),
   // getItem("Devs", "sub1", <MailOutlined />, [
   //   getItem("Perfiles", "profiles"),

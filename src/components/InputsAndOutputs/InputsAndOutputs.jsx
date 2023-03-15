@@ -24,10 +24,12 @@ import { formatArrayMoney, unformatMoney } from "../utils/utils";
 import { PaymentComission } from "../Paymets/PaymentComission";
 import moment from "moment";
 import { ApplyDevolution } from "../ApplyDevolution./ApplyDevolution";
+import { ViewGeneral } from "../ViewGeneral/ViewGeneral";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openView, setOpenView] = useState(false);
   const [openPay, setOpenPay] = useState(false);
   const [row, setRow] = useState(false);
   const [rowIn, setRowIn] = useState(false);
@@ -261,6 +263,12 @@ export const InputsAndOutputs = () => {
             Imprimir
           </a>
         </div>
+        <div>
+          <a onClick={() => handlePrint(record)}>
+            <PrinterOutlined />
+            Vista general
+          </a>
+        </div>
       </div>
     );
   };
@@ -355,7 +363,8 @@ export const InputsAndOutputs = () => {
           <Button
             type="primary"
             onClick={() => {
-              setOpen(true);
+              setOpenView(true)
+              // setOpen(true);
               setUpdate(true);
               setVisible(false);
             }}
@@ -377,6 +386,10 @@ export const InputsAndOutputs = () => {
           token={token}
           setRowIn={setRowIn}
           rowIn={rowIn}
+        />
+        <ViewGeneral
+          openView={openView}
+          setOpenView={setOpenView}
         />
         <Table
           columns={columns}

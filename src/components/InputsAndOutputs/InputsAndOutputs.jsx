@@ -25,6 +25,7 @@ import { PaymentComission } from "../Paymets/PaymentComission";
 import moment from "moment";
 import { ApplyDevolution } from "../ApplyDevolution./ApplyDevolution";
 import { ViewGeneral } from "../ViewGeneral/ViewGeneral";
+import { setDataEdit } from "../../controllers/redux";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
@@ -352,6 +353,28 @@ export const InputsAndOutputs = () => {
     ],
   };
 
+  const openFormViewGeneral = () => {
+    dispatch(setDataEdit({
+      id: '',
+      fecha: moment().format("YYYY-MM-DD"),
+      zona: 0,
+      codigo: '',
+      saldo_base: 0,
+      precio_total: 0,
+      valor_iva: 0,
+      valor_venta: 0,
+      valor_comision: 0,
+      valor_pendiente: 0,
+      valor_ingresos: 0,
+      valor_descuento: 0,
+      valor_fiado: 0
+    }));
+    setOpenView(true)
+    // setOpen(true);
+    setUpdate(true);
+    setVisible(false);
+  }
+
   setTimeout(function () {
     form.setFieldValue("fechas", [moment(fechaInit, "YYYY-MM-DD"), moment(fechaEnd, "YYYY-MM-DD")]);
   }, 500);
@@ -363,10 +386,7 @@ export const InputsAndOutputs = () => {
           <Button
             type="primary"
             onClick={() => {
-              setOpenView(true)
-              // setOpen(true);
-              setUpdate(true);
-              setVisible(false);
+              openFormViewGeneral()
             }}
           >
             Nuevo

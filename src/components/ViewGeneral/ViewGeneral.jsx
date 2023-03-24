@@ -26,11 +26,11 @@ export const ViewGeneral = ({ openView, setOpenView }) => {
             label: `Ingresos`,
             children: <TabIncomes />,
         },
-        {
-            key: 'Pagos',
-            label: `Pago comisión`,
-            children: <TabPays />,
-        },
+        // {
+        //     key: 'Pagos',
+        //     label: `Pago comisión`,
+        //     children: <TabPays />,
+        // },
         {
             key: 'Saldos',
             label: `Saldos`,
@@ -62,11 +62,7 @@ export const ViewGeneral = ({ openView, setOpenView }) => {
             onCancel={() => {
                 setOpenView(false);
                 // form.resetFields();
-                // setDataSource([]);
-                // setRow(false);
-                // setSaldoBase(0)
             }}
-            // onOk={false}
             // onOk={() => {
                 // update || visible
                 //   ? form

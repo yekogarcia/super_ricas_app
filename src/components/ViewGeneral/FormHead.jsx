@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getZones } from '../../controllers/fetchDynamics';
 import { getInventoryDet, saveInventory, updateInventory } from '../../controllers/inventory';
+import { setDataEdit } from '../../controllers/redux';
 import { formatArrayMoney, unformatArrayMoney, unformatMoney } from '../utils/utils';
 
 const onFinish = (values) => {
@@ -16,25 +17,22 @@ const onFinishFailed = (errorInfo) => {
 
 const { Option } = Select;
 
-export const FormHead = ({ open,
-    setOpen,
-    setRow,
-    row,
-    invent,
-    setInvent,
-    update,
-    visible,
-    onSearch, }) => {
+export const FormHead = ({ row, visible }) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const { token } = useSelector((state) => state.auth);
+    const { eventEdit, editable } = useSelector((state) => state.edit);
+
+    const [dataFact, setDataFact] = useState({});
+
+    console.log(editable);
+    editable ? form.setFieldsValue(eventEdit) : form.setFieldsValue({});
 
     const [zones, setZones] = useState([]);
     const [fecha, setFecha] = useState(moment().format("YYYY-MM-DD"));
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [saldoBase, setSaldoBase] = useState(0);
-    const [zona, setZona] = useState(0);
+
 
     let defaultColumns = [
         {
@@ -121,91 +119,38 @@ export const FormHead = ({ open,
         },
     ];
 
-    // useEffect(() => {
-    //     if (row) {
-    //       setLoading(true);
-    //       dispatch(getInventoryDet("", token, row.id)).then(function (res) {
-    //         setDataSource(formatArrayMoney(res, defaultColumns));
-    //         setLoading(false);
-    //       });
-    //       row.fecha_dia = moment(row.fecha_dia, "YYYY-MM-DD");
-    //       setFecha(row.fecha_dia);
-    //       row.saldo_base = unformatMoney(row.saldo_base);
-    //       form.setFieldsValue(row);
-    //     } else {
-    //       setFecha(moment().format("YYYY-MM-DD"));
-    //       // form.resetFields();
-    //     }
-    //   }, [row]);
-
-      useEffect(() => {
+    useEffect(() => {
         dispatch(getZones("", token)).then((pr) => {
-          setZones(pr);
+            setZones(pr);
         });
-      }, []);
+    }, []);
 
-    //   const onCreate = (values) => {
-    //     // console.log(values);
-    //     setLoading(true);
-    //     values.fecha_dia = moment(values.fecha_dia["_d"]).format("YYYY-MM-DD");
-    //     const dataFormat = unformatArrayMoney(dataSource, defaultColumns);
-    //     values.detalles = dataFormat;
+    const initData = () => {
+        dispatch(setDataEdit(form.getFieldsValue()));
+    }
 
-    //     if (dataFormat.length === 0) {
-    //       message.warning("No puedes guardar, sin agregar almenos un producto");
-    //       return;
-    //     }
-    //     // console.log(dataFormat);
-    //     values.total_iva = 0;
-    //     values.total_comision = 0;
-    //     values.total_venta = 0;
-    //     for (let i = 0; i < dataFormat.length; i++) {
-    //       values.total_iva += parseFloat(dataFormat[i].valor_iva);
-    //       values.total_comision += parseFloat(dataFormat[i].valor_comision);
-    //       values.total_venta += parseFloat(dataFormat[i].valor_venta);
-    //     }
-    //     if (!row) {
-    //       const exist = invent.filter(
-    //         (dt) =>
-    //           dt.id_zona == values.id_zona && dt.fecha_dia["_i"] == values.fecha_dia
-    //       );
-    //       if (exist.length > 0) {
-    //         message.warning("Ya tienes agregada la misma zona, en la misma fecha!");
-    //         return;
-    //       }
-    //       dispatch(saveInventory(values, token)).then((res) => {
-    //         res[0].key = res[0].id;
-    //         // setInvent(addRow(invent, res[0]));
-    //         onSearch();
-    //         setOpen(false);
-    //         form.resetFields();
-    //         setDataSource([]);
-    //         setLoading(false);
-    //       });
-    //     } else {
-    //       // console.log(values);
-    //       values.id = row.id;
-    //       dispatch(updateInventory(values, row.id, token)).then((res) => {
-    //         // console.log(res);
-    //         // setInvent(updateRow(invent, res[0], row.id));
-    //         onSearch();
-    //         setOpen(false);
-    //         setRow(false);
-    //         form.resetFields();
-    //         setDataSource([]);
-    //         setLoading(false);
-    //       });
-    //     }
-    //   };
 
     const onChageDate = (value) => {
         setFecha(moment(value["_d"]).format("YYYY-MM-DD"));
+        initData();
     };
+
+    const onChageSaldo = () => {
+        initData();
+    }
+
+    const onChageZona = () => {
+        initData();
+    }
+
+    const onChageNoFact = () => {
+        initData();
+    }
 
     setTimeout(function () {
         if (!row) {
+            // form.setFieldsValue(dataFact);
             form.setFieldValue("fecha_dia", moment(fecha, "YYYY-MM-DD"));
-            form.setFieldValue("saldo_base", saldoBase);
         }
     }, 500);
     return <>
@@ -249,7 +194,7 @@ export const FormHead = ({ open,
                     },
                 ]}
             >
-                <Select onBlur={() => { setZona(form.getFieldValue("id_zona")) }}>
+                <Select onBlur={onChageZona}>
                     {zones.map(({ id, nombre }) => (
                         <Option value={id} key={id}>
                             {nombre}
@@ -272,7 +217,23 @@ export const FormHead = ({ open,
                     },
                 ]}
             >
-                <Input />
+                <Input onBlur={onChageNoFact} />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(20% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="saldo_base"
+                label="Saldo base"
+            >
+                <InputNumber onBlur={onChageSaldo}
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
             </Form.Item>
             <Form.Item
                 style={{
@@ -280,10 +241,122 @@ export const FormHead = ({ open,
                     width: "calc(25% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
-                name="saldo_base"
-                label="Saldo base"
+                name="precio_total"
+                label="Subtotal"
             >
-                <InputNumber onBlur={(e) => { setSaldoBase(form.getFieldValue('saldo_base')) }}
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(25% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="valor_iva"
+                label="Total iva"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(25% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="valor_venta"
+                label="Total"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(25% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="valor_comision"
+                label="Comisión"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(25% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="valor_ingresos"
+                label="Ingresos"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(25% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="valor_pendiente"
+                label="Valor pendiente"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(25% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="valor_descuento"
+                label="Descuentos"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(25% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="valor_fiado"
+                label="Valor fiado"
+            >
+                <InputNumber disabled
                     formatter={(value) =>
                         `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                     }

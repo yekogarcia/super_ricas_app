@@ -12,6 +12,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteRowInventoryDetId } from "../../../controllers/inventory";
 import { getBalanceProducts, getProductsConcat, getProductsId } from "../../../controllers/products";
+import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatArrayMoney, formatMoney, unformatMoney } from "../../utils/utils";
 
@@ -56,13 +57,22 @@ const EditableCell = (props) => {
             [dataIndex]: record[dataIndex],
         });
     };
-
+    const dispatch = useDispatch();
+    const { eventEdit } = useSelector((state) => state.edit);
     const save = async () => {
         try {
+            let dta = eventEdit;
             const values = await form.validateFields();
             toggleEdit();
             if (typeof values.cantidad !== "undefined") {
-                console.log(record);
+                // console.log(record);
+                // console.log(values);
+                let precio_total_ant = Math.round(unformatMoney(record.precio_unidad) * parseInt(record.cantidad));
+                dta.precio_total -= precio_total_ant;
+                dta.valor_iva -= Math.round((precio_total_ant * record.iva) / 100);
+                dta.valor_comision -= Math.round((precio_total_ant * record.porcen_comision) / 100);
+                dta.valor_venta -= Math.round(precio_total_ant + Math.round((precio_total_ant * record.iva) / 100));
+
                 record.precio_total = Math.round(
                     unformatMoney(record.precio_unidad) * values.cantidad
                 );
@@ -72,10 +82,19 @@ const EditableCell = (props) => {
                 );
                 record.valor_venta = Math.round(record.precio_total + record.valor_iva);
 
+                dta.precio_total += parseFloat(record.precio_total);
+                dta.valor_iva += parseFloat(record.valor_iva);
+                dta.valor_comision += parseFloat(record.valor_comision);
+                dta.valor_venta += parseFloat(record.valor_venta);
+                dta.valor_pendiente = dta.valor_venta - dta.valor_ingresos;
+
                 record.precio_total = formatMoney(record.precio_total);
                 record.valor_iva = formatMoney(record.valor_iva);
                 record.valor_comision = formatMoney(record.valor_comision);
                 record.valor_venta = formatMoney(record.valor_venta);
+
+                // console.log(dta);
+                dispatch(setDataEdit(dta));
             }
 
             handleSave({
@@ -123,7 +142,9 @@ const EditableCell = (props) => {
 export const LProducts = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
-    const [visible, setVisible] = useState(true);
+    const { eventEdit } = useSelector((state) => state.edit);
+    let dta = eventEdit;
+    console.log(dta);
 
     let defaultColumns = [
         {
@@ -153,7 +174,7 @@ export const LProducts = () => {
         {
             label: "Cant",
             name: "cantidad",
-            width: "wp-50",
+            width: "wp-70",
             filter: "order",
             editable: true,
         },
@@ -171,7 +192,7 @@ export const LProducts = () => {
         },
         {
             label: "IVA",
-            width: "wp-70",
+            width: "wp-50",
             name: "iva",
         },
         {
@@ -212,11 +233,9 @@ export const LProducts = () => {
     const cols = defaultColumns;
 
     const [loading, setLoading] = useState(false);
-    const [update, setUpdate] = useState(true);
-    const [zona, setZona] = useState([]);
-    const [products, setProducts] = useState([]);
     const [dataSource, setDataSource] = useState([]);
     const { token } = useSelector((state) => state.auth);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         dispatch(getProductsConcat("", token)).then((pr) => {
@@ -228,35 +247,41 @@ export const LProducts = () => {
         });
     }, []);
 
+
     const handleDelete = (record) => {
-        console.log(record);
+        // console.log(record);
+        dta.precio_total -= unformatMoney(record.precio_total);
+        dta.valor_iva -= unformatMoney(record.valor_iva);
+        dta.valor_comision -= unformatMoney(record.valor_comision);
+        dta.valor_venta -= unformatMoney(record.valor_venta);
+        dta.valor_pendiente = dta.valor_venta - dta.valor_ingresos;
         if (typeof record.id !== "undefined") {
             dispatch(deleteRowInventoryDetId(record.id, token)).then((res) => {
                 const newData = dataSource.filter((item) => item.key !== record.key);
                 setDataSource(newData);
+                dispatch(setDataEdit(dta));
             });
         } else {
             const newData = dataSource.filter((item) => item.key !== record.key);
             setDataSource(newData);
+            dispatch(setDataEdit(dta));
         }
     };
 
     defaultColumns = setColumnsList(defaultColumns, dataSource);
-    if (update) {
-        defaultColumns.push({
-            title: "Action",
-            dataIndex: "action",
-            render: (_, record) =>
-                dataSource.length >= 1 ? (
-                    <Popconfirm
-                        title="Esta seguro de eliminar este item?"
-                        onConfirm={() => handleDelete(record)}
-                    >
-                        <a>Eliminar</a>
-                    </Popconfirm>
-                ) : null,
-        });
-    }
+    defaultColumns.push({
+        title: "Action",
+        dataIndex: "action",
+        render: (_, record) =>
+            dataSource.length >= 1 ? (
+                <Popconfirm
+                    title="Esta seguro de eliminar este item?"
+                    onConfirm={() => handleDelete(record)}
+                >
+                    <a>Eliminar</a>
+                </Popconfirm>
+            ) : null,
+    });
 
     const handleAdd = (value) => {
         dispatch(getProductsId(value.id_producto, token)).then((res) => {
@@ -271,6 +296,7 @@ export const LProducts = () => {
                 );
             } else {
                 if (value.cantidad > 0) {
+
                     let precio_total = Math.round(res[0].precio * value.cantidad);
                     let valor_iva = Math.round(
                         (res[0].precio * value.cantidad * res[0].iva) / 100
@@ -279,6 +305,11 @@ export const LProducts = () => {
                         (res[0].precio * value.cantidad * res[0].porcen_comision) / 100
                     );
                     let valor_venta = Math.round(precio_total + valor_iva);
+                    dta.precio_total += precio_total;
+                    dta.valor_iva += valor_iva;
+                    dta.valor_comision += valor_comision;
+                    dta.valor_venta += valor_venta;
+                    dta.valor_pendiente = dta.valor_venta - dta.valor_ingresos;
 
                     const newData = {
                         key: res[0].id,
@@ -294,8 +325,8 @@ export const LProducts = () => {
                         valor_comision: formatMoney(valor_comision),
                         valor_venta: formatMoney(valor_venta),
                     };
-
                     setDataSource([...dataSource, newData]);
+                    dispatch(setDataEdit(dta));
                 } else {
                     message.warning("La cantidad tiene que ser mayor a 0!");
                 }
@@ -307,8 +338,8 @@ export const LProducts = () => {
     };
 
     const handleApplySaldos = () => {
-        if (zona !== 0) {
-            dispatch(getBalanceProducts("", { id_zona: zona }, token)).then(res => {
+        if (dta.zona !== 0) {
+            dispatch(getBalanceProducts("", { id_zona: dta.zona }, token)).then(res => {
                 console.log(res);
                 setDataSource(formatArrayMoney(res, cols));
             });
@@ -359,7 +390,6 @@ export const LProducts = () => {
     const onSearch = (value) => { };
     return (
         <div>
-            {update ? (
                 <Form
                     form={form}
                     layout="vertical"
@@ -449,9 +479,6 @@ export const LProducts = () => {
                         Aplicar saldos
                     </Button>
                 </Form>
-            ) : (
-                ""
-            )}
             <Table
                 components={components}
                 rowClassName={() => "editable-row"}
@@ -461,7 +488,7 @@ export const LProducts = () => {
                 loading={loading}
                 size="small"
             />
-           <Button type="primary">Guardar productos</Button>
+            <Button type="primary">Guardar productos</Button>
         </div>
     );
 };

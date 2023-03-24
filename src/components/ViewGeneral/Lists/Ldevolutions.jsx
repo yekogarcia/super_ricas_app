@@ -1,56 +1,36 @@
-import { Button, Form, Table } from "antd"
+import { Button, DatePicker, Form, InputNumber, Select, Table } from "antd"
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux";
-// import { deleteReturns, getReturns } from "../../controllers/products";
-// import { setColumnsList } from "../utils/setColumnsList";
-// import { setOptionsBlock } from "../utils/setOptionsList";
-// import { FormReturns } from "./FormReturns";
 
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
-// import { removeRow } from "../utils/rows";
 import moment from "moment";
 import { setOptionsBlock } from "../../utils/setOptionsList";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { deleteReturns, getReturns } from "../../../controllers/products";
+import { deleteReturns, getProductsConcat, getReturns } from "../../../controllers/products";
 import { removeRow } from "../../utils/rows";
-import { FormReturns } from "../../Returns/FormReturns";
-// import { getZones } from "../../controllers/fetchDynamics";
 
 
 export const Ldevolutions = () => {
   const [returns, setReturns] = useState([]);
-  const [row, setRow] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
-  const [zones, setZones] = useState([]);
+  const [products, setProducts] = useState([]);
   const dispatch = useDispatch();
-  const [fechaEnd, setFechaEnd] = useState(moment().format("YYYY-MM-DD"));
-  const [fechaInit, setFechaInit] = useState(moment().add(-30, 'days').format("YYYY-MM-DD"));
 
 
   const [form] = Form.useForm();
 
   const { token } = useSelector((state) => state.auth);
 
-//   useEffect(() => {
-//     onSearch()
-//     dispatch(getZones("", token)).then((pr) => {
-//       let options = [{
-//         key: "TODOS",
-//         value: "",
-//         label: "TODOS"
-//       }];
-//       for (let i = 0; i < pr.length; i++) {
-//         options.push(
-//           {
-//             key: pr[i].id,
-//             value: pr[i].id,
-//             label: pr[i].nombre
-//           })
-//       }
-//       setZones(options);
-//     });
-//   }, [])
+
+  useEffect(() => {
+    dispatch(getProductsConcat("", token)).then((pr) => {
+      const data = [];
+      pr.map(({ id, nombre }) => {
+        data.push({ value: id, label: nombre });
+      });
+      setProducts(data);
+    });
+  }, []);
 
 
   let defaultColumns = [
@@ -121,10 +101,6 @@ export const Ldevolutions = () => {
       <div className="options">
         {record.estado !== 'APLICADA' ?
           <div>
-            <a onClick={() => handleUpdate(record)}>
-              <EditOutlined />
-              Editar
-            </a>
             <a onClick={() => handleDelete(record)}>
               <DeleteOutlined />
               Eliminar
@@ -141,20 +117,20 @@ export const Ldevolutions = () => {
 
 
   const onSearch = (record) => {
-    setLoading(true);
+    // setLoading(true);
 
-    console.log(record);
-    dispatch(getReturns("", record, token)).then(res => {
-      // console.log(res);
-      setReturns(res);
-      setLoading(false);
-    });
+    // console.log(record);
+    // dispatch(getReturns("", record, token)).then(res => {
+    //   // console.log(res);
+    //   setReturns(res);
+    //   setLoading(false);
+    // });
   }
 
-  const handleUpdate = (record) => {
-    setOpen(true);
-    setRow(record)
-  }
+  // const handleUpdate = (record) => {
+  //   setOpen(true);
+  //   setRow(record)
+  // }
 
 
   const handleDelete = record => {
@@ -164,42 +140,164 @@ export const Ldevolutions = () => {
     });
   }
 
-  const onChangeDates = (record) => {
-    if (record) {
-      setFechaInit(moment(record[0]["_d"]).format("YYYY-MM-DD"));
-      setFechaEnd(moment(record[1]["_d"]).format("YYYY-MM-DD"));
-    }
+
+  const handleAddRow = (values) => {
+    console.log(values);
+    values.estado = 'PENDIENTE';
+    values.fecha = moment(values.fecha["_d"]).format("YYYY-MM-DD");
+    setReturns([...returns, values]);
   }
 
- 
   setTimeout(function () {
-    form.setFieldValue("fechas", [moment(fechaInit, "YYYY-MM-DD"), moment(fechaEnd, "YYYY-MM-DD")]);
+    form.setFieldValue("fecha", moment(moment().format("YYYY-MM-DD"), "YYYY-MM-DD"));
   }, 500);
 
+  const onChageDate = () => {
+
+  }
   return (
     <>
-      <section className="contain-table">
-        <aside className="head-table">
-          <Button
-            type="primary"
-            onClick={() => {
-              setOpen(true);
-            }}
-          >
-            Agregar devolución
-          </Button>
-          {/* <FormReturns
-            open={open} setOpen={setOpen} token={token} row={row} setRow={setRow}
-            onSearch={onSearch} /> */}
-        </aside>
-        <Table
-          bordered
-          dataSource={returns}
-          columns={defaultColumns}
-          loading={loading}
-          size="small"
-        />
-      </section>
+      <Form
+        form={form}
+        layout="vertical"
+        name="form_in_modal"
+        initialValues={{
+          modifier: "public",
+        }}
+      >
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(20% - 8px)",
+            margin: "0px 4px 16px 4px",
+          }}
+          name="fecha"
+          label="Fecha devolución"
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
+        >
+          <DatePicker onChange={onChageDate} />
+        </Form.Item>
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(20% - 8px)",
+            margin: "0px 4px 16px 4px",
+          }}
+          name="tipo_devolucion"
+          label="Tipo devolución"
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
+        >
+          <Select
+            className="select_produ"
+            // onChange={onChangeProduct}
+            // showSearch
+            optionFilterProp="children"
+            // onSearch={onSearch}
+            options={[
+              {
+                label: "PNC",
+                value: "PNC",
+                key: "PNC",
+              },
+              {
+                label: "OBSEQUIOS",
+                value: "OBSEQUIOS",
+                key: "OBSEQUIOS",
+              },
+              {
+                label: "DEVOLUCIÓN",
+                value: "DEVOLUCIÓN",
+                key: "DEVOLUCIÓN",
+              },
+            ]}
+          />
+        </Form.Item>
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(25% - 8px)",
+            margin: "0px 4px 16px 4px",
+          }}
+          name="id_producto"
+          label="Producto"
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
+        >
+          <Select
+            className="select_produ"
+            // onChange={onChangeProduct}
+            showSearch
+            optionFilterProp="children"
+            onSearch={onSearch}
+            filterOption={(input, option) =>
+              (option?.label ?? "")
+                .toLowerCase()
+                .includes(input.toLowerCase())
+            }
+            filterOption={(input, option) =>
+              (option?.value.toString() ?? 0).includes(input)
+            }
+            options={products}
+          />
+        </Form.Item>
+        <Form.Item
+          style={{
+            display: "inline-block",
+            width: "calc(20% - 8px)",
+            margin: "0px 4px 16px 4px",
+          }}
+          rules={[
+            {
+              required: true,
+              message: "Por favor ingrese un valor!",
+            },
+          ]}
+          name="cantidad"
+          label="Cantidad"
+        >
+          <InputNumber />
+        </Form.Item>
+        <Button
+          type="primary"
+          onClick={() => {
+            form
+              .validateFields()
+              .then((values) => {
+                handleAddRow(values);
+              })
+              .catch((info) => {
+                console.log("Validate Failed:", info);
+              });
+          }}
+          style={{
+            marginBottom: 0,
+            marginTop: 31,
+          }}
+        >
+          Agregar
+        </Button>
+      </Form>
+      <Table
+        bordered
+        dataSource={returns}
+        columns={defaultColumns}
+        loading={loading}
+        size="small"
+      />
     </>
   )
 }

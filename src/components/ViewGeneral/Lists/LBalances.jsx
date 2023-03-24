@@ -10,7 +10,7 @@ import {
 } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleBalanceDetId, getProductsConcat } from "../../../controllers/products";
+import { deleBalanceDetId, getProductFactBalance, getProductsConcat } from "../../../controllers/products";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatMoney } from "../../utils/utils";
 
@@ -110,15 +110,47 @@ export const LBalances = () => {
         // dispatch(getZones("", token)).then((zone) => {
         //   setZones(zone);
         // });
-        dispatch(getProductsConcat("", token)).then((produ) => {
-          const data = [];
-          produ.map(({ id, nombre }) => {
-            data.push({ value: id, label: nombre });
+        // dispatch(getProductsConcat("", token)).then((produ) => {
+        //     console.log(produ);
+        //   const data = [];
+        //   produ.map(({ id, nombre }) => {
+        //     data.push({ value: id, label: nombre });
+        //   });
+        //   setProducts(data);
+        //   setLoading(false);
+        // });
+
+        dispatch(getProductFactBalance("", token)).then(res => {
+            console.log(res)
+            setDatProd(res);
+            // form.setFieldValue("zona", res[0].id_zona);
+            const data = [];
+            // res.map(({ id_producto, producto_text, codigo_producto }) => {
+            //   data.push({ value: id_producto, label: codigo_producto + "-" + producto_text });
+            // });
+            setProducts(data);
+            setLoading(false);
           });
-          setProducts(data);
-          setLoading(false);
-        });
       }, []);
+
+      const handlefact = (e) => {
+        const cod = form.getFieldValue("cod_factura");
+        if (cod !== "") {
+          setLoading(true);
+          dispatch(getProductFactBalance("", token)).then(res => {
+            console.log(res)
+            setDatProd(res);
+            form.setFieldValue("zona", res[0].id_zona);
+            const data = [];
+            res.map(({ id_producto, producto_text, codigo_producto }) => {
+              data.push({ value: id_producto, label: codigo_producto + "-" + producto_text });
+            });
+            setProducts(data);
+            setLoading(false);
+          });
+    
+        }
+      }
 
     const handleDelete = (record) => {
         console.log(record);

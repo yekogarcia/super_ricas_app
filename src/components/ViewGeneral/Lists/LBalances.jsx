@@ -11,21 +11,22 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleBalanceDetId, getProductFactBalance, getProductsConcat } from "../../../controllers/products";
+import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatMoney } from "../../utils/utils";
 
 export const LBalances = () => {
-    const [products, setProducts] = useState([]);
-    const [datProd, setDatProd] = useState([]);
+    const [product, setProduct] = useState([]);
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const [form] = Form.useForm();
     const dispatch = useDispatch();
 
-
     const { token } = useSelector((state) => state.auth);
-
+    const { products } = useSelector((state) => state.products);
+    const { eventEdit } = useSelector((state) => state.edit);
+    let dta = eventEdit;
 
     const { user_login } = useSelector((state) => state.auth);
 
@@ -106,51 +107,34 @@ export const LBalances = () => {
     ];
 
     useEffect(() => {
-        setLoading(true);
-        // dispatch(getZones("", token)).then((zone) => {
-        //   setZones(zone);
-        // });
-        // dispatch(getProductsConcat("", token)).then((produ) => {
-        //     console.log(produ);
-        //   const data = [];
-        //   produ.map(({ id, nombre }) => {
-        //     data.push({ value: id, label: nombre });
-        //   });
-        //   setProducts(data);
-        //   setLoading(false);
-        // });
-
-        dispatch(getProductFactBalance("", token)).then(res => {
-            console.log(res)
-            setDatProd(res);
-            // form.setFieldValue("zona", res[0].id_zona);
+        if (typeof products !== 'undefined') {
             const data = [];
-            // res.map(({ id_producto, producto_text, codigo_producto }) => {
-            //   data.push({ value: id_producto, label: codigo_producto + "-" + producto_text });
-            // });
-            setProducts(data);
-            setLoading(false);
-          });
-      }, []);
-
-      const handlefact = (e) => {
-        const cod = form.getFieldValue("cod_factura");
-        if (cod !== "") {
-          setLoading(true);
-          dispatch(getProductFactBalance("", token)).then(res => {
-            console.log(res)
-            setDatProd(res);
-            form.setFieldValue("zona", res[0].id_zona);
-            const data = [];
-            res.map(({ id_producto, producto_text, codigo_producto }) => {
-              data.push({ value: id_producto, label: codigo_producto + "-" + producto_text });
+            products.map(({ id, nombre, codigo }) => {
+                const nom = codigo + "-" + nombre;
+                data.push({ value: id, label: nom });
             });
-            setProducts(data);
-            setLoading(false);
-          });
-    
+            setProduct(data);
         }
-      }
+    }, [products]);
+
+    // const handlefact = (e) => {
+    //     const cod = form.getFieldValue("cod_factura");
+    //     if (cod !== "") {
+    //         setLoading(true);
+    //         dispatch(getProductFactBalance("", token)).then(res => {
+    //             console.log(res)
+    //             setDatProd(res);
+    //             form.setFieldValue("zona", res[0].id_zona);
+    //             const data = [];
+    //             res.map(({ id_producto, producto_text, codigo_producto }) => {
+    //                 data.push({ value: id_producto, label: codigo_producto + "-" + producto_text });
+    //             });
+    //             setProduct(data);
+    //             setLoading(false);
+    //         });
+
+    //     }
+    // }
 
     const handleDelete = (record) => {
         console.log(record);
@@ -181,11 +165,10 @@ export const LBalances = () => {
             ) : null,
     });
     // }
-    
+
 
     const handleAdd = (value) => {
         console.log(value);
-        console.log(datProd);
         const findDt = dataSource.filter(
             (dt) => dt.id_producto === value.id_producto
         );
@@ -195,25 +178,26 @@ export const LBalances = () => {
             );
         } else {
             if (value.cantidad > 0) {
-                const res = datProd.find(({ id_producto }) => id_producto == value.id_producto)
+                const res = products.find(({ id }) => id === value.id_producto)
                 console.log(res);
 
-                let precio_total = Math.round(res.precio_unidad * value.cantidad);
+                let precio_total = Math.round(res.precio * value.cantidad);
                 let valor_iva = Math.round(
-                    (res.precio_unidad * value.cantidad * res.iva) / 100
+                    (res.precio * value.cantidad * res.iva) / 100
                 );
                 let valor_comision = Math.round(
-                    (res.precio_unidad * value.cantidad * res.porcen_comision) / 100
+                    (res.precio * value.cantidad * res.porcen_comision) / 100
                 );
                 let valor_venta = Math.round(precio_total + valor_iva);
+                dta.total_saldos += valor_venta;
                 const newData = {
-                    key: res.id_producto,
-                    id_producto: res.id_producto,
-                    nomb_producto: res.producto_text,
-                    producto_text: res.producto_text,
+                    key: res.id,
+                    id_producto: res.id,
+                    nomb_producto: res.nombre,
+                    producto_text: res.nombre,
                     cantidad: value.cantidad,
-                    codigo_producto: res.codigo_producto,
-                    precio_unidad: formatMoney(res.precio_unidad),
+                    codigo_producto: res.codigo,
+                    precio_unidad: formatMoney(res.precio),
                     precio_total: formatMoney(precio_total),
                     iva: res.iva,
                     porcen_comision: res.porcen_comision,
@@ -222,6 +206,7 @@ export const LBalances = () => {
                     valor_venta: formatMoney(valor_venta),
                 }
                 setDataSource([...dataSource, newData]);
+                dispatch(setDataEdit(dta));
             } else {
                 message.warning("La cantidad tiene que ser mayor a 0!");
             }
@@ -309,7 +294,7 @@ export const LBalances = () => {
                         // filterOption={(input, option) =>
                         //   (option?.value.toString() ?? 0).includes(input)
                         // }
-                        options={products}
+                        options={product}
                     />
                 </Form.Item>
                 <Form.Item
@@ -360,7 +345,7 @@ export const LBalances = () => {
                 loading={loading}
                 size="small"
             />
-             <Button type="primary">Guardar Saldos</Button>
+            <Button type="primary">Guardar Saldos</Button>
         </div>
     );
 };

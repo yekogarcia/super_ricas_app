@@ -142,9 +142,9 @@ const EditableCell = (props) => {
 export const LProducts = () => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
+    const { products } = useSelector((state) => state.products);
     const { eventEdit } = useSelector((state) => state.edit);
     let dta = eventEdit;
-    console.log(dta);
 
     let defaultColumns = [
         {
@@ -235,17 +235,22 @@ export const LProducts = () => {
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
     const { token } = useSelector((state) => state.auth);
-    const [products, setProducts] = useState([]);
+    const [product, setProduct] = useState([]);
 
     useEffect(() => {
-        dispatch(getProductsConcat("", token)).then((pr) => {
+        if (typeof products !== 'undefined') {
             const data = [];
-            pr.map(({ id, nombre }) => {
-                data.push({ value: id, label: nombre });
+            products.map(({ id, nombre, codigo }) => {
+                const nom = codigo + "-" + nombre;
+                data.push({ value: id, label: nom });
             });
-            setProducts(data);
-        });
-    }, []);
+            setProduct(data);
+        }
+        // dispatch(getProductsConcat("", token)).then((pr) => {
+
+        // });
+    }, [products]);
+
 
 
     const handleDelete = (record) => {
@@ -284,11 +289,14 @@ export const LProducts = () => {
     });
 
     const handleAdd = (value) => {
-        dispatch(getProductsId(value.id_producto, token)).then((res) => {
-            //   console.log(res);
-            //   console.log(value);
+        // dispatch(getProductsId(value.id_producto, token)).then((res) => {
+        //   console.log(res);
+        //   console.log(value);
+        const res = products.filter(products => products.id === value.id_producto);
+        console.log(res)
+        if (res.length > 0) {
             const findDt = dataSource.filter(
-                (dt) => dt.id_producto == value.id_producto
+                (dt) => dt.id_producto === value.id_producto
             );
             if (findDt.length > 0) {
                 message.error(
@@ -334,8 +342,17 @@ export const LProducts = () => {
             selectRef.current.focus();
             //   form.setFieldValue("cantidad", '');
             form.resetFields();
-        });
+        }
+
+        // });
     };
+
+    const handleSaveProducts = () => {
+        dta.productos = dataSource;
+        console.log(dta);
+
+    }
+
 
     const handleApplySaldos = () => {
         if (dta.zona !== 0) {
@@ -390,95 +407,95 @@ export const LProducts = () => {
     const onSearch = (value) => { };
     return (
         <div>
-                <Form
-                    form={form}
-                    layout="vertical"
-                    name="form_in_modal"
-                    initialValues={{
-                        modifier: "public",
+            <Form
+                form={form}
+                layout="vertical"
+                name="form_in_modal"
+                initialValues={{
+                    modifier: "public",
+                }}
+            >
+                <Form.Item
+                    style={{
+                        display: "inline-block",
+                        width: "calc(30% - 8px)",
+                        margin: "0px 4px 16px 4px",
+                    }}
+                    name="id_producto"
+                    label="Producto"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Por favor ingrese un valor!",
+                        },
+                    ]}
+                >
+                    <Select
+                        className="select_produ"
+                        ref={selectRef}
+                        onChange={onChange}
+                        showSearch
+                        optionFilterProp="children"
+                        onSearch={onSearch}
+                        filterOption={(input, option) =>
+                            (option?.label ?? "")
+                                .toLowerCase()
+                                .includes(input.toLowerCase())
+                        }
+                        // filterOption={(input, option) =>
+                        //   (option?.value.toString() ?? 0).includes(input)
+                        // }
+                        options={product}
+                    />
+                </Form.Item>
+                <Form.Item
+                    style={{
+                        display: "inline-block",
+                        width: "calc(30% - 8px)",
+                        margin: "0px 4px 16px 4px",
+                    }}
+                    name="cantidad"
+                    label="Cantidad"
+                    rules={[
+                        {
+                            required: true,
+                            message: "Por favor ingrese un valor!",
+                        },
+                    ]}
+                >
+                    <InputNumber parser={(value) => value.replace(/\$\s?|(,*)/g, "")} />
+                </Form.Item>
+                <Button
+                    onClick={() => {
+                        form
+                            .validateFields()
+                            .then((values) => {
+                                handleAdd(values);
+                            })
+                            .catch((info) => {
+                                console.log("Validate Failed:", info);
+                            });
+                    }}
+                    type="primary"
+                    style={{
+                        marginBottom: 0,
+                        marginTop: 31,
                     }}
                 >
-                    <Form.Item
-                        style={{
-                            display: "inline-block",
-                            width: "calc(30% - 8px)",
-                            margin: "0px 4px 16px 4px",
-                        }}
-                        name="id_producto"
-                        label="Producto"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Por favor ingrese un valor!",
-                            },
-                        ]}
-                    >
-                        <Select
-                            className="select_produ"
-                            ref={selectRef}
-                            onChange={onChange}
-                            showSearch
-                            optionFilterProp="children"
-                            onSearch={onSearch}
-                            filterOption={(input, option) =>
-                                (option?.label ?? "")
-                                    .toLowerCase()
-                                    .includes(input.toLowerCase())
-                            }
-                            // filterOption={(input, option) =>
-                            //   (option?.value.toString() ?? 0).includes(input)
-                            // }
-                            options={products}
-                        />
-                    </Form.Item>
-                    <Form.Item
-                        style={{
-                            display: "inline-block",
-                            width: "calc(30% - 8px)",
-                            margin: "0px 4px 16px 4px",
-                        }}
-                        name="cantidad"
-                        label="Cantidad"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Por favor ingrese un valor!",
-                            },
-                        ]}
-                    >
-                        <InputNumber parser={(value) => value.replace(/\$\s?|(,*)/g, "")} />
-                    </Form.Item>
-                    <Button
-                        onClick={() => {
-                            form
-                                .validateFields()
-                                .then((values) => {
-                                    handleAdd(values);
-                                })
-                                .catch((info) => {
-                                    console.log("Validate Failed:", info);
-                                });
-                        }}
-                        type="primary"
-                        style={{
-                            marginBottom: 0,
-                            marginTop: 31,
-                        }}
-                    >
-                        Agregar producto
-                    </Button>
-                    <Button
-                        onClick={handleApplySaldos}
-                        type="primary"
-                        style={{
-                            marginBottom: 0,
-                            marginTop: 31,
-                            marginLeft: 10,
-                        }}
-                    >
-                        Aplicar saldos
-                    </Button>
-                </Form>
+                    Agregar producto
+                </Button>
+                <Button
+                    onClick={handleApplySaldos}
+                    type="primary"
+                    style={{
+                        marginBottom: 0,
+                        marginTop: 31,
+                        marginLeft: 10,
+                    }}
+                >
+                    Aplicar saldos
+                </Button>
+            </Form>
             <Table
                 components={components}
                 rowClassName={() => "editable-row"}
@@ -488,7 +505,7 @@ export const LProducts = () => {
                 loading={loading}
                 size="small"
             />
-            <Button type="primary">Guardar productos</Button>
+            <Button type="primary" onClick={handleSaveProducts}>Guardar productos</Button>
         </div>
     );
 };

@@ -6,31 +6,36 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { setOptionsBlock } from "../../utils/setOptionsList";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { deleteReturns, getProductsConcat, getReturns } from "../../../controllers/products";
+import { deleteReturns, getProductsAll, getProductsConcat, getReturns } from "../../../controllers/products";
 import { removeRow } from "../../utils/rows";
+import { setDataEdit } from "../../../controllers/redux";
 
 
 export const Ldevolutions = () => {
   const [returns, setReturns] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [products, setProducts] = useState([]);
+  const [product, setProduct] = useState([]);
   const dispatch = useDispatch();
 
 
   const [form] = Form.useForm();
 
   const { token } = useSelector((state) => state.auth);
+  const { products } = useSelector((state) => state.products);
+  const { eventEdit } = useSelector((state) => state.edit);
+  let dta = eventEdit;
 
 
   useEffect(() => {
-    dispatch(getProductsConcat("", token)).then((pr) => {
+    if (typeof products !== 'undefined') {
       const data = [];
-      pr.map(({ id, nombre }) => {
-        data.push({ value: id, label: nombre });
+      products.map(({ id, nombre, codigo }) => {
+        const nom = codigo + "-" + nombre;
+        data.push({ value: id, label: nom });
       });
-      setProducts(data);
-    });
-  }, []);
+      setProduct(data);
+    }
+  }, [products]);
 
 
   let defaultColumns = [
@@ -142,10 +147,16 @@ export const Ldevolutions = () => {
 
 
   const handleAddRow = (values) => {
-    console.log(values);
+    const { nombre, precio } = products.find(({ id }) => id === values.id_producto);
+    values.key = values.id_producto;
+    values.producto_text = nombre;
+    values.zona_text = dta.zona_text;
     values.estado = 'PENDIENTE';
     values.fecha = moment(values.fecha["_d"]).format("YYYY-MM-DD");
+    dta.total_devoluciones = values.cantidad * precio;
+    // console.log(values);
     setReturns([...returns, values]);
+    dispatch(setDataEdit(dta));
   }
 
   setTimeout(function () {
@@ -251,7 +262,7 @@ export const Ldevolutions = () => {
             filterOption={(input, option) =>
               (option?.value.toString() ?? 0).includes(input)
             }
-            options={products}
+            options={product}
           />
         </Form.Item>
         <Form.Item

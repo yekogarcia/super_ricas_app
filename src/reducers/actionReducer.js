@@ -22,3 +22,20 @@ export const editReducer = (state = false, action) => {
             return state;
     }
 }
+
+export const productsReducer = (state = false, action) => {
+    switch (action.type) {
+        case types.productAll:
+            return {
+                ...state,
+                products: action.payload,
+            }
+        case types.notProductAll:
+            return {
+                ...state,
+                products: [],
+            }
+        default:
+            return state;
+    }
+}

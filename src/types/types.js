@@ -8,4 +8,7 @@ export const types = {
 
     editItems: '[edit] Edit Items',
     editNotItems: '[edit] Not Edit Items',
+
+    productAll: '[products] products All item',
+    notProductAll: '[products] products not item',
 }

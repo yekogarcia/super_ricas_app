@@ -367,7 +367,9 @@ export const InputsAndOutputs = () => {
       valor_pendiente: 0,
       valor_ingresos: 0,
       valor_descuento: 0,
-      valor_fiado: 0
+      valor_fiado: 0,
+      total_saldos: 0,
+      total_devoluciones: 0
     }));
     setOpenView(true)
     // setOpen(true);

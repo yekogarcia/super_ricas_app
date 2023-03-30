@@ -5,7 +5,8 @@ import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getZones } from '../../controllers/fetchDynamics';
 import { getInventoryDet, saveInventory, updateInventory } from '../../controllers/inventory';
-import { setDataEdit } from '../../controllers/redux';
+import { getProductsAll } from '../../controllers/products';
+import { setDataEdit, setProductAll } from '../../controllers/redux';
 import { formatArrayMoney, unformatArrayMoney, unformatMoney } from '../utils/utils';
 
 const onFinish = (values) => {
@@ -23,15 +24,14 @@ export const FormHead = ({ row, visible }) => {
     const { token } = useSelector((state) => state.auth);
     const { eventEdit, editable } = useSelector((state) => state.edit);
 
-    const [dataFact, setDataFact] = useState({});
+    // const [dataFact, setDataFact] = useState({});
 
-    console.log(editable);
     editable ? form.setFieldsValue(eventEdit) : form.setFieldsValue({});
 
     const [zones, setZones] = useState([]);
     const [fecha, setFecha] = useState(moment().format("YYYY-MM-DD"));
-    const [dataSource, setDataSource] = useState([]);
-    const [loading, setLoading] = useState(false);
+    // const [dataSource, setDataSource] = useState([]);
+    // const [loading, setLoading] = useState(false);
 
 
     let defaultColumns = [
@@ -123,12 +123,17 @@ export const FormHead = ({ row, visible }) => {
         dispatch(getZones("", token)).then((pr) => {
             setZones(pr);
         });
+        dispatch(getProductsAll("", token)).then((pr) => {
+            dispatch(setProductAll(pr));
+        });
     }, []);
 
     const initData = () => {
-        dispatch(setDataEdit(form.getFieldsValue()));
+        const valFields = form.getFieldsValue();
+        const [{ nombre }] = zones.filter(({ id }) => id === valFields.id_zona);
+        valFields.zona_text = nombre;
+        dispatch(setDataEdit(valFields));
     }
-
 
     const onChageDate = (value) => {
         setFecha(moment(value["_d"]).format("YYYY-MM-DD"));
@@ -238,7 +243,7 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="precio_total"
@@ -254,7 +259,7 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="valor_iva"
@@ -270,7 +275,7 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="valor_venta"
@@ -286,7 +291,7 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="valor_comision"
@@ -302,7 +307,7 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="valor_ingresos"
@@ -318,7 +323,7 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="valor_pendiente"
@@ -334,7 +339,7 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="valor_descuento"
@@ -350,11 +355,43 @@ export const FormHead = ({ row, visible }) => {
             <Form.Item
                 style={{
                     display: "inline-block",
-                    width: "calc(25% - 8px)",
+                    width: "calc(20% - 8px)",
                     margin: "0px 4px 16px 4px",
                 }}
                 name="valor_fiado"
                 label="Valor fiado"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(20% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="total_saldos"
+                label="Total saldos"
+            >
+                <InputNumber disabled
+                    formatter={(value) =>
+                        `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    }
+                    parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                />
+            </Form.Item>
+            <Form.Item
+                style={{
+                    display: "inline-block",
+                    width: "calc(20% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="total_devoluciones"
+                label="Total devoluciones"
             >
                 <InputNumber disabled
                     formatter={(value) =>

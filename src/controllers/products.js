@@ -229,3 +229,14 @@ export const getProductFactBalance = (id = "", token) => {
     }
   };
 };
+
+export const getProductsAll = (id = "", token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("products/" + id, {}, token, "GET");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};

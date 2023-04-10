@@ -1,7 +1,7 @@
 import { FPays } from "./Forms./FPays"
 
-export const TabPays = () => {
+export const TabPays = (form) => {
   return (
-    <FPays />
+    <FPays formEnc={form}/>
   )
 }

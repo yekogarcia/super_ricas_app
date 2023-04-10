@@ -240,3 +240,19 @@ export const getProductsAll = (id = "", token) => {
     }
   };
 };
+
+export const saveMenu = (values, token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("menu", { ...values }, token, "POST");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    console.log(body);
+    if (body.ok) {
+      message.success(body.message);
+      return body.data;
+    } else {
+      message.error(body.message);
+      return false;
+    }
+  };
+};

@@ -11,10 +11,10 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteRowInventoryDetId } from "../../../controllers/inventory";
-import { getBalanceProducts, getProductsConcat, getProductsId } from "../../../controllers/products";
+import { getBalanceProducts, getProductsConcat, getProductsId, saveMenu } from "../../../controllers/products";
 import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { formatArrayMoney, formatMoney, unformatMoney } from "../../utils/utils";
+import { formatArrayMoney, formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
 
 const EditableContext = React.createContext(null);
 
@@ -139,7 +139,7 @@ const EditableCell = (props) => {
     return <td {...restProps}>{childNode}</td>;
 };
 
-export const LProducts = () => {
+export const LProducts = ({ formEnc }) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const { products } = useSelector((state) => state.products);
@@ -230,7 +230,6 @@ export const LProducts = () => {
             format: "money",
         },
     ];
-    const cols = defaultColumns;
 
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
@@ -246,9 +245,6 @@ export const LProducts = () => {
             });
             setProduct(data);
         }
-        // dispatch(getProductsConcat("", token)).then((pr) => {
-
-        // });
     }, [products]);
 
 
@@ -273,8 +269,8 @@ export const LProducts = () => {
         }
     };
 
-    defaultColumns = setColumnsList(defaultColumns, dataSource);
-    defaultColumns.push({
+    let columns = setColumnsList(defaultColumns, dataSource);
+    columns.push({
         title: "Action",
         dataIndex: "action",
         render: (_, record) =>
@@ -347,18 +343,12 @@ export const LProducts = () => {
         // });
     };
 
-    const handleSaveProducts = () => {
-        dta.productos = dataSource;
-        console.log(dta);
-
-    }
-
 
     const handleApplySaldos = () => {
         if (dta.zona !== 0) {
             dispatch(getBalanceProducts("", { id_zona: dta.zona }, token)).then(res => {
                 console.log(res);
-                setDataSource(formatArrayMoney(res, cols));
+                setDataSource(formatArrayMoney(res, defaultColumns));
             });
         } else {
             message.error("Debe seleccionar una zona");
@@ -382,7 +372,7 @@ export const LProducts = () => {
         },
     };
 
-    const columns = defaultColumns.map((col) => {
+    columns = columns.map((col) => {
         if (!col.editable) {
             return col;
         }
@@ -405,6 +395,23 @@ export const LProducts = () => {
         console.log(value);
     };
     const onSearch = (value) => { };
+
+    const handleSaveProducts = () => {
+        let data = dta;
+        console.log(dataSource);
+        const dt = unformatArrayMoney(dataSource, defaultColumns);
+        data.productos = dt;
+        console.log(data);
+        dispatch(saveMenu(data, token)).then(res => {
+            console.log(res);
+            if (res) {
+                dta.id = res;
+                dispatch(setDataEdit(dta));
+                formEnc.setFieldValue("id", res);
+            }
+        });
+    }
+
     return (
         <div>
             <Form

@@ -15,12 +15,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { deletePayments } from "../../../controllers/inventory";
 import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { formatMoney, unformatMoney } from "../../utils/utils";
+import { formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
+import { saveMenu } from "../../../controllers/products";
 //   import { deletePayments } from "../../controllers/inventory";
 //   import { setColumnsList } from "../utils/setColumnsList";
 //   import { formatMoney, unformatMoney } from "../utils/utils";
 
-export const LIncomes = () => {
+export const LIncomes = ({formEnc}) => {
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
@@ -99,9 +100,9 @@ export const LIncomes = () => {
     }
   };
 
-  defaultColumns = setColumnsList(defaultColumns, pays);
+  let columns = setColumnsList(defaultColumns, pays);
 
-  defaultColumns.push({
+  columns.push({
     title: "Action",
     dataIndex: "action",
     className: "wp-150",
@@ -159,6 +160,19 @@ export const LIncomes = () => {
   //     });
   //     setPays(newData);
   //   };
+
+  const handleSaveIncome = () => {
+    let data = dta;
+    data.ingresos = pays;
+    console.log(data);
+    dispatch(saveMenu(data, token)).then(res => {
+      if (res) {
+        dta.id = res;
+        dispatch(setDataEdit(dta));
+        formEnc.setFieldValue("id", res);
+      }
+    });
+  }
 
   const selectRef = useRef(null);
   setTimeout(function () {
@@ -275,7 +289,7 @@ export const LIncomes = () => {
         rowClassName={() => "editable-row"}
         bordered
         dataSource={pays}
-        columns={defaultColumns}
+        columns={columns}
         loading={loading}
         size="small"
         // title={() => 'Header'}
@@ -287,7 +301,7 @@ export const LIncomes = () => {
           </>
         )}
       />
-      <Button type="primary">Guardar Ingresos</Button>
+      <Button type="primary" onClick={handleSaveIncome}>Guardar Ingresos</Button>
     </div>
   );
 };

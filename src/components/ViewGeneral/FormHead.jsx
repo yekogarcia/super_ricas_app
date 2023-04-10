@@ -18,8 +18,8 @@ const onFinishFailed = (errorInfo) => {
 
 const { Option } = Select;
 
-export const FormHead = ({ row, visible }) => {
-    const [form] = Form.useForm();
+export const FormHead = ({ form, row, visible }) => {
+
     const dispatch = useDispatch();
     const { token } = useSelector((state) => state.auth);
     const { eventEdit, editable } = useSelector((state) => state.edit);
@@ -167,6 +167,17 @@ export const FormHead = ({ row, visible }) => {
                 modifier: "public",
             }}
         >
+            <Form.Item
+                style={{
+                    display: "none",
+                    width: "calc(20% - 8px)",
+                    margin: "0px 4px 16px 4px",
+                }}
+                name="id"
+                label="Id"
+            >
+                <Input />
+            </Form.Item>
             <Form.Item
                 style={{
                     display: "inline-block",

@@ -1,7 +1,7 @@
 import { Ldevolutions } from "./Lists/Ldevolutions"
 
-export const TabDevolutions = () => {
+export const TabDevolutions = (form) => {
   return (
-   <Ldevolutions />
+   <Ldevolutions formEnc={form}/>
   )
 }

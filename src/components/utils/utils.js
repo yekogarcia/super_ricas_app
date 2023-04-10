@@ -16,21 +16,25 @@ export const formatArrayMoney = (array, columns) => {
   cols.forEach((col) => {
     for (let i = 0; i < array.length; i++) {
       const element = array[i];
-      // console.log(element[col.name])
-        array[i][col.name] = formatMoney(element[col.name]);
+      array[i][col.name] = formatMoney(element[col.name]);
     }
   });
   return array;
 };
 
 export const unformatArrayMoney = (array, columns) => {
+  const newArray = [];
   const cols = columns.filter(({ format }) => format === "money");
-
-  cols.forEach((col) => {
-    for (let i = 0; i < array.length; i++) {
+  for (let i = 0; i < array.length; i++) {
+    let values = Object.assign({}, array[i]);
+    cols.forEach((col) => {
       const element = array[i];
-      array[i][col.name] = unformatMoney(element[col.name]);
-    }
-  });
-  return array;
+      if (typeof element[col.name] !== 'undefined') {
+        // array[i][col.name] = unformatMoney(element[col.name]);
+        values[col.name] = unformatMoney(element[col.name]);
+      }
+    });
+    newArray.push(values);
+  }
+  return newArray;
 };

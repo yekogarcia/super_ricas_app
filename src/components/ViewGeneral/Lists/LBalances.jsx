@@ -13,9 +13,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleBalanceDetId, getProductFactBalance, getProductsConcat } from "../../../controllers/products";
 import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { formatMoney } from "../../utils/utils";
+import { formatMoney, unformatArrayMoney } from "../../utils/utils";
 
-export const LBalances = () => {
+export const LBalances = ({formEnc}) => {
     const [product, setProduct] = useState([]);
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -117,24 +117,6 @@ export const LBalances = () => {
         }
     }, [products]);
 
-    // const handlefact = (e) => {
-    //     const cod = form.getFieldValue("cod_factura");
-    //     if (cod !== "") {
-    //         setLoading(true);
-    //         dispatch(getProductFactBalance("", token)).then(res => {
-    //             console.log(res)
-    //             setDatProd(res);
-    //             form.setFieldValue("zona", res[0].id_zona);
-    //             const data = [];
-    //             res.map(({ id_producto, producto_text, codigo_producto }) => {
-    //                 data.push({ value: id_producto, label: codigo_producto + "-" + producto_text });
-    //             });
-    //             setProduct(data);
-    //             setLoading(false);
-    //         });
-
-    //     }
-    // }
 
     const handleDelete = (record) => {
         console.log(record);
@@ -149,9 +131,9 @@ export const LBalances = () => {
         }
     };
 
-    defaultColumns = setColumnsList(defaultColumns, dataSource);
+    let columns = setColumnsList(defaultColumns, dataSource);
     // if (update) {
-    defaultColumns.push({
+    columns.push({
         title: "Action",
         dataIndex: "action",
         render: (_, record) =>
@@ -228,7 +210,7 @@ export const LBalances = () => {
         setDataSource(newData);
     };
 
-    const columns = defaultColumns.map((col) => {
+    columns = columns.map((col) => {
         if (!col.editable) {
             return col;
         }
@@ -251,6 +233,15 @@ export const LBalances = () => {
         console.log(value);
     };
     const onSearch = (value) => { };
+
+    const handleSaveBalances = () => {
+        // console.log(defaultColumns);
+        delete dta.ingresos;
+        delete dta.devoluciones;
+        delete dta.productos;
+        dta.saldos = unformatArrayMoney(dataSource, defaultColumns);
+        console.log(dta);
+    }
     return (
         <div>
             {/* {update ? ( */}
@@ -345,7 +336,7 @@ export const LBalances = () => {
                 loading={loading}
                 size="small"
             />
-            <Button type="primary">Guardar Saldos</Button>
+            <Button type="primary" onClick={handleSaveBalances}>Guardar Saldos</Button>
         </div>
     );
 };

@@ -6,12 +6,12 @@ import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { setOptionsBlock } from "../../utils/setOptionsList";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { deleteReturns, getProductsAll, getProductsConcat, getReturns } from "../../../controllers/products";
+import { deleteReturns, getProductsAll, getProductsConcat, getReturns, saveMenu } from "../../../controllers/products";
 import { removeRow } from "../../utils/rows";
 import { setDataEdit } from "../../../controllers/redux";
 
 
-export const Ldevolutions = () => {
+export const Ldevolutions = ({ formEnc }) => {
   const [returns, setReturns] = useState([]);
   const [loading, setLoading] = useState(false);
   const [product, setProduct] = useState([]);
@@ -166,6 +166,18 @@ export const Ldevolutions = () => {
   const onChageDate = () => {
 
   }
+  const handleSaveDevolutions = () => {
+    let data = dta;
+    data.devoluciones = returns;
+    console.log(data);
+    dispatch(saveMenu(data, token)).then(res => {
+      if (res) {
+        dta.id = res;
+        dispatch(setDataEdit(dta));
+        formEnc.setFieldValue("id", res);
+      }
+    });
+  }
   return (
     <>
       <Form
@@ -309,6 +321,7 @@ export const Ldevolutions = () => {
         loading={loading}
         size="small"
       />
+      <Button type="primary" onClick={handleSaveDevolutions}>Guardar Devoluciones</Button>
     </>
   )
 }

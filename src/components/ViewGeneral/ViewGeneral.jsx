@@ -9,6 +9,7 @@ import { TabProducts } from './TabProducts';
 
 
 export const ViewGeneral = ({ openView, setOpenView }) => {
+    const [form] = Form.useForm();
 
     const onChange = (key) => {
         console.log(key);
@@ -19,12 +20,12 @@ export const ViewGeneral = ({ openView, setOpenView }) => {
         {
             key: 'Productos',
             label: `Productos`,
-            children: <TabProducts />,
+            children: <TabProducts {...form} />,
         },
         {
             key: 'Ingresos',
             label: `Ingresos`,
-            children: <TabIncomes />,
+            children: <TabIncomes {...form} />,
         },
         // {
         //     key: 'Pagos',
@@ -34,12 +35,12 @@ export const ViewGeneral = ({ openView, setOpenView }) => {
         {
             key: 'Saldos',
             label: `Saldos`,
-            children: <TabBalances />,
+            children: <TabBalances {...form} />,
         },
         {
             key: 'Devoluciones',
             label: `Devoluciones`,
-            children: <TabDevolutions />,
+            children: <TabDevolutions {...form} />,
         },
     ];
 
@@ -55,7 +56,7 @@ export const ViewGeneral = ({ openView, setOpenView }) => {
             maskClosable={false}
             okButtonProps={{
                 disabled: true,
-              }}
+            }}
             //   cancelButtonProps={{
             //     disabled: true,
             //   }}
@@ -63,20 +64,20 @@ export const ViewGeneral = ({ openView, setOpenView }) => {
                 setOpenView(false);
                 // form.resetFields();
             }}
-            // onOk={() => {
-                // update || visible
-                //   ? form
-                //     .validateFields()
-                //     .then((values) => {
-                //       onCreate(values);
-                //     })
-                //     .catch((info) => {
-                //       console.log("Validate Failed:", info);
-                //     })
-                //   : message.error("No puede editar, verifique por favor!");
-            // }}
+        // onOk={() => {
+        // update || visible
+        //   ? form
+        //     .validateFields()
+        //     .then((values) => {
+        //       onCreate(values);
+        //     })
+        //     .catch((info) => {
+        //       console.log("Validate Failed:", info);
+        //     })
+        //   : message.error("No puede editar, verifique por favor!");
+        // }}
         >
-            <FormHead />
+            <FormHead form={form} />
             <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
         </Modal>
     </>

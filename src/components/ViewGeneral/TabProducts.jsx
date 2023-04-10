@@ -1,9 +1,9 @@
 import { LProducts } from "./Lists/LProducts"
 
-export const TabProducts = () => {
+export const TabProducts = (form) => {
     return (
         <>
-            <LProducts />
+            <LProducts formEnc={form} />
         </>
     )
 }

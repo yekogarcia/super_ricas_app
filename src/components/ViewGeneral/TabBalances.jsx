@@ -1,7 +1,7 @@
 import { LBalances } from "./Lists/LBalances"
 
-export const TabBalances = () => {
+export const TabBalances = (form) => {
   return (
-   <LBalances />
+   <LBalances formEnc={form} />
   )
 }

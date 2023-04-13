@@ -10,12 +10,12 @@ import {
 } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleBalanceDetId, getProductFactBalance, getProductsConcat } from "../../../controllers/products";
+import { deleBalanceDetId, getProductFactBalance, getProductsConcat, saveMenu } from "../../../controllers/products";
 import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatMoney, unformatArrayMoney } from "../../utils/utils";
 
-export const LBalances = ({formEnc}) => {
+export const LBalances = ({ formEnc }) => {
     const [product, setProduct] = useState([]);
     const [dataSource, setDataSource] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -236,11 +236,16 @@ export const LBalances = ({formEnc}) => {
 
     const handleSaveBalances = () => {
         // console.log(defaultColumns);
-        delete dta.ingresos;
-        delete dta.devoluciones;
-        delete dta.productos;
-        dta.saldos = unformatArrayMoney(dataSource, defaultColumns);
-        console.log(dta);
+        let data = dta;
+        data.saldos = unformatArrayMoney(dataSource, defaultColumns);
+        console.log(data);
+        dispatch(saveMenu(data, token)).then(res => {
+            if (res) {
+                dta.id = res;
+                dispatch(setDataEdit(dta));
+                formEnc.setFieldValue("id", res);
+            }
+        });
     }
     return (
         <div>

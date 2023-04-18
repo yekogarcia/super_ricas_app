@@ -12,16 +12,16 @@ import {
 import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deletePayments } from "../../../controllers/inventory";
+import { deletePayments, getPayments } from "../../../controllers/inventory";
 import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
+import { formatArrayMoney, formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
 import { saveMenu } from "../../../controllers/products";
 //   import { deletePayments } from "../../controllers/inventory";
 //   import { setColumnsList } from "../utils/setColumnsList";
 //   import { formatMoney, unformatMoney } from "../utils/utils";
 
-export const LIncomes = ({formEnc}) => {
+export const LIncomes = ({ formEnc }) => {
   const [form] = Form.useForm();
 
   const [loading, setLoading] = useState(false);
@@ -67,6 +67,14 @@ export const LIncomes = ({formEnc}) => {
       filter: "order"
     }
   ];
+
+  useEffect(() => {
+    setLoading(false);
+    dispatch(getPayments(token, dta.id)).then((res) => {
+      setPays(formatArrayMoney(res, defaultColumns));
+      // setValor(rowIn.valor_ingresos);
+    });
+  }, [dta.id]);
 
   // useEffect(() => { }, []);
 
@@ -127,9 +135,11 @@ export const LIncomes = ({formEnc}) => {
       }
       if (value.concepto === 'INGRESO') {
         dta.valor_ingresos += value.valor;
+        dta.valor_pendiente -= value.valor;
       }
       if (value.concepto === 'DESCUENTO') {
         dta.valor_descuento += value.valor;
+        dta.valor_pendiente -= (value.valor * 50) / 100;
       }
       if (value.concepto === 'FIADO') {
         dta.valor_fiado += value.valor;
@@ -295,9 +305,9 @@ export const LIncomes = ({formEnc}) => {
         // title={() => 'Header'}
         footer={() => (
           <>
-            <div className="total">Total: {formatMoney(dta.valor_venta)}</div>
+            {/* <div className="total">Total: {formatMoney(dta.valor_venta)}</div>
             <div className="income">Ingresos: {formatMoney(dta.valor_ingresos)}</div>
-            <div className="missing">Faltante: {formatMoney(dta.valor_pendiente)}</div>
+            <div className="missing">Faltante: {formatMoney(dta.valor_pendiente)}</div> */}
           </>
         )}
       />

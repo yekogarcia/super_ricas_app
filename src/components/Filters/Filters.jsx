@@ -88,7 +88,7 @@ export const Filters = ({ onSearch, form, loading, filters }) => {
   }
 
   return (
-    <div>
+    <div className="filters">
       {filters.length > 0 ? (
         <Form
           form={form}

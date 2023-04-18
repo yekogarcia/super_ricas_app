@@ -10,7 +10,7 @@ import {
 } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteRowInventoryDetId } from "../../../controllers/inventory";
+import { deleteRowInventoryDetId, getInventoryDet } from "../../../controllers/inventory";
 import { getBalanceProducts, getProductsConcat, getProductsId, saveMenu } from "../../../controllers/products";
 import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
@@ -231,10 +231,24 @@ export const LProducts = ({ formEnc }) => {
         },
     ];
 
+
+
     const [loading, setLoading] = useState(false);
     const [dataSource, setDataSource] = useState([]);
     const { token } = useSelector((state) => state.auth);
     const [product, setProduct] = useState([]);
+
+    useEffect(() => {
+        setDataSource([]);
+        if (dta.id !== "") {
+            // setLoading(true);
+            dispatch(getInventoryDet("", token, dta.id)).then(function (res) {
+                setDataSource(formatArrayMoney(res, defaultColumns));
+                // setLoading(false);
+            });
+        }
+    }, [dta.id])
+
 
     useEffect(() => {
         if (typeof products !== 'undefined') {

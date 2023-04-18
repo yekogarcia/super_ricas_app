@@ -20,7 +20,7 @@ import "./InputsAndOutputs.scss";
 import "../css/style.scss";
 import { FormInputsAndOutputs } from "./FormInputsAndOutputs";
 import { FormPayments } from "../Paymets/FormPayments";
-import { formatArrayMoney, unformatMoney } from "../utils/utils";
+import { formatArrayMoney, unformatArrayMoney, unformatMoney } from "../utils/utils";
 import { PaymentComission } from "../Paymets/PaymentComission";
 import moment from "moment";
 import { ApplyDevolution } from "../ApplyDevolution./ApplyDevolution";
@@ -150,20 +150,23 @@ export const InputsAndOutputs = () => {
   ];
 
   const handleUpdate = (values) => {
-    setOpen(true);
-    setRow(values);
-    setUpdate(true);
-    setVisible(false);
-    if (values.estado !== "INGRESADA") {
-      setUpdate(false);
-    }
+    // if (values.estado !== "INGRESADA") {
+    //   setUpdate(false);
+    // }
+    console.log(values);
+    setOpenView(true)
+    let vals = unformatArrayMoney([values], confColumns);
+    vals[0].fecha_dia = moment(vals[0].fecha_dia, "YYYY-MM-DD")
+    console.log(vals);
+    dispatch(setDataEdit(vals[0]));
   };
 
   const handleOutputs = (values) => {
-    setOpen(true);
-    setRow(values);
-    setUpdate(false);
-    setVisible(true);
+    // setOpen(true);
+    // setRow(values);
+    // setUpdate(false);
+    // setVisible(true);
+
   };
 
   const handleDelete = (values) => {
@@ -227,7 +230,7 @@ export const InputsAndOutputs = () => {
                 Eliminar
               </a>
             </Popconfirm>
-            <a onClick={() => handleAddPay(record)}>
+            {/* <a onClick={() => handleAddPay(record)}>
               <FileAddOutlined />
               Agregar ingresos
             </a>
@@ -243,22 +246,22 @@ export const InputsAndOutputs = () => {
               <a onClick={() => handlePrint(record)}>
                 <CheckOutlined />
                 Finalizar
-              </a>
-              : ""}
+              </a> */}
+              {/* : ""} */}
           </div>
         ) : (
           <div>
-            <a onClick={() => handlePrint(record)}>
+            {/* <a onClick={() => handlePrint(record)}>
               <FullscreenOutlined />
               Ver Ingresos
             </a>
             <a onClick={() => handlePrint(record)}>
               <FullscreenOutlined />
               Ver Detalles
-            </a>
+            </a> */}
           </div>
         )}
-        <div>
+        {/* <div>
           <a onClick={() => handlePrint(record)}>
             <PrinterOutlined />
             Imprimir
@@ -269,7 +272,7 @@ export const InputsAndOutputs = () => {
             <PrinterOutlined />
             Vista general
           </a>
-        </div>
+        </div> */}
       </div>
     );
   };

@@ -144,14 +144,14 @@ export const LProducts = ({ formEnc }) => {
     const dispatch = useDispatch();
     const { products } = useSelector((state) => state.products);
     const { eventEdit } = useSelector((state) => state.edit);
-    let dta = eventEdit;
+    const dta = eventEdit;
 
     let defaultColumns = [
         {
             label: "Id",
             name: "id",
             width: "wp-50",
-            visible: false,
+            // visible: false,
         },
         {
             label: "Producto",
@@ -204,7 +204,7 @@ export const LProducts = ({ formEnc }) => {
         },
         {
             label: "Comisión",
-            width: "wp-100",
+            width: "wp-70",
             name: "porcen_comision",
         },
         {
@@ -238,16 +238,18 @@ export const LProducts = ({ formEnc }) => {
     const { token } = useSelector((state) => state.auth);
     const [product, setProduct] = useState([]);
 
+
     useEffect(() => {
         setDataSource([]);
         if (dta.id !== "") {
-            // setLoading(true);
+            setLoading(true);
             dispatch(getInventoryDet("", token, dta.id)).then(function (res) {
+                console.log(res);
                 setDataSource(formatArrayMoney(res, defaultColumns));
-                // setLoading(false);
+                setLoading(false);
             });
         }
-    }, [dta.id])
+    }, [dta])
 
 
     useEffect(() => {
@@ -303,7 +305,7 @@ export const LProducts = ({ formEnc }) => {
         //   console.log(res);
         //   console.log(value);
         const res = products.filter(products => products.id === value.id_producto);
-        console.log(res)
+        // console.log(res)
         if (res.length > 0) {
             const findDt = dataSource.filter(
                 (dt) => dt.id_producto === value.id_producto
@@ -327,7 +329,7 @@ export const LProducts = ({ formEnc }) => {
                     dta.valor_iva += valor_iva;
                     dta.valor_comision += valor_comision;
                     dta.valor_venta += valor_venta;
-                    dta.valor_pendiente = dta.valor_venta - dta.valor_ingresos;
+                    dta.valor_pendiente += dta.valor_venta - dta.valor_ingresos;
 
                     const newData = {
                         key: res[0].id,
@@ -408,20 +410,23 @@ export const LProducts = ({ formEnc }) => {
     const onChange = (value) => {
         console.log(value);
     };
+
     const onSearch = (value) => { };
 
     const handleSaveProducts = () => {
-        let data = dta;
-        console.log(dataSource);
+        let data = {...dta};
         const dt = unformatArrayMoney(dataSource, defaultColumns);
         data.productos = dt;
         console.log(data);
         dispatch(saveMenu(data, token)).then(res => {
-            console.log(res);
             if (res) {
+                console.log(res);
                 dta.id = res;
                 dispatch(setDataEdit(dta));
                 formEnc.setFieldValue("id", res);
+                dispatch(getInventoryDet("", token, dta.id)).then(function (res) {
+                    setDataSource(formatArrayMoney(res, defaultColumns));
+                });
             }
         });
     }

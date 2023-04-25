@@ -1,21 +1,10 @@
 import { DatePicker, Form, Input, InputNumber, message, Modal, Select } from 'antd';
-import { Button } from 'antd/lib/radio';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { getZones } from '../../controllers/fetchDynamics';
-import { getInventoryDet, saveInventory, updateInventory } from '../../controllers/inventory';
 import { getProductsAll } from '../../controllers/products';
 import { setDataEdit, setProductAll } from '../../controllers/redux';
-import { formatArrayMoney, unformatArrayMoney, unformatMoney } from '../utils/utils';
-
-const onFinish = (values) => {
-    console.log('Success:', values);
-};
-const onFinishFailed = (errorInfo) => {
-    console.log('Failed:', errorInfo);
-};
-
 const { Option } = Select;
 
 export const FormHead = ({ form, row, visible }) => {
@@ -23,11 +12,12 @@ export const FormHead = ({ form, row, visible }) => {
     const dispatch = useDispatch();
     const { token } = useSelector((state) => state.auth);
     const { eventEdit, editable } = useSelector((state) => state.edit);
-
+    let dta = eventEdit;
     // const [dataFact, setDataFact] = useState({});
 
     editable ? form.setFieldsValue(eventEdit) : form.setFieldsValue({});
 
+    const [enabled, setEnabled] = useState(false);
     const [zones, setZones] = useState([]);
     const [fecha, setFecha] = useState(moment().format("YYYY-MM-DD"));
     // const [dataSource, setDataSource] = useState([]);
@@ -120,6 +110,11 @@ export const FormHead = ({ form, row, visible }) => {
     ];
 
     useEffect(() => {
+        dta.id === "" ? setEnabled(false) : setEnabled(true);
+    }, [dta.id])
+
+
+    useEffect(() => {
         dispatch(getZones("", token)).then((pr) => {
             setZones(pr);
         });
@@ -131,6 +126,16 @@ export const FormHead = ({ form, row, visible }) => {
     const initData = () => {
         const valFields = form.getFieldsValue();
         const [{ nombre }] = zones.filter(({ id }) => id === valFields.id_zona);
+        valFields.precio_total = 0;
+        valFields.valor_iva = 0;
+        valFields.valor_venta = 0;
+        valFields.valor_comision = 0;
+        valFields.valor_pendiente = valFields.saldo_base;
+        valFields.valor_ingresos = 0;
+        valFields.valor_descuento = 0;
+        valFields.valor_fiado = 0;
+        valFields.total_saldos = 0;
+        valFields.total_devoluciones = 0;
         valFields.zona_text = nombre;
         dispatch(setDataEdit(valFields));
     }
@@ -141,7 +146,11 @@ export const FormHead = ({ form, row, visible }) => {
     };
 
     const onChageSaldo = () => {
-        initData();
+        const valFields = form.getFieldsValue();
+        dta.valor_pendiente -= dta.saldo_base;
+        dta.saldo_base = valFields.saldo_base;
+        dta.valor_pendiente += valFields.saldo_base;
+        dispatch(setDataEdit(dta));
     }
 
     const onChageZona = () => {
@@ -210,7 +219,7 @@ export const FormHead = ({ form, row, visible }) => {
                     },
                 ]}
             >
-                <Select onBlur={onChageZona}>
+                <Select disabled={enabled} onBlur={onChageZona}>
                     {zones.map(({ id, nombre }) => (
                         <Option value={id} key={id}>
                             {nombre}
@@ -233,7 +242,7 @@ export const FormHead = ({ form, row, visible }) => {
                     },
                 ]}
             >
-                <Input onBlur={onChageNoFact} />
+                <Input disabled={enabled} onBlur={onChageNoFact} />
             </Form.Item>
             <Form.Item
                 style={{

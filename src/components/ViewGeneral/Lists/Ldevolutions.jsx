@@ -9,6 +9,7 @@ import { setColumnsList } from "../../utils/setColumnsList";
 import { deleteReturns, getProductsAll, getProductsConcat, getReturns, saveMenu } from "../../../controllers/products";
 import { removeRow } from "../../utils/rows";
 import { setDataEdit } from "../../../controllers/redux";
+import { formatArrayMoney, formatMoney, unformatArrayMoney } from "../../utils/utils";
 
 
 export const Ldevolutions = ({ formEnc }) => {
@@ -36,6 +37,18 @@ export const Ldevolutions = ({ formEnc }) => {
       setProduct(data);
     }
   }, [products]);
+
+  useEffect(() => {
+    setReturns([]);
+    if (dta.id !== "") {
+      dispatch(getReturns("", { zona: dta.id_zona }, token)).then(res => {
+        // console.log(res);
+        setReturns(formatArrayMoney(res, defaultColumns));
+        setLoading(false);
+      });
+    }
+  }, [dta])
+
 
 
   let defaultColumns = [
@@ -73,6 +86,7 @@ export const Ldevolutions = ({ formEnc }) => {
       name: "zona_text",
       filter: "search",
       width: "wp-200",
+      visible: false
     },
     {
       label: "Id prodducto",
@@ -90,7 +104,21 @@ export const Ldevolutions = ({ formEnc }) => {
     {
       label: "Cantidad",
       name: "cantidad",
-      width: "wp-100",
+      width: "wp-70",
+      filter: "order",
+    },
+    {
+      label: "Valor unidad",
+      name: "valor_unidad",
+      width: "wp-150",
+      format: "money",
+      filter: "order",
+    },
+    {
+      label: "Total",
+      name: "total",
+      width: "wp-150",
+      format: "money",
       filter: "order",
     },
     {
@@ -117,8 +145,8 @@ export const Ldevolutions = ({ formEnc }) => {
   };
   const block = setOptionsBlock(contextMenu);
 
-  defaultColumns = setColumnsList(defaultColumns, returns);
-  defaultColumns = block.concat(defaultColumns);
+  let columns = setColumnsList(defaultColumns, returns);
+  columns = block.concat(columns);
 
 
   const onSearch = (record) => {
@@ -153,10 +181,13 @@ export const Ldevolutions = ({ formEnc }) => {
     values.zona_text = dta.zona_text;
     values.estado = 'PENDIENTE';
     values.fecha = moment(values.fecha["_d"]).format("YYYY-MM-DD");
-    dta.total_devoluciones = values.cantidad * precio;
-    // console.log(values);
+    values.valor_unidad = formatMoney(precio);
+    values.total = formatMoney(values.cantidad * precio);
+    dta.total_devoluciones += values.cantidad * precio;
+    console.log(dta);
     setReturns([...returns, values]);
     dispatch(setDataEdit(dta));
+    form.resetFields();
   }
 
   setTimeout(function () {
@@ -167,13 +198,18 @@ export const Ldevolutions = ({ formEnc }) => {
 
   }
   const handleSaveDevolutions = () => {
-    let data = dta;
-    data.devoluciones = returns;
+    let data = {...dta};
+    data.devoluciones = unformatArrayMoney(returns, defaultColumns);
     console.log(data);
     dispatch(saveMenu(data, token)).then(res => {
       if (res) {
         dta.id = res;
         dispatch(setDataEdit(dta));
+        dispatch(getReturns("", { zona: dta.id_zona }, token)).then(res => {
+          // console.log(res);
+          setReturns(formatArrayMoney(res, defaultColumns));
+          setLoading(false);
+        });
         formEnc.setFieldValue("id", res);
       }
     });
@@ -317,7 +353,7 @@ export const Ldevolutions = ({ formEnc }) => {
       <Table
         bordered
         dataSource={returns}
-        columns={defaultColumns}
+        columns={columns}
         loading={loading}
         size="small"
       />

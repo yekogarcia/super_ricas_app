@@ -256,3 +256,14 @@ export const saveMenu = (values, token) => {
     }
   };
 };
+
+export const getSaldosFact = (id = "", token) => {
+  return async (dispatch) => {
+    const resp = await useFetchToken("menu/saldos_det/" + id, {}, token, "GET");
+    dispatch(checkSession(resp.status));
+    const body = await resp.json();
+    if (resp.ok) {
+      return body.data;
+    }
+  };
+};

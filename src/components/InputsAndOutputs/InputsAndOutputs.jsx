@@ -147,6 +147,18 @@ export const InputsAndOutputs = () => {
       width: "wp-100",
       format: "money",
     },
+    {
+      label: "Total saldos",
+      name: "total_saldos",
+      width: "wp-150",
+      format: "money",
+    },
+    {
+      label: "Total devoluciones",
+      name: "total_devoluciones",
+      width: "wp-150",
+      format: "money",
+    },
   ];
 
   const handleUpdate = (values) => {
@@ -360,7 +372,7 @@ export const InputsAndOutputs = () => {
     dispatch(setDataEdit({
       id: '',
       fecha: moment().format("YYYY-MM-DD"),
-      zona: 0,
+      id_zona: '',
       codigo: '',
       saldo_base: 0,
       precio_total: 0,
@@ -415,6 +427,7 @@ export const InputsAndOutputs = () => {
         <ViewGeneral
           openView={openView}
           setOpenView={setOpenView}
+          onSearch={onSearch}
         />
         <Table
           columns={columns}

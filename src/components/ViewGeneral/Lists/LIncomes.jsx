@@ -69,21 +69,25 @@ export const LIncomes = ({ formEnc }) => {
   ];
 
   useEffect(() => {
-    setLoading(false);
-    dispatch(getPayments(token, dta.id)).then((res) => {
-      setPays(formatArrayMoney(res, defaultColumns));
-      // setValor(rowIn.valor_ingresos);
-    });
-  }, [dta.id]);
+    setPays([]);
+    if (dta.id !== "") {
+      setLoading(false);
+      dispatch(getPayments(token, dta.id)).then((res) => {
+        setPays(formatArrayMoney(res, defaultColumns));
+      });
+    }
+  }, [dta]);
 
-  // useEffect(() => { }, []);
 
   const calcValIncomes = (record) => {
     if (record.concepto === 'INGRESO') {
       dta.valor_ingresos -= unformatMoney(record.valor);
+      dta.valor_pendiente += unformatMoney(record.valor);
     }
     if (record.concepto === 'DESCUENTO') {
       dta.valor_descuento -= unformatMoney(record.valor);
+      const value_comission = unformatMoney(record.valor);
+      dta.valor_comision += (value_comission * 50) / 100;
     }
     if (record.concepto === 'FIADO') {
       dta.valor_fiado -= unformatMoney(record.valor);
@@ -139,7 +143,7 @@ export const LIncomes = ({ formEnc }) => {
       }
       if (value.concepto === 'DESCUENTO') {
         dta.valor_descuento += value.valor;
-        dta.valor_pendiente -= (value.valor * 50) / 100;
+        dta.valor_comision -= (value.valor * 50) / 100;
       }
       if (value.concepto === 'FIADO') {
         dta.valor_fiado += value.valor;
@@ -160,26 +164,19 @@ export const LIncomes = ({ formEnc }) => {
     form.resetFields();
   };
 
-  //   const handleSave = (row) => {
-  //     const newData = [...pays];
-  //     const index = newData.findIndex((item) => row.key === item.key);
-  //     const item = newData[index];
-  //     newData.splice(index, 1, {
-  //       ...item,
-  //       ...row,
-  //     });
-  //     setPays(newData);
-  //   };
 
   const handleSaveIncome = () => {
-    let data = dta;
-    data.ingresos = pays;
+    let data = {...dta};
+    data.ingresos = unformatArrayMoney(pays, defaultColumns);
     console.log(data);
     dispatch(saveMenu(data, token)).then(res => {
       if (res) {
         dta.id = res;
         dispatch(setDataEdit(dta));
         formEnc.setFieldValue("id", res);
+        dispatch(getPayments(token, dta.id)).then((res) => {
+          setPays(formatArrayMoney(res, defaultColumns));
+        });
       }
     });
   }

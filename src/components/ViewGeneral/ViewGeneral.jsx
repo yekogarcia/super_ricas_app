@@ -1,16 +1,17 @@
-import { Button, Form, Input, Modal, Tabs } from 'antd'
+import { Form,  Modal, Tabs } from 'antd'
 import React from 'react'
 import { FormHead } from './FormHead';
 import { TabBalances } from './TabBalances';
 import { TabDevolutions } from './TabDevolutions';
 import { TabIncomes } from './TabIncomes';
-import { TabPays } from './TabPays';
 import { TabProducts } from './TabProducts';
+import { useDispatch } from 'react-redux';
 
 
-export const ViewGeneral = ({ openView, setOpenView }) => {
+export const ViewGeneral = ({ openView, setOpenView, onSearch }) => {
     const [form] = Form.useForm();
-
+    const dispatch = useDispatch();
+   
     const onChange = (key) => {
         console.log(key);
     };
@@ -62,19 +63,11 @@ export const ViewGeneral = ({ openView, setOpenView }) => {
             //   }}
             onCancel={() => {
                 setOpenView(false);
+                onSearch();
+                // dispatch(setDataEdit({id: ""}));
                 // form.resetFields();
             }}
         // onOk={() => {
-        // update || visible
-        //   ? form
-        //     .validateFields()
-        //     .then((values) => {
-        //       onCreate(values);
-        //     })
-        //     .catch((info) => {
-        //       console.log("Validate Failed:", info);
-        //     })
-        //   : message.error("No puede editar, verifique por favor!");
         // }}
         >
             <FormHead form={form} />

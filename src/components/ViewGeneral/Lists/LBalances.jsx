@@ -10,10 +10,10 @@ import {
 } from "antd";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { deleBalanceDetId, getProductFactBalance, getProductsConcat, saveMenu } from "../../../controllers/products";
+import { deleBalanceDetId, getBalanceProducts, getProductFactBalance, getProductsConcat, getSaldosFact, saveMenu } from "../../../controllers/products";
 import { setDataEdit } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
-import { formatMoney, unformatArrayMoney } from "../../utils/utils";
+import { formatArrayMoney, formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
 
 export const LBalances = ({ formEnc }) => {
     const [product, setProduct] = useState([]);
@@ -117,6 +117,25 @@ export const LBalances = ({ formEnc }) => {
         }
     }, [products]);
 
+    useEffect(() => {
+        setDataSource([]);
+        if (dta.id !== "") {
+            dispatch(getSaldosFact(dta.codigo, token)).then(res => {
+                console.log(res);
+                setDataSource(formatArrayMoney(res, defaultColumns));
+                setLoading(false);
+            });
+        }
+    }, [dta])
+
+    const calculateValuesHead = (record) => {
+        dta.precio_total += unformatMoney(record.precio_total);
+        dta.valor_iva += unformatMoney(record.valor_iva);
+        dta.valor_venta = dta.valor_iva + dta.precio_total;
+        dta.valor_comision += unformatMoney(record.valor_comision);
+        dta.total_saldos -= unformatMoney(record.valor_venta);
+        dispatch(setDataEdit(dta));
+    }
 
     const handleDelete = (record) => {
         console.log(record);
@@ -124,10 +143,12 @@ export const LBalances = ({ formEnc }) => {
             dispatch(deleBalanceDetId(record.id, token)).then((res) => {
                 const newData = dataSource.filter((item) => item.key !== record.key);
                 setDataSource(newData);
+                calculateValuesHead(record);
             });
         } else {
             const newData = dataSource.filter((item) => item.key !== record.key);
             setDataSource(newData);
+            calculateValuesHead(record);
         }
     };
 
@@ -151,6 +172,11 @@ export const LBalances = ({ formEnc }) => {
 
     const handleAdd = (value) => {
         console.log(value);
+        console.log(dta);
+        if (dta.valor_pendiente <= value.valor_venta) {
+            message.warning("El valor total no puede ser mayor al valor pendiente!");
+            return;
+        }
         const findDt = dataSource.filter(
             (dt) => dt.id_producto === value.id_producto
         );
@@ -188,6 +214,11 @@ export const LBalances = ({ formEnc }) => {
                     valor_venta: formatMoney(valor_venta),
                 }
                 setDataSource([...dataSource, newData]);
+                dta.precio_total -= precio_total;
+                dta.valor_iva -= valor_iva;
+                dta.valor_pendiente -= valor_iva + precio_total;
+                dta.valor_venta = dta.valor_iva + dta.precio_total;
+                dta.valor_comision -= valor_comision;
                 dispatch(setDataEdit(dta));
             } else {
                 message.warning("La cantidad tiene que ser mayor a 0!");
@@ -236,7 +267,7 @@ export const LBalances = ({ formEnc }) => {
 
     const handleSaveBalances = () => {
         // console.log(defaultColumns);
-        let data = dta;
+        let data = { ...dta };
         data.saldos = unformatArrayMoney(dataSource, defaultColumns);
         console.log(data);
         dispatch(saveMenu(data, token)).then(res => {

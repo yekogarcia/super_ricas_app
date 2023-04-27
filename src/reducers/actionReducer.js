@@ -39,3 +39,33 @@ export const productsReducer = (state = false, action) => {
             return state;
     }
 }
+
+export const emptyReducer = (state = false, action) => {
+    switch (action.type) {
+        case types.emptyDetails:
+            return {
+                ...state,
+                details: action.payload,
+            }
+        case types.notEmptyDetails:
+            return {
+                ...state,
+                details: {
+                    products: false,
+                    incomes: false,
+                    devolutions: false,
+                    balances: false,
+                },
+            }
+        default:
+            return {
+                ...state,
+                details: {
+                    products: false,
+                    incomes: false,
+                    devolutions: false,
+                    balances: false,
+                },
+            };
+    }
+}

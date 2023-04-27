@@ -8,7 +8,7 @@ import { setOptionsBlock } from "../../utils/setOptionsList";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { deleteReturns, getProductsAll, getProductsConcat, getReturns, saveMenu } from "../../../controllers/products";
 import { removeRow } from "../../utils/rows";
-import { setDataEdit } from "../../../controllers/redux";
+import { setDataEdit, setEmptyDetails } from "../../../controllers/redux";
 import { formatArrayMoney, formatMoney, unformatArrayMoney } from "../../utils/utils";
 
 
@@ -23,6 +23,7 @@ export const Ldevolutions = ({ formEnc }) => {
 
   const { token } = useSelector((state) => state.auth);
   const { products } = useSelector((state) => state.products);
+  const { details } = useSelector((state) => state.empty);
   const { eventEdit } = useSelector((state) => state.edit);
   let dta = eventEdit;
 
@@ -187,6 +188,8 @@ export const Ldevolutions = ({ formEnc }) => {
     console.log(dta);
     setReturns([...returns, values]);
     dispatch(setDataEdit(dta));
+    details.devolutions = true
+    dispatch(setEmptyDetails(details));
     form.resetFields();
   }
 
@@ -198,7 +201,7 @@ export const Ldevolutions = ({ formEnc }) => {
 
   }
   const handleSaveDevolutions = () => {
-    let data = {...dta};
+    let data = { ...dta };
     data.devoluciones = unformatArrayMoney(returns, defaultColumns);
     console.log(data);
     dispatch(saveMenu(data, token)).then(res => {
@@ -211,6 +214,8 @@ export const Ldevolutions = ({ formEnc }) => {
           setLoading(false);
         });
         formEnc.setFieldValue("id", res);
+        details.devolutions = false;
+        dispatch(setEmptyDetails(details));
       }
     });
   }

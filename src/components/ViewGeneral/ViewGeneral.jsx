@@ -1,19 +1,42 @@
-import { Form,  Modal, Tabs } from 'antd'
+import { Form, Modal, Tabs, message } from 'antd'
 import React from 'react'
 import { FormHead } from './FormHead';
 import { TabBalances } from './TabBalances';
 import { TabDevolutions } from './TabDevolutions';
 import { TabIncomes } from './TabIncomes';
 import { TabProducts } from './TabProducts';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 export const ViewGeneral = ({ openView, setOpenView, onSearch }) => {
     const [form] = Form.useForm();
+    const { details } = useSelector((state) => state.empty);
     const dispatch = useDispatch();
-   
+
     const onChange = (key) => {
         console.log(key);
+    };
+
+    const validateDetails = () => {
+        if (details.products) {
+            message.warning("Tiene productos sin guardar verifica por favor!");
+            return;
+        }
+        if (details.incomes) {
+            message.warning("Tiene Ingresos sin guardar verifica por favor!");
+            return;
+        }
+        if (details.balances) {
+            message.warning("Tiene saldos sin guardar verifica por favor!");
+            return;
+        }
+        if (details.devolutions) {
+            message.warning("Tiene devoluciones sin guardar verifica por favor!");
+            return;
+        }
+
+        setOpenView(false);
+        onSearch();
     };
 
 
@@ -62,8 +85,7 @@ export const ViewGeneral = ({ openView, setOpenView, onSearch }) => {
             //     disabled: true,
             //   }}
             onCancel={() => {
-                setOpenView(false);
-                onSearch();
+                validateDetails();
                 // dispatch(setDataEdit({id: ""}));
                 // form.resetFields();
             }}

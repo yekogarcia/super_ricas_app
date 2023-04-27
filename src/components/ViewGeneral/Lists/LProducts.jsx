@@ -12,7 +12,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteRowInventoryDetId, getInventoryDet } from "../../../controllers/inventory";
 import { getBalanceProducts, getProductsConcat, getProductsId, saveMenu } from "../../../controllers/products";
-import { setDataEdit } from "../../../controllers/redux";
+import { setDataEdit, setEmptyDetails } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatArrayMoney, formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
 
@@ -143,8 +143,10 @@ export const LProducts = ({ formEnc }) => {
     const [form] = Form.useForm();
     const dispatch = useDispatch();
     const { products } = useSelector((state) => state.products);
+    const { details } = useSelector((state) => state.empty);
     const { eventEdit } = useSelector((state) => state.edit);
     const dta = eventEdit;
+    // console.log(details);
 
     let defaultColumns = [
         {
@@ -347,6 +349,8 @@ export const LProducts = ({ formEnc }) => {
                     };
                     setDataSource([...dataSource, newData]);
                     dispatch(setDataEdit(dta));
+                    details["products"] = true;
+                    dispatch(setEmptyDetails(details));
                 } else {
                     message.warning("La cantidad tiene que ser mayor a 0!");
                 }
@@ -414,7 +418,7 @@ export const LProducts = ({ formEnc }) => {
     const onSearch = (value) => { };
 
     const handleSaveProducts = () => {
-        let data = {...dta};
+        let data = { ...dta };
         const dt = unformatArrayMoney(dataSource, defaultColumns);
         data.productos = dt;
         console.log(data);
@@ -427,6 +431,8 @@ export const LProducts = ({ formEnc }) => {
                 dispatch(getInventoryDet("", token, dta.id)).then(function (res) {
                     setDataSource(formatArrayMoney(res, defaultColumns));
                 });
+                details.products = false
+                dispatch(setEmptyDetails(details));
             }
         });
     }
@@ -510,17 +516,19 @@ export const LProducts = ({ formEnc }) => {
                 >
                     Agregar producto
                 </Button>
-                <Button
-                    onClick={handleApplySaldos}
-                    type="primary"
-                    style={{
-                        marginBottom: 0,
-                        marginTop: 31,
-                        marginLeft: 10,
-                    }}
-                >
-                    Aplicar saldos
-                </Button>
+                {dta.id === "" ?
+                    <Button
+                        onClick={handleApplySaldos}
+                        type="primary"
+                        style={{
+                            marginBottom: 0,
+                            marginTop: 31,
+                            marginLeft: 10,
+                        }}
+                    >
+                        Aplicar saldos
+                    </Button>
+                    : ""}
             </Form>
             <Table
                 components={components}

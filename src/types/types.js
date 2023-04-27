@@ -11,4 +11,7 @@ export const types = {
 
     productAll: '[products] products All item',
     notProductAll: '[products] products not item',
+    
+    emptyDetails: '[empty] emptyDetails All item',
+    notEmptyDetails: '[empty] emptyDetails not item',
 }

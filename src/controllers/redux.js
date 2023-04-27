@@ -10,3 +10,8 @@ export const setProductAll = (data) => ({
     type: types.productAll,
     payload: data,
 });
+
+export const setEmptyDetails = (data) => ({
+    type: types.emptyDetails,
+    payload: data,
+});

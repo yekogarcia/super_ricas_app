@@ -11,7 +11,7 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleBalanceDetId, getBalanceProducts, getProductFactBalance, getProductsConcat, getSaldosFact, saveMenu } from "../../../controllers/products";
-import { setDataEdit } from "../../../controllers/redux";
+import { setDataEdit, setEmptyDetails } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatArrayMoney, formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
 
@@ -25,6 +25,7 @@ export const LBalances = ({ formEnc }) => {
 
     const { token } = useSelector((state) => state.auth);
     const { products } = useSelector((state) => state.products);
+    const { details } = useSelector((state) => state.empty);
     const { eventEdit } = useSelector((state) => state.edit);
     let dta = eventEdit;
 
@@ -220,6 +221,8 @@ export const LBalances = ({ formEnc }) => {
                 dta.valor_venta = dta.valor_iva + dta.precio_total;
                 dta.valor_comision -= valor_comision;
                 dispatch(setDataEdit(dta));
+                details.balances = true
+                dispatch(setEmptyDetails(details));
             } else {
                 message.warning("La cantidad tiene que ser mayor a 0!");
             }
@@ -275,6 +278,8 @@ export const LBalances = ({ formEnc }) => {
                 dta.id = res;
                 dispatch(setDataEdit(dta));
                 formEnc.setFieldValue("id", res);
+                details.balances = false;
+                dispatch(setEmptyDetails(details));
             }
         });
     }

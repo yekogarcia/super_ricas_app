@@ -13,7 +13,7 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deletePayments, getPayments } from "../../../controllers/inventory";
-import { setDataEdit } from "../../../controllers/redux";
+import { setDataEdit, setEmptyDetails } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatArrayMoney, formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";
 import { saveMenu } from "../../../controllers/products";
@@ -31,6 +31,7 @@ export const LIncomes = ({ formEnc }) => {
   const dispatch = useDispatch();
 
   const { token } = useSelector((state) => state.auth);
+  const { details } = useSelector((state) => state.empty);
   const { eventEdit } = useSelector((state) => state.edit);
   let dta = eventEdit;
 
@@ -157,6 +158,8 @@ export const LIncomes = ({ formEnc }) => {
       };
       setPays([...pays, newData]);
       dispatch(setDataEdit(dta));
+      details.incomes = true
+      dispatch(setEmptyDetails(details));
     } else {
       message.warning("El valor tiene que ser mayor a 0!");
     }
@@ -166,7 +169,7 @@ export const LIncomes = ({ formEnc }) => {
 
 
   const handleSaveIncome = () => {
-    let data = {...dta};
+    let data = { ...dta };
     data.ingresos = unformatArrayMoney(pays, defaultColumns);
     console.log(data);
     dispatch(saveMenu(data, token)).then(res => {
@@ -177,6 +180,8 @@ export const LIncomes = ({ formEnc }) => {
         dispatch(getPayments(token, dta.id)).then((res) => {
           setPays(formatArrayMoney(res, defaultColumns));
         });
+        details.incomes = false;
+        dispatch(setEmptyDetails(details));
       }
     });
   }

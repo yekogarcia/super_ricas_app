@@ -11,7 +11,7 @@ import {
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteRowInventoryDetId, getInventoryDet } from "../../../controllers/inventory";
-import { getBalanceProducts, getProductsConcat, getProductsId, saveMenu } from "../../../controllers/products";
+import { getBalanceProducts, saveMenu } from "../../../controllers/products";
 import { setDataEdit, setEmptyDetails } from "../../../controllers/redux";
 import { setColumnsList } from "../../utils/setColumnsList";
 import { formatArrayMoney, formatMoney, unformatArrayMoney, unformatMoney } from "../../utils/utils";

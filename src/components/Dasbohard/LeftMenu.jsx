@@ -23,13 +23,13 @@ function getItem(label, key, icon, children, type) {
 
 const items = [
   getItem("Zonas", "zones", <ContainerOutlined />),
-  getItem("Categorias", "categories", <DesktopOutlined />),
+  // getItem("Categorias", "categories", <DesktopOutlined />),
   getItem("Productos", "products", <PieChartOutlined />),
   getItem("Mercancía Zonas", "inputs", <ContainerOutlined />),
   getItem("Ventas zonas", "inventory", <ContainerOutlined />),
-  getItem("Devoluciones", "devolutions", <ContainerOutlined />),
-  getItem("Saldos", "balance", <ContainerOutlined />),
-  getItem("Vista general", "view", <ContainerOutlined />),
+  // getItem("Devoluciones", "devolutions", <ContainerOutlined />),
+  // getItem("Saldos", "balance", <ContainerOutlined />),
+  // getItem("Vista general", "view", <ContainerOutlined />),
   // getItem("Informes", "reports", <ContainerOutlined />),
   // getItem("Devs", "sub1", <MailOutlined />, [
   //   getItem("Perfiles", "profiles"),

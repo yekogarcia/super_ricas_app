@@ -57,7 +57,7 @@ export const Inventory = () => {
       label: "Zona",
       name: "zona_text",
       filter: "search",
-      width: "wp-100",
+      width: "wp-200",
     },
     {
       label: "Fecha ingreso",
@@ -68,19 +68,19 @@ export const Inventory = () => {
     {
       label: "Valor total",
       name: "precio_total",
-      width: "wp-150",
+      width: "wp-200",
       format: "money",
     },
     {
       label: "Valor comisión",
       name: "valor_comision",
-      width: "wp-150",
+      width: "wp-200",
       format: "money",
     },
     {
       label: "Valor pendiente",
       name: "valor_pendiente",
-      width: "wp-200",
+      width: "wp-250",
       format: "money",
     },
 

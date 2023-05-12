@@ -47,7 +47,7 @@ export const Dasbohard = () => {
               <Route exact path="/view" element={<ViewGeneral />} />
             </Routes>
           </Content>
-          <Footer>Footer</Footer>
+          {/* <Footer>Powered By <b>Yksoft</b></Footer> */}
         </Layout>
       </Layout>
     </>

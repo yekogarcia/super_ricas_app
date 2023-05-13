@@ -26,6 +26,7 @@ import moment from "moment";
 import { ApplyDevolution } from "../ApplyDevolution./ApplyDevolution";
 import { ViewGeneral } from "../ViewGeneral/ViewGeneral";
 import { setDataEdit } from "../../controllers/redux";
+import { getZones } from "../../controllers/fetchDynamics";
 
 export const InputsAndOutputs = () => {
   const [loading, setLoading] = useState(false);
@@ -39,6 +40,7 @@ export const InputsAndOutputs = () => {
   const [visualize, setVisualize] = useState(true);
   const [showConfirm, setShowConfirm] = useState(false);
   const [invent, setInvent] = useState([]);
+  const [zones, setZones] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isOpenApplyDev, setIsOpenApplyDev] = useState(false);
   const [fechaEnd, setFechaEnd] = useState(moment().format("YYYY-MM-DD"));
@@ -54,6 +56,16 @@ export const InputsAndOutputs = () => {
   useEffect(() => {
     onSearch();
   }, []);
+
+  useEffect(() => {
+    const newZones = [];
+    dispatch(getZones("", token)).then((dataZones) => {
+      dataZones.map(({ id, nombre }) => {
+        newZones.push({ value: id, label: nombre });
+      });
+      setZones(newZones);
+    });
+  }, [])
 
   const confColumns = [
     {
@@ -259,7 +271,7 @@ export const InputsAndOutputs = () => {
                 <CheckOutlined />
                 Finalizar
               </a> */}
-              {/* : ""} */}
+            {/* : ""} */}
           </div>
         ) : (
           <div>
@@ -355,9 +367,10 @@ export const InputsAndOutputs = () => {
     loading,
     filters: [
       {
-        label: "Buscar",
-        name: "buscar",
-        type: "search"
+        label: "Zonas",
+        name: "zonas",
+        type: "select",
+        options: zones
       },
       {
         label: "Fechas",

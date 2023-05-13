@@ -12,6 +12,7 @@ import { formatArrayMoney, formatMoney } from "../utils/utils";
 
 import "../css/style.scss";
 import "./Inventory.scss";
+import { getZones } from "../../controllers/fetchDynamics";
 
 export const FooterTotSales = ({ total, comision, pendiente }) => {
   return (
@@ -26,6 +27,7 @@ export const FooterTotSales = ({ total, comision, pendiente }) => {
 export const Inventory = () => {
   const [loading, setLoading] = useState(false);
   const [invent, setInvent] = useState([]);
+  const [zones, setZones] = useState([]);
   const [total, setTotal] = useState(0);
   const [comision, setComision] = useState(0);
   const [pendiente, setPendiente] = useState(0);
@@ -38,6 +40,16 @@ export const Inventory = () => {
   useEffect(() => {
     onSearch();
   }, []);
+
+  useEffect(() => {
+    const newZones = [];
+    dispatch(getZones("", token)).then((dataZones) => {
+      dataZones.map(({ id, nombre }) => {
+        newZones.push({ value: id, label: nombre });
+      });
+      setZones(newZones);
+    });
+  }, [])
 
   const confColumns = [
     {
@@ -130,9 +142,10 @@ export const Inventory = () => {
     loading,
     filters: [
       {
-        label: "Buscar",
-        name: "buscar",
-        type: "search"
+        label: "Zonas",
+        name: "zonas",
+        type: "select",
+        options: zones
       },
       {
         label: "Fechas",

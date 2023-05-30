@@ -42,12 +42,13 @@ export const Inventory = () => {
   }, []);
 
   useEffect(() => {
-    const newZones = [];
+    const newZones = [{ key: "", value: "", label: "Todos" }];
     dispatch(getZones("", token)).then((dataZones) => {
       dataZones.map(({ id, nombre }) => {
-        newZones.push({ value: id, label: nombre });
+        newZones.push({ key: id, value: id, label: nombre });
       });
       setZones(newZones);
+      console.log(zones)
     });
   }, [])
 
@@ -143,7 +144,7 @@ export const Inventory = () => {
     filters: [
       {
         label: "Zonas",
-        name: "zonas",
+        name: "id_zona",
         type: "select",
         options: zones
       },

@@ -58,13 +58,14 @@ export const InputsAndOutputs = () => {
   }, []);
 
   useEffect(() => {
-    const newZones = [];
+    const newZones = [{ key: "", value: "", label: "Todos" }];
     dispatch(getZones("", token)).then((dataZones) => {
       dataZones.map(({ id, nombre }) => {
-        newZones.push({ value: id, label: nombre });
+        newZones.push({ key: id, value: id, label: nombre });
       });
       setZones(newZones);
     });
+
   }, [])
 
   const confColumns = [
@@ -368,7 +369,7 @@ export const InputsAndOutputs = () => {
     filters: [
       {
         label: "Zonas",
-        name: "zonas",
+        name: "id_zona",
         type: "select",
         options: zones
       },

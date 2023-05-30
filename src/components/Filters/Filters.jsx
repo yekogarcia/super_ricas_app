@@ -40,9 +40,9 @@ const CreateFilter = ({ label, name, type, func, options }) => {
             showSearch
             placeholder={label}
             filterOption={(input, option) => (option?.label ?? '').includes(input)}
-            filterSort={(optionA, optionB) =>
-              (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
-            }
+            // filterSort={(optionA, optionB) =>
+            //   (optionA?.label ?? '').toLowerCase().localeCompare((optionB?.label ?? '').toLowerCase())
+            // }
             options={options}
           />
         </Form.Item>

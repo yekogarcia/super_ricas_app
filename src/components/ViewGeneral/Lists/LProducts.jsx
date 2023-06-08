@@ -331,7 +331,7 @@ export const LProducts = ({ formEnc }) => {
                     dta.valor_iva += valor_iva;
                     dta.valor_comision += valor_comision;
                     dta.valor_venta += valor_venta;
-                    dta.valor_pendiente += dta.valor_venta - dta.valor_ingresos;
+                    dta.valor_pendiente = (dta.valor_venta - dta.valor_ingresos);
 
                     const newData = {
                         key: res[0].id,
@@ -347,6 +347,7 @@ export const LProducts = ({ formEnc }) => {
                         valor_comision: formatMoney(valor_comision),
                         valor_venta: formatMoney(valor_venta),
                     };
+                    console.log(dta);
                     setDataSource([...dataSource, newData]);
                     dispatch(setDataEdit(dta));
                     details["products"] = true;

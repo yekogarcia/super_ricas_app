@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { getCategories } from "../../controllers/fetchDynamics";
 import { saveProducts, updateProducts } from "../../controllers/products";
 import { addRow, updateRow } from "../utils/rows";
+import { unformatMoney } from "../utils/utils";
 const { Option } = Select;
 
 export const FormProducts = ({
@@ -35,6 +36,7 @@ export const FormProducts = ({
 
   const onCreate = (values) => {
     console.log(values);
+    values.precio = unformatMoney(values.precio);
     if (!row) {
       dispatch(saveProducts(values, token)).then((pr) => {
         pr[0].key = pr[0].id;
@@ -44,6 +46,7 @@ export const FormProducts = ({
       });
     } else {
       dispatch(updateProducts(values, row.id, token)).then((pr) => {
+        console.log(pr);
         setProducts(updateRow(products, pr, row.id));
         form.resetFields();
         setOpen(false);
